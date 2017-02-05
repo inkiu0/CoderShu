@@ -6,17 +6,63 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="codershu.com">
-  <title>Archives: 2017/2 | 南昌小白龙的blog</title>
+  <title>南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="游戏程序员，现就职于心动网络。">
-<meta property="og:type" content="website">
+  <meta name="description" content="jiugongge_demo
+	
+		*{
+			margin:0;
+			padding: 0;
+		}
+		table{
+			margin: 30px;
+			border-collapse: collapse;
+		}
+		#test0{
+			margin: 30px;
+			width: 200px;
+			height: 200px;
+		}
+		#test0 div{">
+<meta property="og:type" content="article">
 <meta property="og:title" content="南昌小白龙的blog">
-<meta property="og:url" content="codershu.com/archives/2017/02/index.html">
+<meta property="og:url" content="codershu.com/2017/02/06/assets/demo/jiugongge_demo/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="游戏程序员，现就职于心动网络。">
+<meta property="og:description" content="jiugongge_demo
+	
+		*{
+			margin:0;
+			padding: 0;
+		}
+		table{
+			margin: 30px;
+			border-collapse: collapse;
+		}
+		#test0{
+			margin: 30px;
+			width: 200px;
+			height: 200px;
+		}
+		#test0 div{">
+<meta property="og:updated_time" content="2017-02-05T18:05:33.436Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="南昌小白龙的blog">
-<meta name="twitter:description" content="游戏程序员，现就职于心动网络。">
+<meta name="twitter:description" content="jiugongge_demo
+	
+		*{
+			margin:0;
+			padding: 0;
+		}
+		table{
+			margin: 30px;
+			border-collapse: collapse;
+		}
+		#test0{
+			margin: 30px;
+			width: 200px;
+			height: 200px;
+		}
+		#test0 div{">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -156,242 +202,278 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-assets/demo/jiugongge_demo" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jiugongge_demo</title>
+	<style>
+		*{
+			margin:0;
+			padding: 0;
+		}
+		table{
+			margin: 30px;
+			border-collapse: collapse;
+		}
+		#test0{
+			margin: 30px;
+			width: 200px;
+			height: 200px;
+		}
+		#test0 div{
+			width: 50px;
+			height: 50px;
+			float: left;
+			background: #eee;
+			border: 5px solid #00f;
+			text-align: center;
+			line-height: 50px;
+			color: #090;
+			position: relative;
+		}
+		#test0 .lr_indent{
+			margin-left: -5px;
+			margin-right: -5px;
+		}
+		#test0 .tb_indent{
+			margin-top: -5px;
+			margin-bottom: -5px;
+		}
+		#test0 div:hover{
+			border: 5px solid #f00;
+			z-index: 999;
+			background: #eee;
+		}
+		#test1 td{
+			width: 50px;
+			height: 50px;
+			background: #eee;
+			position: relative;
+			border: 5px solid #00f;
+			text-align: center;
+		}
+		#test1 td span{
+			color: #090;
+			display:block;
+			width: 50px;
+			height: 50px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			line-height: 50px;
+		}
+		#test1 td span:hover{
+			border: 5px solid #f00;
+			margin-top:-5px;
+			margin-left: -5px;
+		}
+
+		#test2 td{
+			width: 50px;
+			height: 50px;
+			background: #eee;
+			border: 5px solid #00f;
+			text-align: center;
+			vertical-align: top;
+		}
+		#test2 td div{
+			position:relative;
+			width: 50px;
+			height: 50px;
+		}
+		#test2 td div span{
+			color: #090;
+			display:block;
+			width: 50px;
+			height: 50px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			line-height: 50px;
+		}
+		#test2 td div span:hover{
+			border: 5px solid #f00;
+			margin-left: -5px;
+			margin-top: -5px;
+		}
+	</style>
+</head>
+<body>
+	<h2>1) div+负margin实现</h2>
+	<div id="test0">
+		<div>1</div>
+		<div class="lr_indent">2</div>
+		<div>3</div>
+		<div class="tb_indent">4</div>
+		<div class="lr_indent tb_indent">5</div>
+		<div class="tb_indent">6</div>
+		<div>7</div>
+		<div class="lr_indent">8</div>
+		<div>9</div>
+	</div>
+	<h2>2.1) table border-collapse: collapse实现</h2>
+	<div id="test1">
+		<table>
+			<tr>
+				<td><span>1</span></td>
+				<td><span>2</span></td>
+				<td><span>3</span></td>
+			</tr>
+			<tr>
+				<td><span>4</span></td>
+				<td><span>5</span></td>
+				<td><span>6</span></td>
+			</tr>
+			<tr>
+				<td><span>7</span></td>
+				<td><span>8</span></td>
+				<td><span>9</span></td>
+			</tr>
+		</table>
+	</div>
+	<h2>2.2) table思路改进</h2>
+	<div id="test2">
+		<table>
+			<tr>
+				<td><div><span>1</span></div></td>
+				<td><div><span>2</span></div></td>
+				<td><div><span>3</span></div></td>
+			</tr>
+			<tr>
+				<td><div><span>4</span></div></td>
+				<td><div><span>5</span></div></td>
+				<td><div><span>6</span></div></td>
+			</tr>
+			<tr>
+				<td><div><span>7</span></div></td>
+				<td><div><span>8</span></div></td>
+				<td><div><span>9</span></div></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/photos/lazyload.min/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.500Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http:codershu.com/2017/02/06/assets/demo/jiugongge_demo/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/photos/index/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.500Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/02/06/photos/index/">相册</a>
-    </h1>
+    <a href="/2017/02/06/assets/demo/hack_demo/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+
+
+
+
+
+  
+    <div class="duoshuo"></div>
   
 
-        <div class="article-info info-on-right">
-          
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/photos/ins/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.500Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/photos/ins/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.500Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/photos/ins/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.500Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/assets/demo/pre_css3_demo/demo/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.478Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/assets/demo/mediator/demo/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.478Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/assets/demo/my_news_reader/js/tagConfig/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.478Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/assets/demo/mediator/mediator/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.478Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/assets/demo/my_news_reader/index/" class="archive-article-date">
-  	<time datetime="2017-02-05T18:13:50.478Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2017/02/page/2/">2</a><a class="page-number" href="/archives/2017/02/page/3/">3</a><a class="extend next" rel="next" href="/archives/2017/02/page/2/">Next &raquo;</a>
-    </nav>
-  
 
 
           </div>
@@ -414,8 +496,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
