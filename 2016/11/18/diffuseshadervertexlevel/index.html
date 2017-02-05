@@ -6,17 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="blog.codershu.com">
-  <title>Archives: 2017/2 | 南昌小白龙的blog</title>
+  <title>DiffuseVertexLevel/PixelLevel(漫反射) | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="游戏程序员，现就职于心动网络。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="南昌小白龙的blog">
-<meta property="og:url" content="blog.codershu.com/archives/2017/02/index.html">
+  <meta name="description" content="左为逐顶点漫反射光照模型，右为逐像素漫反射光照模型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DiffuseVertexLevel/PixelLevel(漫反射)">
+<meta property="og:url" content="blog.codershu.com/2016/11/18/diffuseshadervertexlevel/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="游戏程序员，现就职于心动网络。">
+<meta property="og:description" content="左为逐顶点漫反射光照模型，右为逐像素漫反射光照模型。">
+<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/QQ图片20161118002425.png">
+<meta property="og:updated_time" content="2017-02-05T19:31:41.229Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="南昌小白龙的blog">
-<meta name="twitter:description" content="游戏程序员，现就职于心动网络。">
+<meta name="twitter:title" content="DiffuseVertexLevel/PixelLevel(漫反射)">
+<meta name="twitter:description" content="左为逐顶点漫反射光照模型，右为逐像素漫反射光照模型。">
+<meta name="twitter:image" content="blog.codershu.com/assets/blogImg/UnityShader/QQ图片20161118002425.png">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -148,49 +151,151 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-diffuseshadervertexlevel" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/06/hello-world/" class="archive-article-date">
-  	<time datetime="2017-02-05T16:26:50.380Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-06</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/02/06/hello-world/">Hello World</a>
+    <h1 class="article-title" itemprop="name">
+      DiffuseVertexLevel/PixelLevel(漫反射)
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
+        
+        <a href="/2016/11/18/diffuseshadervertexlevel/" class="archive-article-date">
+  	<time datetime="2016-11-17T16:24:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161118002425.png" alt=""><br>左为逐顶点漫反射光照模型，右为逐像素漫反射光照模型。  </p>
+<a id="more"></a>
+<blockquote>
+<p>漫反射光照模型</p>
+<p>$$C<em>{diffuse}=(C</em>{light} * m_{diffuse})max(0, \vec{n}·\vec{i})$$</p>
+<ul>
+<li>$$C_{light}$$入射光颜色和强度</li>
+<li>$$m_{diffuse}$$材质漫反射系数</li>
+<li>$$\vec{n}$$法线方向</li>
+<li>$$\vec{i}$$光源方向  </li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">Shader &quot;UnityShaderLearning/DiffuseVertexLevel&quot;</div><div class="line">&#123;</div><div class="line">    Properties</div><div class="line">    &#123;</div><div class="line">        _Diffuse(&quot;Diffuse&quot;, Color) = (1, 1, 1, 1)</div><div class="line">    &#125;</div><div class="line">    SubShader</div><div class="line">    &#123;</div><div class="line">        Pass</div><div class="line">        &#123;</div><div class="line">            Tags&#123; &quot;LightMode&quot;=&quot;ForwardBase&quot; &#125;</div><div class="line">            </div><div class="line">            CGPROGRAM</div><div class="line">            </div><div class="line">            #pragma vertex vert</div><div class="line">            #pragma fragment frag</div><div class="line"></div><div class="line">            #include &quot;Lighting.cginc&quot;</div><div class="line"></div><div class="line">            fixed4 _Diffuse;</div><div class="line">            </div><div class="line">            struct a2v</div><div class="line">            &#123;</div><div class="line">                float4 vertex : POSITION;</div><div class="line">                float3 normal : NORMAL;</div><div class="line">            &#125;;</div><div class="line">    </div><div class="line">            struct v2f</div><div class="line">            &#123;</div><div class="line">                float4 pos : SV_POSITION;</div><div class="line">                fixed3 color : COLOR;</div><div class="line">            &#125;;</div><div class="line"></div><div class="line">            v2f vert(a2v v)</div><div class="line">            &#123;</div><div class="line">                v2f o;</div><div class="line">                o.pos = mul(UNITY_MATRIX_MVP, v.vertex);</div><div class="line">                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</div><div class="line">                fixed3 worldNormal = normalize(mul(v.normal, (float3x3)_World2Object));</div><div class="line">                fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);</div><div class="line">                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLight));</div><div class="line">                o.color = ambient + diffuse;</div><div class="line">                return o;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            fixed4 frag(v2f i) : SV_Target</div><div class="line">            &#123;</div><div class="line">                return fixed4(i.color, 1.0);    </div><div class="line">            &#125;</div><div class="line">            ENDCG</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    FallBack &quot;Diffuse&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">Shader &quot;UnityShaderLearning/DiffusePixelLevel&quot;</div><div class="line">&#123;</div><div class="line">	Properties</div><div class="line">	&#123;</div><div class="line">		_Diffuse(&quot;Diffuse&quot;, Color) = (1, 1, 1, 1)</div><div class="line">	&#125;</div><div class="line">	SubShader</div><div class="line">	&#123;</div><div class="line">		Pass</div><div class="line">		&#123;</div><div class="line">			Tags&#123; &quot;LightMode&quot; = &quot;ForwardBase&quot; &#125;</div><div class="line"></div><div class="line">			CGPROGRAM</div><div class="line"></div><div class="line">			#pragma vertex vert</div><div class="line">			#pragma fragment frag</div><div class="line">			#include &quot;Lighting.cginc&quot;</div><div class="line"></div><div class="line">			fixed4 _Diffuse;</div><div class="line"></div><div class="line">			struct a2v</div><div class="line">			&#123;</div><div class="line">				float4 vertex : POSITION;</div><div class="line">				float3 normal : NORMAL;</div><div class="line">			&#125;;</div><div class="line"></div><div class="line">			struct v2f</div><div class="line">			&#123;</div><div class="line">				float4 pos : SV_POSITION;</div><div class="line">				fixed3 worldNormal : TEXCOORD0;</div><div class="line">			&#125;;</div><div class="line"></div><div class="line">			v2f vert(a2v v)</div><div class="line">			&#123;</div><div class="line">				v2f o;</div><div class="line">				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);</div><div class="line">				o.worldNormal =mul(v.normal, (float3x3)_World2Object);</div><div class="line">				return o;</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			fixed4 frag(v2f i) : SV_Target</div><div class="line">			&#123;</div><div class="line">				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</div><div class="line">				fixed3 worldNormal = normalize(i.worldNormal);</div><div class="line">				fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);</div><div class="line">				fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));</div><div class="line">				fixed3 color = ambient + diffuse;</div><div class="line">				return fixed4(color, 1.0);</div><div class="line">			&#125;</div><div class="line">			ENDCG</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	FallBack &quot;Diffuse&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http:blog.codershu.com/2016/11/18/diffuseshadervertexlevel/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-  
-    </div></section>
+
   
 
-    
+
+
+
+
+  
+    <div class="duoshuo"></div>
+  
+
+
 
 
           </div>
@@ -213,8 +318,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
@@ -269,6 +374,10 @@
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
