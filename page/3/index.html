@@ -445,19 +445,19 @@
 
 
   
-    <article id="post-separateAlpha" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-xcode8automaticallymanag" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/31/separateAlpha/">Alpha分离</a>
+      <a class="article-title" href="/2016/10/31/xcode8automaticallymanag/">Xcode8自动打包去掉AutoMaticallyManageSigning</a>
     </h1>
   
 
         
-        <a href="/2016/10/31/separateAlpha/" class="archive-article-date">
+        <a href="/2016/10/31/xcode8automaticallymanag/" class="archive-article-date">
   	<time datetime="2016-10-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-31</time>
 </a>
         
@@ -465,16 +465,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1-为什么要进行Alpha分离？"><a href="#1-为什么要进行Alpha分离？" class="headerlink" title="1. 为什么要进行Alpha分离？"></a>1. 为什么要进行Alpha分离？</h2><ul>
-<li>使得图集可以压缩，减小包量。</li>
-</ul>
-<h2 id="2-Alpha分离要点"><a href="#2-Alpha分离要点" class="headerlink" title="2. Alpha分离要点"></a>2. Alpha分离要点</h2><h3 id="1-分离"><a href="#1-分离" class="headerlink" title="1. 分离"></a>1. 分离</h3><ul>
-<li><p>收集图集</p>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">List&lt;Texture2D&gt; m_AtlasList = <span class="keyword">new</span> List&lt;Texture2D&gt;();</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">CollectAtlasSprite</span>(<span class="params"></span>)</div><div class="line"></span>&#123;</div><div class="line">    <span class="comment">//Travel all AtlasSprite</span></div><div class="line">    m_AtlasList.Add(obj <span class="keyword">as</span> Texture2D);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
+        <p>最近项目里的自动打包脚本不能用了，一直提示<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">Check</span> dependencies</div><div class="line">Signing <span class="keyword">for</span> <span class="string">"Unity-iPhone"</span> requires a development team. <span class="keyword">Select</span> a development team <span class="keyword">in</span> the <span class="keyword">project</span> editor.</div><div class="line">Code signing <span class="keyword">is</span> <span class="keyword">required</span> <span class="keyword">for</span> product <span class="keyword">type</span> <span class="string">'Application'</span> <span class="keyword">in</span> SDK <span class="string">'iOS 10.0'</span></div><div class="line"></div><div class="line">** <span class="keyword">BUILD</span> <span class="keyword">FAILED</span> **</div><div class="line"></div><div class="line">The <span class="keyword">following</span> <span class="keyword">build</span> commands <span class="keyword">failed</span>:</div><div class="line"> <span class="keyword">Check</span> dependencies</div><div class="line">(<span class="number">1</span> <span class="keyword">failure</span>)</div></pre></td></tr></table></figure></p>
+<p>Google了一下发现是xcode新的自动管理签名机制的问题，你要不使用AutoMatic自动管理，要不使用Manual手动指定证书的模式。</p>
+<p>无奈我们打包的时候只有证书，没有对应的AppleID，所以自动管理的就用不了。但是UnityBuild出来的Xcode项目是自动勾选<code>Auto MaticallyManageSigning</code>的，而且Xcode也没有支持用命令行设置这个值。那这样的话，我们每次打包出Xcode项目的时候需要手动点一下，这就失去打包工具的意义了。</p>
+<p>无奈之下，找到一个办法解决这个问题。<br>
         
-          <a class="article-more-a" href="/2016/10/31/separateAlpha/#more">more >></a>
+          <a class="article-more-a" href="/2016/10/31/xcode8automaticallymanag/#more">more >></a>
         
       
 
@@ -488,7 +484,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Unity</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Xcode打包</a>
         		</li>
       		
 		</ul>
@@ -498,7 +494,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2016/10/31/separateAlpha/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/10/31/xcode8automaticallymanag/">展开全文 >></a>
         </p>
       
 
@@ -593,19 +589,19 @@
 
 
   
-    <article id="post-xcode8automaticallymanag" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-separateAlpha" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/31/xcode8automaticallymanag/">Xcode8自动打包去掉AutoMaticallyManageSigning</a>
+      <a class="article-title" href="/2016/10/31/separateAlpha/">Alpha分离</a>
     </h1>
   
 
         
-        <a href="/2016/10/31/xcode8automaticallymanag/" class="archive-article-date">
+        <a href="/2016/10/31/separateAlpha/" class="archive-article-date">
   	<time datetime="2016-10-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-31</time>
 </a>
         
@@ -613,12 +609,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近项目里的自动打包脚本不能用了，一直提示<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">Check</span> dependencies</div><div class="line">Signing <span class="keyword">for</span> <span class="string">"Unity-iPhone"</span> requires a development team. <span class="keyword">Select</span> a development team <span class="keyword">in</span> the <span class="keyword">project</span> editor.</div><div class="line">Code signing <span class="keyword">is</span> <span class="keyword">required</span> <span class="keyword">for</span> product <span class="keyword">type</span> <span class="string">'Application'</span> <span class="keyword">in</span> SDK <span class="string">'iOS 10.0'</span></div><div class="line"></div><div class="line">** <span class="keyword">BUILD</span> <span class="keyword">FAILED</span> **</div><div class="line"></div><div class="line">The <span class="keyword">following</span> <span class="keyword">build</span> commands <span class="keyword">failed</span>:</div><div class="line"> <span class="keyword">Check</span> dependencies</div><div class="line">(<span class="number">1</span> <span class="keyword">failure</span>)</div></pre></td></tr></table></figure></p>
-<p>Google了一下发现是xcode新的自动管理签名机制的问题，你要不使用AutoMatic自动管理，要不使用Manual手动指定证书的模式。</p>
-<p>无奈我们打包的时候只有证书，没有对应的AppleID，所以自动管理的就用不了。但是UnityBuild出来的Xcode项目是自动勾选<code>Auto MaticallyManageSigning</code>的，而且Xcode也没有支持用命令行设置这个值。那这样的话，我们每次打包出Xcode项目的时候需要手动点一下，这就失去打包工具的意义了。</p>
-<p>无奈之下，找到一个办法解决这个问题。<br>
+        <h2 id="1-为什么要进行Alpha分离？"><a href="#1-为什么要进行Alpha分离？" class="headerlink" title="1. 为什么要进行Alpha分离？"></a>1. 为什么要进行Alpha分离？</h2><ul>
+<li>使得图集可以压缩，减小包量。</li>
+</ul>
+<h2 id="2-Alpha分离要点"><a href="#2-Alpha分离要点" class="headerlink" title="2. Alpha分离要点"></a>2. Alpha分离要点</h2><h3 id="1-分离"><a href="#1-分离" class="headerlink" title="1. 分离"></a>1. 分离</h3><ul>
+<li><p>收集图集</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">List&lt;Texture2D&gt; m_AtlasList = <span class="keyword">new</span> List&lt;Texture2D&gt;();</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">CollectAtlasSprite</span>(<span class="params"></span>)</div><div class="line"></span>&#123;</div><div class="line">    <span class="comment">//Travel all AtlasSprite</span></div><div class="line">    m_AtlasList.Add(obj <span class="keyword">as</span> Texture2D);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
         
-          <a class="article-more-a" href="/2016/10/31/xcode8automaticallymanag/#more">more >></a>
+          <a class="article-more-a" href="/2016/10/31/separateAlpha/#more">more >></a>
         
       
 
@@ -632,7 +632,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Xcode打包</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Unity</a>
         		</li>
       		
 		</ul>
@@ -642,7 +642,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2016/10/31/xcode8automaticallymanag/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/10/31/separateAlpha/">展开全文 >></a>
         </p>
       
 
@@ -766,11 +766,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
