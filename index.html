@@ -150,58 +150,222 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-shadow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-sluaunitytransform.position" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/15/shadow/">实时阴影</a>
+      <a class="article-title" href="/2017/02/05/sluaunitytransform.position/">Slua的优化初探</a>
     </h1>
   
 
         
-        <a href="/2016/12/15/shadow/" class="archive-article-date">
-  	<time datetime="2016-12-15T02:42:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-15</time>
+        <a href="/2017/02/05/sluaunitytransform.position/" class="archive-article-date">
+  	<time datetime="2017-02-05T15:27:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1-Unity内部的ShadowCasterShader"><a href="#1-Unity内部的ShadowCasterShader" class="headerlink" title="1. Unity内部的ShadowCasterShader"></a>1. Unity内部的ShadowCasterShader</h2><pre><code>Pass
+        <p>看了<a href="http://blog.uwa4d.com/archives/USparkle_Lua.html">UWA的blog</a>以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。  </p>
+<h2 id="tolua取值赋值的过程"><a href="#tolua取值赋值的过程" class="headerlink" title="tolua取值赋值的过程"></a>tolua取值赋值的过程</h2><p><img src="/assets/blogImg/UnityShader/setcsharpobjectvalue.png" alt="">  </p>
+<h2 id="slua的取值赋值过程"><a href="#slua的取值赋值过程" class="headerlink" title="slua的取值赋值过程"></a>slua的取值赋值过程</h2><ol>
+<li>取出object的缓存  <pre><code>ObjectCache oc = ObjectCache.get(l);
+</code></pre></li>
+<li>取得c#中的index然后再ObjectCache里面查找  </li>
+<li>cache.get(index, out o)，类似tolua中的Translator，都是从缓存中取出object<pre><code>int index = LuaDLL.luaS_rawnetobj(l, p);
+object o;
+if (index != -1 &amp;&amp; cache.get(index, out o))
 {
-    Name &quot;ShadowCaster&quot;
-    Tags { &quot;LightMode&quot;=&quot;ShadowCaster&quot; }
+     return o;
+}
+</code></pre></li>
+<li>从栈中取出3个float组成Vector3  <pre><code>UnityEngine.Vector3 v;
+checkType(l,2,out v); 
+static public bool checkType(IntPtr l, int p, out Vector3 v)
+{
+ float x, y, z;
+ if(LuaDLL.luaS_checkVector3(l, p, out x, out y, out z)!=0)
+     throw new Exception(string.Format(&quot;Invalid vector3 argument at {0}&quot;, p));
+ v = new Vector3(x, y, z);
+ return true;
+}
+</code></pre></li>
+<li>赋值给position  <pre><code>self.position=v;
+</code></pre>
+        
+          <a class="article-more-a" href="/2017/02/05/sluaunitytransform.position/#more">more >></a>
+        
+      
 
-    CGPROGRAM
-    #pragma vertex vert
-    #pragma fragment frag
-    #pragma multi_compile_shadowcaster
-    #include &quot;UnityCG.cginc&quot;
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Lua Slua Unity</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
-    struct v2f
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/05/sluaunitytransform.position/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-MotionBlur" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/26/MotionBlur/">运动模糊 </a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/26/MotionBlur/" class="archive-article-date">
+  	<time datetime="2017-01-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#MotionBlur运动模糊  </p>
+<ul>
+<li>首先为accumulationTexture进行一个恢复操作，以取得上一步混合得到的纹理。  </li>
+<li>然后用shader把原图像和上一步的纹理进行混合  </li>
+<li>最后把混合后的纹理显示在屏幕上。  <pre><code>accumulationTexture.MarkRestoreExpected();
+material.SetFloat(&quot;_BlurAmount&quot;, 1.0f - blurAmount);
+Graphics.Blit(src, accumulationTexture, material);
+Graphics.Blit(accumulationTexture, dest);
+</code></pre>shader混合图像的方式为(last.rgb <em> BlurAmount + src.rgb </em> (1 - blurAmount), last.a)
+        
+          <a class="article-more-a" href="/2017/01/26/MotionBlur/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/26/MotionBlur/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-bloom" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/25/bloom/">bloom效果</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/25/bloom/" class="archive-article-date">
+  	<time datetime="2017-01-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>bloom是模拟真实相机，较亮的部分扩散到周围，造成一种朦胧的感觉。  </p>
+<ul>
+<li>先用第一个pass筛选出原图中较亮的部分  </li>
+<li>然后在第二和第三个pass中把较亮的图像进行高斯模糊  </li>
+<li><p>最后在第四个pass中把模糊后的亮部和原图进行混合得到bloom效果  </p>
+<pre><code>void OnRenderImage(RenderTexture src, RenderTexture dest)
+{
+    if (material != null)
     {
-        V2F_SHADOW_CASTER;
-    };
-
-    v2f vert(appdata_base v)
-    {
-        v2f o;
-        TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-        return o;
+        material.SetFloat(&quot;_LuminanceThreshold&quot;, luminanceThreshold);
+        int rtW = src.width / downSample;
+        int rtH = src.height / downSample;
+        RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, 0);
+        buffer0.filterMode = FilterMode.Bilinear;
+        Graphics.Blit(src, buffer0, material, 0);
+        for (int i = 0; i &lt; iterations; i++)
+        {
+            material.SetFloat(&quot;_BlurSize&quot;, 1.0f + i * blurSpread);
+            RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
+            Graphics.Blit(buffer0, buffer1, material, 1);
+            RenderTexture.ReleaseTemporary(buffer0);
+            buffer0 = buffer1;
+        }
+        material.SetTexture(&quot;_Bloom&quot;, buffer0);
+        Graphics.Blit(src, dest, material, 3);
+        RenderTexture.ReleaseTemporary(buffer0);
     }
-
-    float4 frag(v2f i) : SV_Target
+    else
     {
-        SHADOW_CASTER_FRAGMENT(i)
+        Graphics.Blit(src, dest);
     }
-    ENDCG
 }
 </code></pre>
         
-          <a class="article-more-a" href="/2016/12/15/shadow/#more">more >></a>
+          <a class="article-more-a" href="/2017/01/25/bloom/#more">more >></a>
         
       
 
@@ -225,7 +389,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/15/shadow/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/25/bloom/">展开全文 >></a>
         </p>
       
 
@@ -243,36 +407,29 @@
 
 
   
-    <article id="post-masktexture" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-gaussianblur" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/07/masktexture/">遮罩纹理</a>
+      <a class="article-title" href="/2017/01/22/gaussianblur/">高斯模糊</a>
     </h1>
   
 
         
-        <a href="/2016/12/07/masktexture/" class="archive-article-date">
-  	<time datetime="2016-12-07T15:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-07</time>
+        <a href="/2017/01/22/gaussianblur/" class="archive-article-date">
+  	<time datetime="2017-01-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161207235523.png" alt="">  </p>
-<blockquote>
-<p>左图使用了遮罩纹理，右侧是普通的Blin-Phone模型，在高光上表现得更加细腻。  </p>
-</blockquote>
-<p><img src="/assets/blogImg/UnityShader/QQ图片20161208001110.png" alt="">  </p>
-<blockquote>
-<p>上图是使用了主纹理/法线贴图/遮罩纹理的效果  </p>
-</blockquote>
+        <p>首先创建了一块1/downSample屏幕大小的buffer存入当前屏幕图像，然后设置滤波模式为双线性采样。<br>这样需要处理的像素是原来的1/downSample。<br>然后多次进行高斯模糊，逐次增大_BlurSize。<br>
         
-          <a class="article-more-a" href="/2016/12/07/masktexture/#more">more >></a>
+          <a class="article-more-a" href="/2017/01/22/gaussianblur/#more">more >></a>
         
       
 
@@ -296,7 +453,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/07/masktexture/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/22/gaussianblur/">展开全文 >></a>
         </p>
       
 
@@ -314,178 +471,346 @@
 
 
   
-    <article id="post-ramptexture" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-sobel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/07/ramptexture/">渐变纹理</a>
+      <a class="article-title" href="/2017/01/17/sobel/">Sobel算子边缘检测</a>
     </h1>
   
 
         
-        <a href="/2016/12/07/ramptexture/" class="archive-article-date">
-  	<time datetime="2016-12-06T17:07:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-07</time>
+        <a href="/2017/01/17/sobel/" class="archive-article-date">
+  	<time datetime="2017-01-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-17</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161207010742.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">fixed halfLambert = 0.5 * dot(worldNormal, worldLightDir) + 0.5;</div><div class="line">fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;</div></pre></td></tr></table></figure></p>
-<p>关键代码有两行</p>
+        <p>用Sobel算子来进行边缘检测<br>应该知道除了Sobel算子以外还有几种常用的算子。</p>
 <ul>
-<li>第一行代码获得了法线和光线方向的夹角的余弦值*0.5 + 0.5, 即把余弦值映射到[0, 1]。</li>
-<li>第二行代码在渐变纹理上采样</li>
+<li>Roberts  </li>
 </ul>
-        
-          <a class="article-more-a" href="/2016/12/07/ramptexture/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/07/ramptexture/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-normalmaptangentspace" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/07/normalmaptangentspace/">切线空间下的法线贴图应用</a>
-    </h1>
-  
-
-        
-        <a href="/2016/12/07/normalmaptangentspace/" class="archive-article-date">
-  	<time datetime="2016-12-06T16:26:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161207002627.png" alt=""></p>
+<p>$$\left[\begin{matrix}<br>-1 &amp; 0 \<br> 0 &amp; 1<br>\end{matrix}\right]$$$$\left[\begin{matrix}<br>0 &amp; -1 \<br>1 &amp;  0<br>\end{matrix}\right]$$</p>
 <ul>
-<li>左侧BumpScale为-1</li>
-<li>右侧BumpScale为1
-        
-          <a class="article-more-a" href="/2016/12/07/normalmaptangentspace/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/07/normalmaptangentspace/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-specularvertexlevelpixellevel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/19/specularvertexlevelpixellevel/">逐顶点和逐像素的高光模型</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/19/specularvertexlevelpixellevel/" class="archive-article-date">
-  	<time datetime="2016-11-18T17:26:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161119012608.png" alt=""></p>
-<blockquote>
-<ul>
-<li>左为逐顶点高光Phong模型</li>
-<li>中为逐像素高光Phong模型</li>
-<li>右为逐像素高光Blinn-Phong模型</li>
-<li>Phong模型$$C<em>{specular=(c</em>{light}*m<em>{specular})max(0, \vec{v}·\vec{r})^{m</em>{Gloss}}}$$</li>
-<li>Blinn-Phong模型$$C<em>{specular=(c</em>{light}*m<em>{specular})max(0, \vec{n}·\vec{h})^{m</em>{Gloss}}}$$<ul>
-<li>$$\vec{h} = \frac{\vec{v}·\vec{i}}{|v||i|}$$</li>
+<li>Prewitt</li>
 </ul>
+<p>$$\left[\begin{matrix}<br>-1 &amp; -1 &amp; -1 \<br> 0 &amp;  0 &amp;  0 \<br> 1 &amp;  1 &amp;  1<br>\end{matrix}\right]$$$$\left[\begin{matrix}<br>-1 &amp;  0 &amp;  1 \<br>-1 &amp;  0 &amp;  1 \<br>-1 &amp;  0 &amp;  1<br>\end{matrix}\right]$$</p>
+<ul>
+<li>Sobel</li>
+</ul>
+<p>$$\left[\begin{matrix}<br>-1 &amp; -2 &amp; -1 \<br>0 &amp; 0 &amp; 0 \<br>1 &amp; 2 &amp; 1<br>\end{matrix}\right]$$$$\left[\begin{matrix}<br>-1 &amp; 0 &amp; 1 \<br>-2 &amp; 0 &amp; 2 \<br>-1 &amp; 0 &amp; 1<br>\end{matrix}\right]$$</p>
+<p>我们取得一个纹素的大小， 即1/texelSize。然后根据现在的纹理坐标前后左右偏移一个像素，得到9个方向的纹理坐标。<br>然后用Sobel函数算得该纹理坐标的卷积值  </p>
+<ul>
+<li>_EdgeOnly = 0时显示原图像和边缘的叠加图像，即withEdgeColor</li>
+<li><p>_EdgeOnly = 1时只显示边缘，其他部分为背景色，即只显示onlyEdgeColor</p>
+        
+          <a class="article-more-a" href="/2017/01/17/sobel/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/17/sobel/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
+  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
+<pre><code>//给shader传对应的亮度/饱和度/对比度
+void OnRenderImage(RenderTexture src, RenderTexture dest)
+{
+    if(material != null)
+    {
+        material.SetFloat(&quot;_Brightness&quot;, brightness);
+        material.SetFloat(&quot;_Saturation&quot;, saturation);
+        material.SetFloat(&quot;_Contrast&quot;, contrast);
+
+        Graphics.Blit(src, dest, material);
+    }
+    else
+    {
+        Graphics.Blit(src, dest);
+    }
+}
+</code></pre>
+        
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/16/alphatest/" class="archive-article-date">
+  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
+<ul>
+<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">if((texcoordColor.a - value) &lt; 0.0)</div><div class="line">&#123;</div><div class="line">    discard;</div><div class="line">&#125;  </div><div class="line">```  </div><div class="line"></div><div class="line">&lt;!-- more --&gt;</div><div class="line">- 双面渲染  </div><div class="line">AlphaTest开启双面渲染也比较容易，只需要在`Tags=&#123; &quot;LightMode&quot;=&quot;ForwardBase&quot; &#125;`后添加一行`Cull Off`, 关闭剔除即可开启双面渲染。</div><div class="line"></div><div class="line"># 2. 透明混合(AlphaBlend)</div><div class="line">![](/assets/blogImg/UnityShader/QQ图片20161209005804.png)![](/assets/blogImg/UnityShader/QQ图片20161209005808.png)  </div><div class="line">- AlphaBlend  </div><div class="line">在Pass中开启Blend即可开启透明混合，混合的公式为`混合颜色 = 当前物体Alpha * 当前颜色 + (1 - 当前Alpha) * 背景颜色`  </div><div class="line">- AlphaBlendZWrite  </div><div class="line">AlphaBlend的shader添加一个Pass即可开启深度写入</div></pre></td></tr></table></figure>
 </li>
 </ul>
-</blockquote>
-        
-          <a class="article-more-a" href="/2016/11/19/specularvertexlevelpixellevel/#more">more >></a>
-        
+<p>Pass<br>{<br>ZWrite On<br>ColorMask 0<br>}</p>
+<pre><code>![](/assets/blogImg/UnityShader/QQ图片20161211225510.png)  
+`ColorMask 0`即关闭该Pass的颜色通道写入，即该Pass只执行了深度写入，然后在后续Pass中处理其他操作。开启ZWrite以后相比AlphaBlend关闭ZWrite能更好地体现前后关系。  
+- 双面渲染  
+![](/assets/blogImg/UnityShader/QQ图片20161212001732.png)  
+AlphaBlend的双面渲染要比AlphaTest的稍微复杂一些, 复制原来AlphaBlend的代码，写作2个Pass，分别剔除Front渲染背面和剔除Back渲染前面。
+</code></pre><p>Pass<br>{<br>    Cull Front<br>    //原来AlphaBlend的代码<br>}<br>Pass<br>{<br>    Cull Back<br>    //原来AlphaBlend的代码<br>}  </p>
+<pre><code>
+- Photoshop中AlphaBlend的几种常用模式  
+&gt;//正常(Normal)，透明度混合    
+Blend SrcAlpha OneMinusSrcAlpha  
+&gt;
+&gt;//柔和相加(Soft Additive)  
+Blend OneMinusDstColor One  
+&gt;
+&gt;//正片叠底(multiply 相乘)  
+Blend DstColor One  
+&gt;
+&gt;//变暗(Darken)  
+BlendOp Min  
+Blend One One  
+&gt;
+&gt;//变亮(Lighten)  
+BlendOp Max  
+Blend One One  
+&gt;
+&gt;//滤色(Screen)  
+Blend OneMinusDstColor One  
+&gt;&gt;//等同于Blend One OneMinusSrcColor  
+//等于D + S - D * S  
+&gt;
+&gt;线性减淡(Linear Dodge)  
+Blend One One
+</code></pre><p>Shader “UnityShaderLearning/AlphaTest”<br>{<br>    Properties<br>    {<br>        _Color (“Main Tint”, Color) = (1, 1, 1, 1)<br>        _MainTex (“Main Tex”, 2D) = “white”{}<br>        _Cutoff (“Alpha Cutoff”, Range(0, 1)) = 0.55<br>    }<br>    SubShader<br>    {<br>        Tags { “Queue”=”AlphaTest” “IgnoreProjector” = “True” “RenderType”=”TransparentCutout”}</p>
+<pre><code>    Pass
+    {
+        Tags { &quot;LightMode&quot;=&quot;ForwardBase&quot; }
+        CGPROGRAM
+
+        #pragma vertex vert
+        #pragma fragment frag
+        #include &quot;Lighting.cginc&quot;
+
+        fixed4 _Color;
+        sampler2D _MainTex;
+        float4 _MainTex_ST;
+        fixed _Cutoff;
+
+        struct a2v
+        {
+            float4 vertex : POSITION;
+            float3 normal : NORMAL;
+            float4 texcoord : TEXCOORD0;
+        };
+
+        struct v2f
+        {
+            float4 pos : SV_POSITION;
+            float3 worldNormal : TEXCOORD0;
+            float3 worldPos : TEXCOORD1;
+            float2 uv : TEXCOORD2;
+        };
+
+        v2f vert(a2v v)
+        {
+            v2f o;
+            o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+            o.worldNormal = UnityObjectToWorldNormal(v.normal);
+            o.worldPos = mul(_Object2World, v.vertex).xyz;
+            o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+            return o;
+        }
+
+        fixed4 frag(v2f i) : SV_Target
+        {
+            fixed3 worldNormal = normalize(i.worldNormal);
+            fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+            fixed4 texColor = tex2D(_MainTex, i.uv);
+            clip (texColor.a - _Cutoff);
+
+            fixed3 albedo = texColor.rgb * _Color.rgb;
+            fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+            fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+            return fixed4(ambient + diffuse, 1.0);
+        }
+        ENDCG
+    }
+}
+FallBack &quot;Transparent/Cutout/VertexLit&quot;
+</code></pre><p>}  </p>
+<pre><code>
+</code></pre><p>Shader “UnityShaderLearning/AlphaBlend”<br>{<br>    Properties<br>    {<br>        _Color (“Main Tint”, Color) = (1, 1, 1, 1)<br>        _MainTex (“Main Tex”, 2D) = “white”{}<br>        _AlphaScale (“Alpha Scale”, Range(0, 1)) = 1<br>    }</p>
+<pre><code>SubShader
+{
+    Tags { &quot;Queue&quot;=&quot;AlphaTest&quot; &quot;IgnoreProjector&quot;=&quot;True&quot; &quot;RenderType&quot;=&quot;TransparentCutout&quot;}
+
+    Pass
+    {
+        Tags { &quot;LightMode&quot;=&quot;ForwardBase&quot; }
+        ZWrite Off
+        Blend SrcAlpha OneMinusSrcAlpha
+
+        CGPROGRAM
+
+        #pragma vertex vert
+        #pragma fragment frag
+        #include &quot;Lighting.cginc&quot;
+
+        fixed4 _Color;
+        sampler2D _MainTex;
+        float4 _MainTex_ST;
+        fixed _AlphaScale;
+
+        struct a2v
+        {
+            float4 vertex : POSITION;
+            float3 normal : NORMAL;
+            float4 texcoord : TEXCOORD0;
+        };
+
+        struct v2f
+        {
+            float4 pos : SV_POSITION;
+            float3 worldNormal : TEXCOORD0;
+            float3 worldPos : TEXCOORD1;
+            float2 uv : TEXCOORD2;
+        };
+
+        v2f vert(a2v v)
+        {
+            v2f o;
+            o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+            o.worldNormal = UnityObjectToWorldNormal(v.normal);
+            o.worldPos = mul(_Object2World, v.vertex).xyz;
+            o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+            return o;
+        }
+
+        fixed4 frag(v2f i) : SV_Target
+        {
+            fixed3 worldNormal = normalize(i.worldNormal);
+            fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+            fixed4 texColor = tex2D(_MainTex, i.uv);
+            fixed3 albedo = texColor.rgb * _Color.rgb;
+            fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+            fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+            return fixed4(ambient + diffuse, texColor.a * _AlphaScale);
+        }
+        ENDCG
+    }
+}
+FallBack &quot;Transparent/VertexLit&quot;
+</code></pre><p>}<br>```  </p>
+
       
 
       
@@ -508,7 +833,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/19/specularvertexlevelpixellevel/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
         </p>
       
 
@@ -526,36 +851,134 @@
 
 
   
-    <article id="post-diffuseshadervertexlevel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-luaIter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/18/diffuseshadervertexlevel/">DiffuseVertexLevel/PixelLevel(漫反射)</a>
+      <a class="article-title" href="/2017/01/16/luaIter/">Lua迭代器和遍历</a>
     </h1>
   
 
         
-        <a href="/2016/11/18/diffuseshadervertexlevel/" class="archive-article-date">
-  	<time datetime="2016-11-17T16:24:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-18</time>
+        <a href="/2017/01/16/luaIter/" class="archive-article-date">
+  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161118002425.png" alt=""><br>左为逐顶点漫反射光照模型，右为逐像素漫反射光照模型。  </p>
-<p>漫反射光照模型<br>$$C<em>{diffuse}=(C</em>{light} * m_{diffuse})max(0, \vec{n}·\vec{i})$$</p>
-<ul>
-<li>$$C_{light}$$入射光颜色和强度</li>
-<li>$$m_{diffuse}$$材质漫反射系数</li>
-<li>$$\vec{n}$$法线方向</li>
-<li>$$\vec{i}$$光源方向  </li>
-</ul>
+        <h1 id="1-Lua遍历"><a href="#1-Lua遍历" class="headerlink" title="1. Lua遍历"></a>1. Lua遍历</h1><p>在用Lua开发过程中经常会用到一些库, 最近看到了<code>Map</code>类中的<code>FindIf</code>方法。 感觉用的很巧妙, 遂分析学习一下。<br><code>FindIf</code>方法我用原生的Lua实现了一遍, 去除了自定义的一些方法, 便于理解。  </p>
+<pre><code>Map = {}
+Map.data = {}
+local hank = { name = &quot;hank&quot;, weight = 75 }
+local marry = { name = &quot;marry&quot;, weight = 50 }
+table.insert(Map.data, hank)
+table.insert(Map.data, marry)
+
+Map.Comparator = function(classNumber, equalValue)
+    if classNumber == nil or equalValue == nil then
+        print(&quot;参数错误! classNumber = &quot; .. tostring(classNumber) .. &quot;equalValue = &quot; .. tostring(equalValue))
+    end
+    local func = function(equalValue)
+        local comparator = function(data)
+            return equalValue == data[classNumber]
+        end
+        return comparator;
+    end
+    return func(equalValue)
+end
+
+Map.Find = function(classNumber, equalValue)
+    local comparator = Map.Comparator(classNumber, equalValue)
+    local find = nil
+    local index = -1;
+    if Map.data ~= nil and #Map.data &gt; 0 then
+        for i = 1, #Map.data do
+            if comparator(Map.data[i]) then
+                find = Map.data[i]
+                index = i;
+                break;
+            end
+        end
+    end
+    return find, index;
+end
+
+-- 使用示例
+print(Map.Find(&quot;name&quot;, &quot;hank&quot;))
+print(Map.Find(&quot;name&quot;, &quot;marry&quot;))
+print(Map.Find(&quot;weight&quot;, 50))
+</code></pre>
         
-          <a class="article-more-a" href="/2016/11/18/diffuseshadervertexlevel/#more">more >></a>
+          <a class="article-more-a" href="/2017/01/16/luaIter/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Lua</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/16/luaIter/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-billboarding" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/14/billboarding/">广告牌</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/14/billboarding/" class="archive-article-date">
+  	<time datetime="2017-01-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/BillBoarding.gif" alt=""><br>我们根据设置的法线y方向偏移来得到偏移后的法线，然后和upDir叉乘得到右方向，最后用法线和右方向叉乘得到准确的upDir。<br>最后把顶点坐标通过我们构造的矩阵进行变化，从而得到新的顶点坐标，最后转换到观察空间。我们就可以得到始终面向我们的物体。<br>
+        
+          <a class="article-more-a" href="/2017/01/14/billboarding/#more">more >></a>
         
       
 
@@ -579,7 +1002,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/18/diffuseshadervertexlevel/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/14/billboarding/">展开全文 >></a>
         </p>
       
 
@@ -597,6 +1020,78 @@
 
 
   
+    <article id="post-uvanimationshader" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/11/uvanimationshader/">顶点动画</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/11/uvanimationshader/" class="archive-article-date">
+  	<time datetime="2017-01-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/UVAnimation.gif" alt=""><br><img src="/assets/blogImg/UnityShader/UVAnimation2.gif" alt=""><br>对顶点进行位移以使得图片看起来像动画  </p>
+<ul>
+<li>_Frequency 是震动频率</li>
+<li>_InvWaveLength 是波长的倒数</li>
+<li><p>_Magnitude 是振幅  </p>
+        
+          <a class="article-more-a" href="/2017/01/11/uvanimationshader/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/11/uvanimationshader/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 
 
@@ -699,7 +1194,31 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Unity Java C#</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Unity</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Lua Slua Unity</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Xcode打包</a>
               </li>
             
             <div class="clearfix"></div>
