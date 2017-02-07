@@ -6,17 +6,44 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="blog.codershu.com">
-  <title>Archives: 2016 | 南昌小白龙的blog</title>
+  <title>实时阴影 | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="游戏程序员，现就职于心动网络。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="南昌小白龙的blog">
-<meta property="og:url" content="blog.codershu.com/archives/2016/index.html">
+  <meta name="description" content="1. Unity内部的ShadowCasterShaderPass
+{
+    Name &amp;quot;ShadowCaster&amp;quot;
+    Tags { &amp;quot;LightMode&amp;quot;=&amp;quot;ShadowCaster&amp;quot; }
+
+    CGPROGRAM
+    #pragma vertex vert
+    #pragma fragment frag
+    #">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实时阴影">
+<meta property="og:url" content="blog.codershu.com/2016/12/15/shadow/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="游戏程序员，现就职于心动网络。">
+<meta property="og:description" content="1. Unity内部的ShadowCasterShaderPass
+{
+    Name &amp;quot;ShadowCaster&amp;quot;
+    Tags { &amp;quot;LightMode&amp;quot;=&amp;quot;ShadowCaster&amp;quot; }
+
+    CGPROGRAM
+    #pragma vertex vert
+    #pragma fragment frag
+    #">
+<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/QQ图片20161215104259.png">
+<meta property="og:updated_time" content="2017-02-07T10:57:33.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="南昌小白龙的blog">
-<meta name="twitter:description" content="游戏程序员，现就职于心动网络。">
+<meta name="twitter:title" content="实时阴影">
+<meta name="twitter:description" content="1. Unity内部的ShadowCasterShaderPass
+{
+    Name &amp;quot;ShadowCaster&amp;quot;
+    Tags { &amp;quot;LightMode&amp;quot;=&amp;quot;ShadowCaster&amp;quot; }
+
+    CGPROGRAM
+    #pragma vertex vert
+    #pragma fragment frag
+    #">
+<meta name="twitter:image" content="blog.codershu.com/assets/blogImg/UnityShader/QQ图片20161215104259.png">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -148,36 +175,306 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-shadow" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      实时阴影
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/12/15/shadow/" class="archive-article-date">
+
+        
+        <a href="/2016/12/15/shadow/" class="archive-article-date">
   	<time datetime="2016-12-15T02:42:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-15</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/12/15/shadow/">实时阴影</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-Unity内部的ShadowCasterShader"><a href="#1-Unity内部的ShadowCasterShader" class="headerlink" title="1. Unity内部的ShadowCasterShader"></a>1. Unity内部的ShadowCasterShader</h2><pre><code>Pass
+{
+    Name &quot;ShadowCaster&quot;
+    Tags { &quot;LightMode&quot;=&quot;ShadowCaster&quot; }
 
-        <div class="article-info info-on-right">
-          
+    CGPROGRAM
+    #pragma vertex vert
+    #pragma fragment frag
+    #pragma multi_compile_shadowcaster
+    #include &quot;UnityCG.cginc&quot;
+
+    struct v2f
+    {
+        V2F_SHADOW_CASTER;
+    };
+
+    v2f vert(appdata_base v)
+    {
+        v2f o;
+        TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+        return o;
+    }
+
+    float4 frag(v2f i) : SV_Target
+    {
+        SHADOW_CASTER_FRAGMENT(i)
+    }
+    ENDCG
+}
+</code></pre><a id="more"></a>
+<h2 id="2-ShadowRecv"><a href="#2-ShadowRecv" class="headerlink" title="2. ShadowRecv"></a>2. ShadowRecv</h2><ul>
+<li><p>在ForwardRendering.shader中添加<code>SHADOW_COORDS</code>  <code>TRANSFER_SHADOW</code>  <code>SHADOW_ATTENUATION</code>即可变成ShadowRecv.shader  </p>
+<pre><code>Shader &quot;UnityShaderLearning/ShadowRecv&quot;
+{
+  Properties
+  {
+      _Diffuse(&quot;Diffuse&quot;, Color) = (1, 1, 1, 1)
+      _Specular(&quot;Specular&quot;, Color) = (1, 1, 1, 1)
+      _Gloss(&quot;Gloss&quot;, Range(8.0, 256)) = 20
+  }
+  SubShader
+  {
+      Pass
+      {
+          Tags { &quot;LightMode&quot;=&quot;ForwardBase&quot; }
+
+          CGPROGRAM
+          #pragma multi_compile_fwbase
+          #pragma vertex vert
+          #pragma fragment frag
+          #include &quot;Lighting.cginc&quot;
+          #include &quot;AutoLight.cginc&quot;
+
+          fixed4 _Diffuse;
+          fixed4 _Specular;
+          float _Gloss;
+
+          struct a2v
+          {
+              float4 vertex : POSITION;
+              float3 normal : NORMAL;
+          };
+
+          struct v2f
+          {
+              float4 pos : SV_POSITION;
+              float3 worldNormal : TEXCOORD0;
+              float3 worldPos : TEXCOORD1;
+              SHADOW_COORDS(2)
+          };
+
+          v2f vert(a2v v)
+          {
+              v2f o;
+              o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+              o.worldNormal = normalize(mul(v.normal, (float3x3)_World2Object));
+              o.worldPos = mul(_Object2World, v.vertex).xyz;
+              TRANSFER_SHADOW(o);
+              return o;
+          }
+
+          fixed4 frag(v2f i) :SV_Target
+          {
+              fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+              fixed3 worldNormal = normalize(i.worldNormal);
+              fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+              fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
+
+              fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);
+              fixed3 halfDir = normalize(viewDir + worldLightDir);
+              fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(worldNormal, halfDir)), _Gloss);
+
+              fixed atten = 1.0;
+              fixed4 shadow = SHADOW_ATTENUATION(i);
+              return fixed4(ambient + (diffuse + specular) * atten * shadow, 1.0);
+          }
+
+          ENDCG
+      }
+      Pass
+      {
+          Tags { &quot;LightMode&quot;=&quot;ForwardAdd&quot; }
+
+          Blend SrcAlpha One
+          CGPROGRAM
+          #pragma multi_compile_fwbase
+          #pragma vertex vert
+          #pragma fragment frag
+
+          #include &quot;Lighting.cginc&quot;
+          #include &quot;AutoLight.cginc&quot;
+
+          fixed4 _Diffuse;
+          fixed4 _Specular;
+          float _Gloss;
+
+          struct a2v
+          {
+              float4 vertex : POSITION;
+              float3 normal : NORMAL;
+          };
+
+          struct v2f
+          {
+              float4 pos : SV_POSITION;
+              float3 worldNormal : TEXCOORD0;
+              float3 worldPos : TEXCOORD1;
+          };
+
+          v2f vert(a2v v)
+          {
+              v2f o;
+              o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+              o.worldNormal = UnityObjectToWorldNormal(v.normal);
+              o.worldPos = mul(_Object2World, v.vertex).xyz;
+              return o;
+          }
+
+          fixed4 frag(v2f i) : SV_Target
+          {
+              fixed3 worldNormal = normalize(i.worldNormal);
+              #ifdef USING_DIRECTIONAL_LIGHT
+                  fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+              #else
+                  fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz - i.worldPos.xyz);
+              #endif
+
+              fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * max(0, dot(worldNormal, worldLightDir));
+
+              fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);
+              fixed3 halfDir = normalize(worldLightDir + viewDir);
+              fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+
+              #ifdef USING_DIRECTIONAL_LIGHT
+                  fixed atten = 1.0;
+              #else
+                  #if defined (POINT)
+                      float3 lightCoord = mul(_LightMatrix0, float4(i.worldPos, 1)).xyz;
+                      fixed atten = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;
+                  #elif defined (SPOT)
+                      float4 lightCoord = mul(_LightMatrix0, float4(i.worldPos, 1));
+                      fixed atten = (lightCoord.z &gt; 0) * tex2D(_LightTexture0, lightCoord.xy / lightCoord.w + 0.5).w * tex2D(_LightTextureB0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;
+                  #else
+                      fixed atten = 1.0;
+                  #endif
+              #endif
+
+              return fixed4((diffuse + specular) * atten, 1.0);
+          }
+          ENDCG
+      }
+  }
+  FallBack &quot;Specular&quot;
+}
+</code></pre></li>
+</ul>
+<h2 id="3-透明物体的阴影效果"><a href="#3-透明物体的阴影效果" class="headerlink" title="3. 透明物体的阴影效果"></a>3. 透明物体的阴影效果</h2><p><img src="/assets/blogImg/UnityShader/QQ图片20161215104259.png" alt="">  </p>
+<pre><code>Shader &quot;UnityShaderLearning/AlphaTestWithShadow&quot;
+{
+    Properties
+    {
+        _Color (&quot;Main Tint&quot;, Color) = (1, 1, 1, 1)
+        _MainTex (&quot;Main Tex&quot;, 2D) = &quot;white&quot;{}
+        _Cutoff (&quot;Alpha Cutoff&quot;, Range(0, 1)) = 0.55
+    }
+    SubShader
+    {
+        Tags { &quot;Queue&quot;=&quot;AlphaTest&quot; &quot;IgnoreProjector&quot; = &quot;True&quot; &quot;RenderType&quot;=&quot;TransparentCutout&quot;}
+
+        Pass
+        {
+            Tags { &quot;LightMode&quot;=&quot;ForwardBase&quot; }
+            Cull Off
+            CGPROGRAM
+
+            #pragma multi_compile_fwdbase
+            #pragma vertex vert
+            #pragma fragment frag
+            #include &quot;Lighting.cginc&quot;
+            #include &quot;AutoLight.cginc&quot;
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            fixed _Cutoff;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+                SHADOW_COORDS(3)
+            };
+
+            v2f vert(a2v v)
+            {
+                v2f o;
+                o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(_Object2World, v.vertex).xyz;
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                TRANSFER_SHADOW(o);
+                return o;
+            }
+
+            fixed4 frag(v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                fixed4 texColor = tex2D(_MainTex, i.uv);
+                clip (texColor.a - _Cutoff);
+
+                fixed3 albedo = texColor.rgb * _Color.rgb;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+                UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
+                return fixed4(ambient + diffuse * atten, 1.0);
+            }
+            ENDCG
+        }
+    }
+    FallBack &quot;VertexLit&quot;
+}
+</code></pre>
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -189,209 +486,88 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http:blog.codershu.com/2016/12/15/shadow/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/12/07/masktexture/" class="archive-article-date">
-  	<time datetime="2016-12-07T15:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-07</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/12/07/masktexture/">遮罩纹理</a>
-    </h1>
+  
+    <a href="/2016/12/07/masktexture/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">遮罩纹理</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+  
+    <div class="duoshuo"></div>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/12/07/ramptexture/" class="archive-article-date">
-  	<time datetime="2016-12-06T17:07:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/12/07/ramptexture/">渐变纹理</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/12/07/normalmaptangentspace/" class="archive-article-date">
-  	<time datetime="2016-12-06T16:26:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/12/07/normalmaptangentspace/">切线空间下的法线贴图应用</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/19/specularvertexlevelpixellevel/" class="archive-article-date">
-  	<time datetime="2016-11-18T17:26:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/19/specularvertexlevelpixellevel/">逐顶点和逐像素的高光模型</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/18/diffuseshadervertexlevel/" class="archive-article-date">
-  	<time datetime="2016-11-17T16:24:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-18</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/18/diffuseshadervertexlevel/">DiffuseVertexLevel/PixelLevel(漫反射)</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -414,8 +590,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
