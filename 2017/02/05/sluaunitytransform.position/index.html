@@ -11,10 +11,11 @@
   <meta name="description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。  
 tolua取值赋值的过程  
 slua的取值赋值过程
-取出object的缓存  ObjectCache oc = ObjectCache.get(l);
+取出object的缓存  
 
-取得c#中的index然后再ObjectCache里面查找  
-ca">
+ObjectCache oc = ObjectCache.get(l);
+
+取得c#中的index然后再ObjectCache里面查找">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Slua的优化初探">
 <meta property="og:url" content="blog.codershu.com/2017/02/05/sluaunitytransform.position/index.html">
@@ -22,21 +23,23 @@ ca">
 <meta property="og:description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。  
 tolua取值赋值的过程  
 slua的取值赋值过程
-取出object的缓存  ObjectCache oc = ObjectCache.get(l);
+取出object的缓存  
 
-取得c#中的index然后再ObjectCache里面查找  
-ca">
+ObjectCache oc = ObjectCache.get(l);
+
+取得c#中的index然后再ObjectCache里面查找">
 <meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/setcsharpobjectvalue.png">
-<meta property="og:updated_time" content="2017-02-07T11:58:58.000Z">
+<meta property="og:updated_time" content="2017-02-07T12:26:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Slua的优化初探">
 <meta name="twitter:description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。  
 tolua取值赋值的过程  
 slua的取值赋值过程
-取出object的缓存  ObjectCache oc = ObjectCache.get(l);
+取出object的缓存  
 
-取得c#中的index然后再ObjectCache里面查找  
-ca">
+ObjectCache oc = ObjectCache.get(l);
+
+取得c#中的index然后再ObjectCache里面查找">
 <meta name="twitter:image" content="blog.codershu.com/assets/blogImg/UnityShader/setcsharpobjectvalue.png">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
@@ -192,32 +195,38 @@ ca">
         <p>看了<a href="http://blog.uwa4d.com/archives/USparkle_Lua.html" target="_blank" rel="external">UWA的blog</a>以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。  </p>
 <h2 id="tolua取值赋值的过程"><a href="#tolua取值赋值的过程" class="headerlink" title="tolua取值赋值的过程"></a>tolua取值赋值的过程</h2><p><img src="/assets/blogImg/UnityShader/setcsharpobjectvalue.png" alt="">  </p>
 <h2 id="slua的取值赋值过程"><a href="#slua的取值赋值过程" class="headerlink" title="slua的取值赋值过程"></a>slua的取值赋值过程</h2><ol>
-<li>取出object的缓存  <pre><code>ObjectCache oc = ObjectCache.get(l);
-</code></pre></li>
+<li>取出object的缓存  </li>
+</ol>
+<pre><code>ObjectCache oc = ObjectCache.get(l);
+</code></pre><ol>
 <li>取得c#中的index然后再ObjectCache里面查找  </li>
-<li>cache.get(index, out o)，类似tolua中的Translator，都是从缓存中取出object<pre><code>int index = LuaDLL.luaS_rawnetobj(l, p);
+<li>cache.get(index, out o)，类似tolua中的Translator，都是从缓存中取出object  </li>
+</ol>
+<pre><code>int index = LuaDLL.luaS_rawnetobj(l, p);
 object o;
 if (index != -1 &amp;&amp; cache.get(index, out o))
 {
-     return o;
+        return o;
 }
-</code></pre></li>
-<li>从栈中取出3个float组成Vector3  <pre><code>UnityEngine.Vector3 v;
+</code></pre><ol>
+<li>从栈中取出3个float组成Vector3  </li>
+</ol>
+<pre><code>UnityEngine.Vector3 v;
 checkType(l,2,out v); 
 static public bool checkType(IntPtr l, int p, out Vector3 v)
 {
- float x, y, z;
- if(LuaDLL.luaS_checkVector3(l, p, out x, out y, out z)!=0)
-     throw new Exception(string.Format(&quot;Invalid vector3 argument at {0}&quot;, p));
- v = new Vector3(x, y, z);
- return true;
+    float x, y, z;
+    if(LuaDLL.luaS_checkVector3(l, p, out x, out y, out z)!=0)
+        throw new Exception(string.Format(&quot;Invalid vector3 argument at {0}&quot;, p));
+    v = new Vector3(x, y, z);
+    return true;
 }
-</code></pre></li>
-<li>赋值给position  <pre><code>self.position=v;
-</code></pre><a id="more"></a>
-<h2 id="slua相比tolua做了哪些优化"><a href="#slua相比tolua做了哪些优化" class="headerlink" title="slua相比tolua做了哪些优化"></a>slua相比tolua做了哪些优化</h2></li>
+</code></pre><ol>
+<li>赋值给position  </li>
 </ol>
-<ul>
+<pre><code>self.position=v;
+</code></pre><a id="more"></a>
+<h2 id="slua相比tolua做了哪些优化"><a href="#slua相比tolua做了哪些优化" class="headerlink" title="slua相比tolua做了哪些优化"></a>slua相比tolua做了哪些优化</h2><ul>
 <li>赋值是在c#中完成的而不是取得object后把index构造成userdata后在lua中赋值</li>
 <li>返回的object缓存起来了，没有频繁地GC  <h2 id="还有那些优化的余地"><a href="#还有那些优化的余地" class="headerlink" title="还有那些优化的余地"></a>还有那些优化的余地</h2></li>
 <li>lua给c#传递3个float而不是一个内容为{x,y,z}的table</li>

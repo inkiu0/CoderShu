@@ -12,8 +12,10 @@
 
 首先为accumulationTexture进行一个恢复操作，以取得上一步混合得到的纹理。  
 然后用shader把原图像和上一步的纹理进行混合  
-最后把混合后的纹理显示在屏幕上。  accumulationTexture.MarkRestoreExpected();
-material.SetFloat(&amp;quot;_BlurAmount&amp;quot;, 1.">
+最后把混合后的纹理显示在屏幕上。  
+
+accumulationTexture.MarkRestoreExpected();
+material.SetFloat(&amp;quot;_BlurAmount&amp;quot;,">
 <meta property="og:type" content="article">
 <meta property="og:title" content="运动模糊 ">
 <meta property="og:url" content="blog.codershu.com/2017/01/26/MotionBlur/index.html">
@@ -22,17 +24,21 @@ material.SetFloat(&amp;quot;_BlurAmount&amp;quot;, 1.">
 
 首先为accumulationTexture进行一个恢复操作，以取得上一步混合得到的纹理。  
 然后用shader把原图像和上一步的纹理进行混合  
-最后把混合后的纹理显示在屏幕上。  accumulationTexture.MarkRestoreExpected();
-material.SetFloat(&amp;quot;_BlurAmount&amp;quot;, 1.">
-<meta property="og:updated_time" content="2017-02-07T12:10:41.000Z">
+最后把混合后的纹理显示在屏幕上。  
+
+accumulationTexture.MarkRestoreExpected();
+material.SetFloat(&amp;quot;_BlurAmount&amp;quot;,">
+<meta property="og:updated_time" content="2017-02-07T12:27:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="运动模糊 ">
 <meta name="twitter:description" content="#MotionBlur运动模糊  
 
 首先为accumulationTexture进行一个恢复操作，以取得上一步混合得到的纹理。  
 然后用shader把原图像和上一步的纹理进行混合  
-最后把混合后的纹理显示在屏幕上。  accumulationTexture.MarkRestoreExpected();
-material.SetFloat(&amp;quot;_BlurAmount&amp;quot;, 1.">
+最后把混合后的纹理显示在屏幕上。  
+
+accumulationTexture.MarkRestoreExpected();
+material.SetFloat(&amp;quot;_BlurAmount&amp;quot;,">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -188,70 +194,70 @@ material.SetFloat(&amp;quot;_BlurAmount&amp;quot;, 1.">
 <ul>
 <li>首先为accumulationTexture进行一个恢复操作，以取得上一步混合得到的纹理。  </li>
 <li>然后用shader把原图像和上一步的纹理进行混合  </li>
-<li>最后把混合后的纹理显示在屏幕上。  <pre><code>accumulationTexture.MarkRestoreExpected();
+<li>最后把混合后的纹理显示在屏幕上。  </li>
+</ul>
+<pre><code>accumulationTexture.MarkRestoreExpected();
 material.SetFloat(&quot;_BlurAmount&quot;, 1.0f - blurAmount);
 Graphics.Blit(src, accumulationTexture, material);
 Graphics.Blit(accumulationTexture, dest);
-</code></pre>shader混合图像的方式为(last.rgb <em> BlurAmount + src.rgb </em> (1 - blurAmount), last.a)  <a id="more"></a>
+</code></pre><p>shader混合图像的方式为(last.rgb <em> BlurAmount + src.rgb </em> (1 - blurAmount), last.a)<br><a id="more"></a></p>
 <pre><code>Shader &quot;UnityShaderLearning/MotionBlur&quot;
 {
-  Properties
-  {
-      _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
-      _BlurAmount(&quot;Blur Amount&quot;, FLoat) = 1.0
-  }
-  SubShader
-  {
-      CGINCLUDE
-      #include &quot;UnityCG.cginc&quot;
-      sampler2D _MainTex;
-      fixed _BlurAmount;
-      struct v2f
-      {
-          float4 pos : SV_POSITION;
-          half2 uv : TEXCOORD0;
-      };
-      v2f vert(appdata_img v)
-      {
-          v2f o;
-          o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
-          o.uv = v.texcoord;
-          return o;
-      }
-      fixed fragRGB(v2f i) : SV_Target
-      {
-          return fixed4(tex2D(_MainTex, i.uv).rgb, _BlurAmount);
-      }
-          half4 fragA(v2f i) : SV_Target
-      {
-          return tex2D(_MainTex, i.uv);
-      }
-      ENDCG
-      ZTest Always Cull Off ZWrite Off
-      Pass
-      {
-          Blend SrcAlpha OneMinusSrcAlpha
-          ColorMask RGB
-          CGPROGRAM
-          #pragma vertex vert
-          #pragma fragment fragRGB
-          ENDCG
-      }
-      Pass
-      {
-          Blend One Zero
-          ColorMask A
-          CGPROGRAM
-          #pragma vertex vert
-          #pragma fragment fragA
-          ENDCG
-      }
-  }
+    Properties
+    {
+        _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+        _BlurAmount(&quot;Blur Amount&quot;, FLoat) = 1.0
+    }
+    SubShader
+    {
+        CGINCLUDE
+        #include &quot;UnityCG.cginc&quot;
+        sampler2D _MainTex;
+        fixed _BlurAmount;
+        struct v2f
+        {
+            float4 pos : SV_POSITION;
+            half2 uv : TEXCOORD0;
+        };
+        v2f vert(appdata_img v)
+        {
+            v2f o;
+            o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+            o.uv = v.texcoord;
+            return o;
+        }
+        fixed fragRGB(v2f i) : SV_Target
+        {
+            return fixed4(tex2D(_MainTex, i.uv).rgb, _BlurAmount);
+        }
+            half4 fragA(v2f i) : SV_Target
+        {
+            return tex2D(_MainTex, i.uv);
+        }
+        ENDCG
+        ZTest Always Cull Off ZWrite Off
+        Pass
+        {
+            Blend SrcAlpha OneMinusSrcAlpha
+            ColorMask RGB
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment fragRGB
+            ENDCG
+        }
+        Pass
+        {
+            Blend One Zero
+            ColorMask A
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment fragA
+            ENDCG
+        }
+    }
 Fallback Off
 }
-</code></pre></li>
-</ul>
-
+</code></pre>
       
 
       
