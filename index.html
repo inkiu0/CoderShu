@@ -355,34 +355,7 @@ Graphics.Blit(accumulationTexture, dest);
 <li>然后在第二和第三个pass中把较亮的图像进行高斯模糊  </li>
 <li>最后在第四个pass中把模糊后的亮部和原图进行混合得到bloom效果  </li>
 </ul>
-<pre><code class="cs"><span class="function"><span class="keyword">void</span> <span class="title">OnRenderImage</span>(<span class="params">RenderTexture src, RenderTexture dest</span>)
-</span>{
-    <span class="keyword">if</span> (material != <span class="literal">null</span>)
-    {
-        material.SetFloat(<span class="string">"_LuminanceThreshold"</span>, luminanceThreshold);
-        <span class="keyword">int</span> rtW = src.width / downSample;
-        <span class="keyword">int</span> rtH = src.height / downSample;
-        RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, <span class="number">0</span>);
-        buffer0.filterMode = FilterMode.Bilinear;
-        Graphics.Blit(src, buffer0, material, <span class="number">0</span>);
-        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; iterations; i++)
-        {
-            material.SetFloat(<span class="string">"_BlurSize"</span>, <span class="number">1.0</span>f + i * blurSpread);
-            RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, <span class="number">0</span>);
-            Graphics.Blit(buffer0, buffer1, material, <span class="number">1</span>);
-            RenderTexture.ReleaseTemporary(buffer0);
-            buffer0 = buffer1;
-        }
-        material.SetTexture(<span class="string">"_Bloom"</span>, buffer0);
-        Graphics.Blit(src, dest, material, <span class="number">3</span>);
-        RenderTexture.ReleaseTemporary(buffer0);
-    }
-    <span class="keyword">else</span>
-    {
-        Graphics.Blit(src, dest);
-    }
-}
-</code></pre>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">  </div><div class="line"><span class="symbol">void</span> OnRenderImage(RenderTexture src, RenderTexture dest)</div><div class="line">&#123;</div><div class="line">    <span class="meta">if</span> (material != null)</div><div class="line">    &#123;</div><div class="line">        material.SetFloat(<span class="string">"_LuminanceThreshold"</span>, luminanceThreshold)<span class="comment">;</span></div><div class="line">        int rtW = src.width / downSample<span class="comment">;</span></div><div class="line">        int rtH = src.height / downSample<span class="comment">;</span></div><div class="line">        RenderTexture <span class="keyword">buffer0 </span>= RenderTexture.GetTemporary(rtW, rtH, <span class="number">0</span>)<span class="comment">;</span></div><div class="line">        <span class="keyword">buffer0.filterMode </span>= FilterMode.<span class="keyword">Bilinear;</div><div class="line"></span>        Graphics.<span class="keyword">Blit(src, </span><span class="keyword">buffer0, </span>material, <span class="number">0</span>)<span class="comment">;</span></div><div class="line">        for (int i = <span class="number">0</span><span class="comment">; i &lt; iterations; i++)</span></div><div class="line">        &#123;</div><div class="line">            material.SetFloat(<span class="string">"_BlurSize"</span>, <span class="number">1</span>.<span class="number">0</span>f + i * <span class="keyword">blurSpread);</div><div class="line"></span>            RenderTexture <span class="keyword">buffer1 </span>= RenderTexture.GetTemporary(rtW, rtH, <span class="number">0</span>)<span class="comment">;</span></div><div class="line">            Graphics.<span class="keyword">Blit(buffer0, </span><span class="keyword">buffer1, </span>material, <span class="number">1</span>)<span class="comment">;</span></div><div class="line">            RenderTexture.ReleaseTemporary(<span class="keyword">buffer0);</div><div class="line"></span>            <span class="keyword">buffer0 </span>= <span class="keyword">buffer1;</div><div class="line"></span>        &#125;</div><div class="line">        material.SetTexture(<span class="string">"_Bloom"</span>, <span class="keyword">buffer0);</div><div class="line"></span>        Graphics.<span class="keyword">Blit(src, </span>dest, material, <span class="number">3</span>)<span class="comment">;</span></div><div class="line">        RenderTexture.ReleaseTemporary(<span class="keyword">buffer0);</div><div class="line"></span>    &#125;</div><div class="line">    <span class="meta">else</span></div><div class="line">    &#123;</div><div class="line">        Graphics.<span class="keyword">Blit(src, </span>dest)<span class="comment">;</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
         
           <a class="article-more-a" href="/2017/01/25/bloom/#more">more >></a>
         
@@ -570,6 +543,72 @@ Graphics.Blit(accumulationTexture, dest);
 
 
   
+    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/16/alphatest/" class="archive-article-date">
+  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
+<ul>
+<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
+        
+          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-luaIter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -739,72 +778,6 @@ void OnRenderImage(RenderTexture src, RenderTexture dest)
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/16/alphatest/" class="archive-article-date">
-  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
-<ul>
-<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
-        
-          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
         </p>
       
 
@@ -1064,15 +1037,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Unity</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Unity</a>
               </li>
              
               <li class="article-tag-list-item">
