@@ -260,7 +260,7 @@
 <h2 id="二、ABRedundancyChecker使用方法"><a href="#二、ABRedundancyChecker使用方法" class="headerlink" title="二、ABRedundancyChecker使用方法"></a>二、ABRedundancyChecker使用方法</h2><h3 id="1-修改脚本参数"><a href="#1-修改脚本参数" class="headerlink" title="1. 修改脚本参数"></a>1. 修改脚本参数</h3><ol>
 <li>把以下参数改成自己想要的:</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">/// &lt;summary&gt;</div><div class="line"></div><div class="line">/// AB文件名匹配规则</div><div class="line"></div><div class="line">/// &lt;/summary&gt;</div><div class="line"></div><div class="line">public string searchPattern = &quot;*.ab&quot;;</div><div class="line"></div><div class="line">/// &lt;summary&gt;</div><div class="line"></div><div class="line">/// 冗余资源类型白名单</div><div class="line"></div><div class="line">/// &lt;/summary&gt;</div><div class="line"></div><div class="line">public List&lt;Type&gt; assetTypeList = new List&lt;Type&gt; &#123; typeof(Material), typeof(Texture2D), typeof(AnimationClip),</div><div class="line"></div><div class="line">typeof(AudioClip), typeof(Sprite), typeof(Shader), typeof(Font), typeof(Mesh) &#125;;</div><div class="line"></div><div class="line">/// &lt;summary&gt;</div><div class="line"></div><div class="line">/// 输出路径</div><div class="line"></div><div class="line">/// &lt;/summary&gt;</div><div class="line"></div><div class="line">public string outPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);</div><div class="line"></div><div class="line">/// &lt;summary&gt;</div><div class="line"></div><div class="line">/// AB文件存放路径，会从这个文件夹下递归查找符合查找规则searchPattern的文件。</div><div class="line"></div><div class="line">/// &lt;/summary&gt;</div><div class="line"></div><div class="line">public string abPath = &quot;Assets/StreamingAssets&quot;;</div><div class="line"></div><div class="line">[MenuItem(&quot;AB冗余检测/AB检测&quot;)]</div></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> AB文件名匹配规则</span></div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">string</span> searchPattern = <span class="string">"*.ab"</span>;</div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> 冗余资源类型白名单</span></div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">public</span> List&lt;Type&gt; assetTypeList = <span class="keyword">new</span> List&lt;Type&gt; &#123; <span class="keyword">typeof</span>(Material), <span class="keyword">typeof</span>(Texture2D), <span class="keyword">typeof</span>(AnimationClip),</div><div class="line"></div><div class="line"><span class="keyword">typeof</span>(AudioClip), <span class="keyword">typeof</span>(Sprite), <span class="keyword">typeof</span>(Shader), <span class="keyword">typeof</span>(Font), <span class="keyword">typeof</span>(Mesh) &#125;;</div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> 输出路径</span></div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">string</span> outPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);</div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> AB文件存放路径，会从这个文件夹下递归查找符合查找规则searchPattern的文件。</span></div><div class="line"></div><div class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">string</span> abPath = <span class="string">"Assets/StreamingAssets"</span>;</div><div class="line"></div><div class="line">[MenuItem(<span class="string">"AB冗余检测/AB检测"</span>)]</div></pre></td></tr></table></figure>
 <h3 id="2-开始使用"><a href="#2-开始使用" class="headerlink" title="2. 开始使用"></a>2. 开始使用</h3><ol>
 <li><p>将<code>ABRedundancyChecker.cs</code>放在Unity项目的Editor目录下</p>
 </li>
@@ -509,11 +509,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Unity Java C#</a>
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -529,23 +529,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua Slua Unity</a>
+                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Xcode打包</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua／Slua／Unity</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
             
             <div class="clearfix"></div>

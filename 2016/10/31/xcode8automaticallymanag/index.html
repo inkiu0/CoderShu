@@ -8,16 +8,16 @@
   <link rel="dns-prefetch" href="blog.codershu.com">
   <title>Xcode8自动打包去掉AutoMaticallyManageSigning | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近项目里的自动打包脚本不能用了，一直提示123456789Check dependenciesSigning for &amp;quot;Unity-iPhone&amp;quot; requires a development team. Select a development team in the project editor.Code signing is required for product t">
+  <meta name="description" content="最近项目里的自动打包脚本不能用了，一直提示123456789Check dependenciesSigning for &quot;Unity-iPhone&quot; requires a development team. Select a development team in the project editor.Code signing is required for product type &apos;Appli">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Xcode8自动打包去掉AutoMaticallyManageSigning">
 <meta property="og:url" content="blog.codershu.com/2016/10/31/xcode8automaticallymanag/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="最近项目里的自动打包脚本不能用了，一直提示123456789Check dependenciesSigning for &amp;quot;Unity-iPhone&amp;quot; requires a development team. Select a development team in the project editor.Code signing is required for product t">
-<meta property="og:updated_time" content="2017-02-07T11:35:53.000Z">
+<meta property="og:description" content="最近项目里的自动打包脚本不能用了，一直提示123456789Check dependenciesSigning for &quot;Unity-iPhone&quot; requires a development team. Select a development team in the project editor.Code signing is required for product type &apos;Appli">
+<meta property="og:updated_time" content="2017-02-07T11:35:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xcode8自动打包去掉AutoMaticallyManageSigning">
-<meta name="twitter:description" content="最近项目里的自动打包脚本不能用了，一直提示123456789Check dependenciesSigning for &amp;quot;Unity-iPhone&amp;quot; requires a development team. Select a development team in the project editor.Code signing is required for product t">
+<meta name="twitter:description" content="最近项目里的自动打包脚本不能用了，一直提示123456789Check dependenciesSigning for &quot;Unity-iPhone&quot; requires a development team. Select a development team in the project editor.Code signing is required for product type &apos;Appli">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -169,20 +169,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近项目里的自动打包脚本不能用了，一直提示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Check dependencies</div><div class="line">Signing for &quot;Unity-iPhone&quot; requires a development team. Select a development team in the project editor.</div><div class="line">Code signing is required for product type &apos;Application&apos; in SDK &apos;iOS 10.0&apos;</div><div class="line"></div><div class="line">** BUILD FAILED **</div><div class="line"></div><div class="line">The following build commands failed:</div><div class="line"> Check dependencies</div><div class="line">(1 failure)</div></pre></td></tr></table></figure></p>
+        <p>最近项目里的自动打包脚本不能用了，一直提示<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">Check</span> dependencies</div><div class="line">Signing <span class="keyword">for</span> <span class="string">"Unity-iPhone"</span> requires a development team. <span class="keyword">Select</span> a development team <span class="keyword">in</span> the <span class="keyword">project</span> editor.</div><div class="line">Code signing <span class="keyword">is</span> <span class="keyword">required</span> <span class="keyword">for</span> product <span class="keyword">type</span> <span class="string">'Application'</span> <span class="keyword">in</span> SDK <span class="string">'iOS 10.0'</span></div><div class="line"></div><div class="line">** <span class="keyword">BUILD</span> <span class="keyword">FAILED</span> **</div><div class="line"></div><div class="line">The <span class="keyword">following</span> <span class="keyword">build</span> commands <span class="keyword">failed</span>:</div><div class="line"> <span class="keyword">Check</span> dependencies</div><div class="line">(<span class="number">1</span> <span class="keyword">failure</span>)</div></pre></td></tr></table></figure></p>
 <p>Google了一下发现是xcode新的自动管理签名机制的问题，你要不使用AutoMatic自动管理，要不使用Manual手动指定证书的模式。</p>
 <p>无奈我们打包的时候只有证书，没有对应的AppleID，所以自动管理的就用不了。但是UnityBuild出来的Xcode项目是自动勾选<code>Auto MaticallyManageSigning</code>的，而且Xcode也没有支持用命令行设置这个值。那这样的话，我们每次打包出Xcode项目的时候需要手动点一下，这就失去打包工具的意义了。</p>
 <p>无奈之下，找到一个办法解决这个问题。<br><a id="more"></a><br>我先用UnityBuild出一个干净的Xcode项目，然后把项目传到Git。然后手动点一下<code>BuildSetting</code>里的<code>Auto MaticallyManageSigning</code>，去掉勾选。然后查看下<code>diff</code>，当然其中有很多修改。<br>主要修改在Unity-iPhone.xcodeproj\/project.pbxproj，在Finder里想打开该文件应选中<strong>Unity-iPhone.xcodeproj</strong>右键<strong>显示包内容</strong>。  </p>
 <p><strong>project.pbxproj</strong>内也有很多修改，重要的修改其实只有几行，主要是在这个地方加上ProvisioningStyle = Manual。</p>
 <p>修改前：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">TargetAttributes = &#123;</div><div class="line">    5623C57217FDCB0800090B9E /* Unity-iPhone Tests */ = &#123;</div><div class="line">        TestTargetID = 1D6058900D05DD3D006BFB54 /* Unity-iPhone */;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">TargetAttributes = &#123;</div><div class="line">    <span class="number">5623</span>C<span class="number">57217F</span>DCB<span class="number">0800090B</span>9E <span class="comment">/* Unity-iPhone Tests */</span> = &#123;</div><div class="line">        TestTargetID = <span class="number">1</span>D6058900D05DD3D<span class="number">006B</span>FB54 <span class="comment">/* Unity-iPhone */</span><span class="comment">;</span></div><div class="line">    &#125;<span class="comment">;</span></div><div class="line">&#125;<span class="comment">;</span></div></pre></td></tr></table></figure>
 <p>修改后：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">TargetAttributes = &#123;</div><div class="line">    5623C57217FDCB0800090B9E /* Unity-iPhone Tests */ = &#123;</div><div class="line">        TestTargetID = 1D6058900D05DD3D006BFB54 /* Unity-iPhone */;</div><div class="line">    &#125;;</div><div class="line">    1D6058900D05DD3D006BFB54 = &#123;</div><div class="line">        ProvisioningStyle = Manual;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p><strong>需要注意的是</strong>从来没有用Xcode打开并且操作过的project.pbxproj是不存在<code>ProvisioningStyle</code>字段的，所以应追加3行。但是打开并操作过的项目是存在<code>ProvisioningStyle</code>字段的，这个时候如果想用脚本修改该值应直接替换该值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -i &quot;&quot; s/&apos;ProvisioningStyle = Automatic;&apos;/&apos;DevelopmentTeam = None;ProvisioningStyle = Manual;&apos;/g project.pbxprojPath</div></pre></td></tr></table></figure></p>
-<p>因为我们是全自动的打包过程，正常流程是不用打开xcode项目的，所以我准备用<code>sed</code>在指定文本下追加3行，并且要获取上一次匹配到的<code>TestTargetID</code>，我写到3点还没写出来……实在不会。所以我用python实现了这个操作，附上python脚本<code>DelMatically.py</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/python</div><div class="line">import os</div><div class="line">import re</div><div class="line"></div><div class="line">print &apos;start python script! Delete AutoMatically Manage Signing&apos;</div><div class="line">filePath = &quot;/Users/yons/Documents/work/bin/prj/Unity-iPhone.xcodeproj/project.pbxproj&quot;</div><div class="line">f = open(filePath, &apos;r+&apos;)</div><div class="line">contents = f.read()</div><div class="line">f.seek(0)</div><div class="line">f.truncate()</div><div class="line">pattern = re.compile(r&apos;(TestTargetID = (\w*)) \/\* Unity-iPhone \*\/;&apos;)</div><div class="line">f.write(pattern.sub(r&apos;\1;\n\t\t\t\t\t&#125;;\n\t\t\t\t\t\2 = &#123;\n\t\t\t\t\t\tProvisioningStyle = Manual;&apos;, contents))</div><div class="line">f.close()</div><div class="line">print &apos;end python script !&apos;</div></pre></td></tr></table></figure></p>
-<p>然后用shell运行python，把<code>xcodeprojPath</code>和<code>Yours</code>换成你们自己对应的值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python DelAutoMatically.py</div><div class="line">xcodebuild -project xcodeprojPath -sdk iphoneos -scheme &quot;Unity-iPhone&quot; CONFIGURATION_BUILD_DIR=&apos;./&apos; CODE_SIGN_IDENTITY=&quot;Yours&quot; PROVISIONING_PROFILE=&quot;Yours&quot;</div></pre></td></tr></table></figure></p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">TargetAttributes = &#123;</div><div class="line">    <span class="number">5623</span>C<span class="number">57217F</span>DCB<span class="number">0800090B</span>9E <span class="comment">/* Unity-iPhone Tests */</span> = &#123;</div><div class="line">        TestTargetID = <span class="number">1</span>D6058900D05DD3D<span class="number">006B</span>FB54 <span class="comment">/* Unity-iPhone */</span><span class="comment">;</span></div><div class="line">    &#125;<span class="comment">;</span></div><div class="line">    <span class="number">1</span>D6058900D05DD3D<span class="number">006B</span>FB54 = &#123;</div><div class="line">        ProvisioningStyle = Manual<span class="comment">;</span></div><div class="line">    &#125;<span class="comment">;</span></div><div class="line">&#125;<span class="comment">;</span></div></pre></td></tr></table></figure>
+<p><strong>需要注意的是</strong>从来没有用Xcode打开并且操作过的project.pbxproj是不存在<code>ProvisioningStyle</code>字段的，所以应追加3行。但是打开并操作过的项目是存在<code>ProvisioningStyle</code>字段的，这个时候如果想用脚本修改该值应直接替换该值<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -<span class="selector-tag">i</span> <span class="string">""</span> s/<span class="string">'ProvisioningStyle = Automatic;'</span>/<span class="string">'DevelopmentTeam = None;ProvisioningStyle = Manual;'</span>/g project.pbxprojPath</div></pre></td></tr></table></figure></p>
+<p>因为我们是全自动的打包过程，正常流程是不用打开xcode项目的，所以我准备用<code>sed</code>在指定文本下追加3行，并且要获取上一次匹配到的<code>TestTargetID</code>，我写到3点还没写出来……实在不会。所以我用python实现了这个操作，附上python脚本<code>DelMatically.py</code>。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> re</div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">'start python script! Delete AutoMatically Manage Signing'</span></div><div class="line">filePath = <span class="string">"/Users/yons/Documents/work/bin/prj/Unity-iPhone.xcodeproj/project.pbxproj"</span></div><div class="line">f = open(filePath, <span class="string">'r+'</span>)</div><div class="line">contents = f.read()</div><div class="line">f.seek(<span class="number">0</span>)</div><div class="line">f.truncate()</div><div class="line">pattern = re.compile(<span class="string">r'(TestTargetID = (\w*)) \/\* Unity-iPhone \*\/;'</span>)</div><div class="line">f.write(pattern.sub(<span class="string">r'\1;\n\t\t\t\t\t&#125;;\n\t\t\t\t\t\2 = &#123;\n\t\t\t\t\t\tProvisioningStyle = Manual;'</span>, contents))</div><div class="line">f.close()</div><div class="line"><span class="keyword">print</span> <span class="string">'end python script !'</span></div></pre></td></tr></table></figure></p>
+<p>然后用shell运行python，把<code>xcodeprojPath</code>和<code>Yours</code>换成你们自己对应的值。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python DelAutoMatically<span class="selector-class">.py</span></div><div class="line">xcodebuild -project xcodeprojPath -sdk iphoneos -scheme <span class="string">"Unity-iPhone"</span> CONFIGURATION_BUILD_DIR=<span class="string">'./'</span> CODE_SIGN_IDENTITY=<span class="string">"Yours"</span> PROVISIONING_PROFILE=<span class="string">"Yours"</span></div></pre></td></tr></table></figure></p>
 <p><strong>需要注意的是</strong><code>PROVISIONING_PROFILE</code>值应该是一串数字+字母，这个值可以用NodePad++打开对应的mobileprovision文件，其中有如下结构。其中string标签包裹的值即是<code>PROVISIONING_PROFILE</code>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;key&gt;UUID&lt;/key&gt;</div><div class="line">&lt;string&gt;&lt;/string&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>UUID<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span><span class="tag">&lt;/<span class="name">string</span>&gt;</span></div></pre></td></tr></table></figure>
 
       
 
@@ -410,11 +410,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Unity Java C#</a>
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -430,23 +430,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua Slua Unity</a>
+                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Xcode打包</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua／Slua／Unity</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
             
             <div class="clearfix"></div>

@@ -355,29 +355,29 @@ Graphics.Blit(accumulationTexture, dest);
 <li>然后在第二和第三个pass中把较亮的图像进行高斯模糊  </li>
 <li>最后在第四个pass中把模糊后的亮部和原图进行混合得到bloom效果  </li>
 </ul>
-<pre><code>void OnRenderImage(RenderTexture src, RenderTexture dest)
-{
-    if (material != null)
+<pre><code class="cs"><span class="function"><span class="keyword">void</span> <span class="title">OnRenderImage</span>(<span class="params">RenderTexture src, RenderTexture dest</span>)
+</span>{
+    <span class="keyword">if</span> (material != <span class="literal">null</span>)
     {
-        material.SetFloat(&quot;_LuminanceThreshold&quot;, luminanceThreshold);
-        int rtW = src.width / downSample;
-        int rtH = src.height / downSample;
-        RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, 0);
+        material.SetFloat(<span class="string">"_LuminanceThreshold"</span>, luminanceThreshold);
+        <span class="keyword">int</span> rtW = src.width / downSample;
+        <span class="keyword">int</span> rtH = src.height / downSample;
+        RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, <span class="number">0</span>);
         buffer0.filterMode = FilterMode.Bilinear;
-        Graphics.Blit(src, buffer0, material, 0);
-        for (int i = 0; i &lt; iterations; i++)
+        Graphics.Blit(src, buffer0, material, <span class="number">0</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; iterations; i++)
         {
-            material.SetFloat(&quot;_BlurSize&quot;, 1.0f + i * blurSpread);
-            RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
-            Graphics.Blit(buffer0, buffer1, material, 1);
+            material.SetFloat(<span class="string">"_BlurSize"</span>, <span class="number">1.0</span>f + i * blurSpread);
+            RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, <span class="number">0</span>);
+            Graphics.Blit(buffer0, buffer1, material, <span class="number">1</span>);
             RenderTexture.ReleaseTemporary(buffer0);
             buffer0 = buffer1;
         }
-        material.SetTexture(&quot;_Bloom&quot;, buffer0);
-        Graphics.Blit(src, dest, material, 3);
+        material.SetTexture(<span class="string">"_Bloom"</span>, buffer0);
+        Graphics.Blit(src, dest, material, <span class="number">3</span>);
         RenderTexture.ReleaseTemporary(buffer0);
     }
-    else
+    <span class="keyword">else</span>
     {
         Graphics.Blit(src, dest);
     }
@@ -570,19 +570,19 @@ Graphics.Blit(accumulationTexture, dest);
 
 
   
-    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
+      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
     </h1>
   
 
         
-        <a href="/2017/01/16/alphatest/" class="archive-article-date">
+        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
   	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
 </a>
         
@@ -590,11 +590,26 @@ Graphics.Blit(accumulationTexture, dest);
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
-<ul>
-<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
+        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
+<pre><code>//给shader传对应的亮度/饱和度/对比度
+void OnRenderImage(RenderTexture src, RenderTexture dest)
+{
+    if(material != null)
+    {
+        material.SetFloat(&quot;_Brightness&quot;, brightness);
+        material.SetFloat(&quot;_Saturation&quot;, saturation);
+        material.SetFloat(&quot;_Contrast&quot;, contrast);
+
+        Graphics.Blit(src, dest, material);
+    }
+    else
+    {
+        Graphics.Blit(src, dest);
+    }
+}
+</code></pre>
         
-          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
         
       
 
@@ -618,7 +633,7 @@ Graphics.Blit(accumulationTexture, dest);
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
         </p>
       
 
@@ -741,19 +756,19 @@ print(Map.Find(&quot;weight&quot;, 50))
 
 
   
-    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
+      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
     </h1>
   
 
         
-        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
+        <a href="/2017/01/16/alphatest/" class="archive-article-date">
   	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
 </a>
         
@@ -761,26 +776,11 @@ print(Map.Find(&quot;weight&quot;, 50))
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
-<pre><code>//给shader传对应的亮度/饱和度/对比度
-void OnRenderImage(RenderTexture src, RenderTexture dest)
-{
-    if(material != null)
-    {
-        material.SetFloat(&quot;_Brightness&quot;, brightness);
-        material.SetFloat(&quot;_Saturation&quot;, saturation);
-        material.SetFloat(&quot;_Contrast&quot;, contrast);
-
-        Graphics.Blit(src, dest, material);
-    }
-    else
-    {
-        Graphics.Blit(src, dest);
-    }
-}
-</code></pre>
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
+<ul>
+<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
         
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
+          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
         
       
 
@@ -804,7 +804,7 @@ void OnRenderImage(RenderTexture src, RenderTexture dest)
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
         </p>
       
 
@@ -1060,11 +1060,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Unity Java C#</a>
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1080,23 +1080,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua Slua Unity</a>
+                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Xcode打包</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua／Slua／Unity</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
             
             <div class="clearfix"></div>

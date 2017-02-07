@@ -594,8 +594,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Lua-OO-实现"><a href="#Lua-OO-实现" class="headerlink" title="Lua OO 实现"></a>Lua OO 实现</h1><p>##1. 类的实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">testClass =</div><div class="line">&#123;</div><div class="line">    id,</div><div class="line">    num</div><div class="line">&#125;;</div><div class="line"></div><div class="line">testClass.__index = testClass</div><div class="line"></div><div class="line">function testClass:new(id, num)</div><div class="line">    local self = &#123;&#125;</div><div class="line">    setmetatable(self, testClass)</div><div class="line">    self.id = id</div><div class="line">    self.num = num</div><div class="line">    return self</div><div class="line">end</div><div class="line"></div><div class="line">function testClass:PrintNum()</div><div class="line">    print(&quot;num is &quot; .. self.num)</div><div class="line">end</div></pre></td></tr></table></figure></p>
-<p>简单使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">local obj = testClass:new(10, 11)</div><div class="line">obj:PrintNum()</div></pre></td></tr></table></figure></p>
+        <h1 id="Lua-OO-实现"><a href="#Lua-OO-实现" class="headerlink" title="Lua OO 实现"></a>Lua OO 实现</h1><p>##1. 类的实现<br><figure class="highlight monkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">testClass =</div><div class="line">&#123;</div><div class="line">    id,</div><div class="line">    num</div><div class="line">&#125;;</div><div class="line"></div><div class="line">testClass.__index = testClass</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">testClass</span>:</span><span class="keyword">new</span>(id, num)</div><div class="line">    <span class="keyword">local</span> <span class="built_in">self</span> = &#123;&#125;</div><div class="line">    setmetatable(<span class="built_in">self</span>, testClass)</div><div class="line">    <span class="built_in">self</span>.id = id</div><div class="line">    <span class="built_in">self</span>.num = num</div><div class="line">    <span class="keyword">return</span> <span class="built_in">self</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">testClass</span>:</span>PrintNum()</div><div class="line">    <span class="built_in">print</span>(<span class="string">"num is "</span> .. <span class="built_in">self</span>.num)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>简单使用<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">local obj = testClass:<span class="keyword">new</span>(10, 11)</div><div class="line">obj:PrintNum()</div></pre></td></tr></table></figure></p>
 <p>得到输出<code>num is 11</code><br>
         
           <a class="article-more-a" href="/2016/12/09/luaoo/#more">more >></a>
@@ -661,17 +661,17 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>#CSharpToJava  </p>
-<p>##1. new Java类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">static AndroidJavaClass _UnityPlayer;</div><div class="line">static AndroidJavaClass unityPlayer</div><div class="line">&#123;</div><div class="line">    get</div><div class="line">    &#123;</div><div class="line">        if (_UnityPlayer == null)</div><div class="line">            _UnityPlayer = new AndroidJavaClass(&quot;com.unity3d.player.UnityPlayer&quot;);</div><div class="line">        return _UnityPlayer;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>##1. new Java类<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> AndroidJavaClass _UnityPlayer;</div><div class="line"><span class="keyword">static</span> AndroidJavaClass unityPlayer</div><div class="line">&#123;</div><div class="line">    <span class="keyword">get</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span> (_UnityPlayer == <span class="literal">null</span>)</div><div class="line">            _UnityPlayer = <span class="keyword">new</span> <span class="type">AndroidJavaClass</span>(<span class="string">"com.unity3d.player.UnityPlayer"</span>);</div><div class="line">        <span class="keyword">return</span> _UnityPlayer;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>##2. 调用Java函数  </p>
 <ul>
 <li><p>调用无参无返回函数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//调用静态函数为CallStatic</div><div class="line">androidJavaClass.Call(&quot;methodName&quot;);</div></pre></td></tr></table></figure>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//调用静态函数为CallStatic</span></div><div class="line">androidJavaClass.<span class="keyword">Call</span>(<span class="string">"methodName"</span>);</div></pre></td></tr></table></figure>
 </li>
 <li><p>调用带参数有返回函数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//返回值为int则为Call&lt;int&gt;</div><div class="line">//返回值为Java自定义的数据类型, 比如Java类。则为CallStatic&lt;AndroidJavaObject&gt;</div><div class="line">//调用静态函数为CallStatic</div><div class="line">String str = androidJavaClass.Call&lt;String&gt;(&quot;methodName&quot;, param1, param2);</div><div class="line">```  </div><div class="line"></div><div class="line">&lt;!-- more --&gt;</div><div class="line">##3. 访问Java类的属性</div><div class="line">- 访问普通属性</div><div class="line">```  </div><div class="line">//访问int属性则为Get&lt;int&gt;</div><div class="line">String str = androidJavaClass.Get&lt;String&gt;(&quot;PropertyName&quot;)</div><div class="line">```  </div><div class="line">- 访问静态属性</div></pre></td></tr></table></figure>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//返回值为int则为Call&lt;int&gt;</span></div><div class="line"><span class="comment">//返回值为Java自定义的数据类型, 比如Java类。则为CallStatic&lt;AndroidJavaObject&gt;</span></div><div class="line"><span class="comment">//调用静态函数为CallStatic</span></div><div class="line">String str = androidJavaClass.Call&lt;String&gt;(<span class="string">"methodName"</span>, param1, param2);</div><div class="line">```  </div><div class="line"></div><div class="line">&lt;!-- more --&gt;</div><div class="line">##<span class="number">3.</span> 访问Java类的属性</div><div class="line">- 访问普通属性</div><div class="line">```  </div><div class="line"><span class="comment">//访问int属性则为Get&lt;int&gt;</span></div><div class="line">String str = androidJavaClass.Get&lt;String&gt;(<span class="string">"PropertyName"</span>)</div><div class="line">```  </div><div class="line">- 访问静态属性</div></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>//示例如下:<br>unityPlayer.GetStatic<androidjavaobject>(“currentActivity”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#JavaToCSharp  </div><div class="line">## 1. Java调用CSharp</div><div class="line">**需要在场景中创建一个名为AScript的GameObject**</div></pre></td></tr></table></figure></androidjavaobject></p>
+<p>//示例如下:<br>unityPlayer.GetStatic<androidjavaobject>(“currentActivity”)<br><figure class="highlight vala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#JavaToCSharp  </span></div><div class="line"><span class="meta">## 1. Java调用CSharp</span></div><div class="line">**需要在场景中创建一个名为AScript的GameObject**</div></pre></td></tr></table></figure></androidjavaobject></p>
 <p>//调用场景中的GameObject:AScript挂载的脚本AScript中的BMethod，传入参数param。<br>UnityPlayer.UnitySendMessage(“AScript”,”BMethod”, param);<br>```</p>
 
       
@@ -805,7 +805,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161207010742.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">fixed halfLambert = 0.5 * dot(worldNormal, worldLightDir) + 0.5;</div><div class="line">fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;</div></pre></td></tr></table></figure></p>
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161207010742.png" alt=""><br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">fixed halfLambert = <span class="number">0</span>.<span class="number">5</span> * dot(worldNormal, worldLightDir) + <span class="number">0</span>.<span class="number">5</span><span class="comment">;</span></div><div class="line">fixed3 <span class="keyword">diffuseColor </span>= tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb<span class="comment">;</span></div></pre></td></tr></table></figure></p>
 <p>关键代码有两行</p>
 <ul>
 <li>第一行代码获得了法线和光线方向的夹角的余弦值*0.5 + 0.5, 即把余弦值映射到[0, 1]。</li>
@@ -960,11 +960,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Unity Java C#</a>
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -980,23 +980,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua Slua Unity</a>
+                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Xcode打包</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua／Slua／Unity</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
             
             <div class="clearfix"></div>

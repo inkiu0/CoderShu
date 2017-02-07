@@ -30,7 +30,7 @@ void OnRenderImage(RenderTexture src, RenderTexture dest)
 void OnRenderImage(RenderTexture src, RenderTexture dest)
 {
     if (mate">
-<meta property="og:updated_time" content="2017-02-07T12:26:45.000Z">
+<meta property="og:updated_time" content="2017-02-07T17:33:33.052Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="bloom效果">
 <meta name="twitter:description" content="bloom是模拟真实相机，较亮的部分扩散到周围，造成一种朦胧的感觉。  
@@ -199,35 +199,36 @@ void OnRenderImage(RenderTexture src, RenderTexture dest)
 <li>然后在第二和第三个pass中把较亮的图像进行高斯模糊  </li>
 <li>最后在第四个pass中把模糊后的亮部和原图进行混合得到bloom效果  </li>
 </ul>
-<pre><code>void OnRenderImage(RenderTexture src, RenderTexture dest)
-{
-    if (material != null)
+<pre><code class="cs"><span class="function"><span class="keyword">void</span> <span class="title">OnRenderImage</span>(<span class="params">RenderTexture src, RenderTexture dest</span>)
+</span>{
+    <span class="keyword">if</span> (material != <span class="literal">null</span>)
     {
-        material.SetFloat(&quot;_LuminanceThreshold&quot;, luminanceThreshold);
-        int rtW = src.width / downSample;
-        int rtH = src.height / downSample;
-        RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, 0);
+        material.SetFloat(<span class="string">"_LuminanceThreshold"</span>, luminanceThreshold);
+        <span class="keyword">int</span> rtW = src.width / downSample;
+        <span class="keyword">int</span> rtH = src.height / downSample;
+        RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, <span class="number">0</span>);
         buffer0.filterMode = FilterMode.Bilinear;
-        Graphics.Blit(src, buffer0, material, 0);
-        for (int i = 0; i &lt; iterations; i++)
+        Graphics.Blit(src, buffer0, material, <span class="number">0</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; iterations; i++)
         {
-            material.SetFloat(&quot;_BlurSize&quot;, 1.0f + i * blurSpread);
-            RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
-            Graphics.Blit(buffer0, buffer1, material, 1);
+            material.SetFloat(<span class="string">"_BlurSize"</span>, <span class="number">1.0</span>f + i * blurSpread);
+            RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, <span class="number">0</span>);
+            Graphics.Blit(buffer0, buffer1, material, <span class="number">1</span>);
             RenderTexture.ReleaseTemporary(buffer0);
             buffer0 = buffer1;
         }
-        material.SetTexture(&quot;_Bloom&quot;, buffer0);
-        Graphics.Blit(src, dest, material, 3);
+        material.SetTexture(<span class="string">"_Bloom"</span>, buffer0);
+        Graphics.Blit(src, dest, material, <span class="number">3</span>);
         RenderTexture.ReleaseTemporary(buffer0);
     }
-    else
+    <span class="keyword">else</span>
     {
         Graphics.Blit(src, dest);
     }
 }
-</code></pre><a id="more"></a>
-<pre><code>Shader &quot;UnityShaderLearning/Bloom&quot;
+</code></pre>
+<a id="more"></a>
+<pre><code class="shader">Shader &quot;UnityShaderLearning/Bloom&quot;
 {
     Properties
     {
@@ -320,6 +321,7 @@ void OnRenderImage(RenderTexture src, RenderTexture dest)
     Fallback Off
 }
 </code></pre>
+
       
 
       
@@ -551,11 +553,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Unity Java C#</a>
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -571,23 +573,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua Slua Unity</a>
+                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Xcode打包</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua／Slua／Unity</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
             
             <div class="clearfix"></div>

@@ -470,7 +470,7 @@
 </ul>
 <h2 id="2-Alpha分离要点"><a href="#2-Alpha分离要点" class="headerlink" title="2. Alpha分离要点"></a>2. Alpha分离要点</h2><h3 id="1-分离"><a href="#1-分离" class="headerlink" title="1. 分离"></a>1. 分离</h3><ul>
 <li><p>收集图集</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">List&lt;Texture2D&gt; m_AtlasList = new List&lt;Texture2D&gt;();</div><div class="line">private void CollectAtlasSprite()</div><div class="line">&#123;</div><div class="line">    //Travel all AtlasSprite</div><div class="line">    m_AtlasList.Add(obj as Texture2D);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">List&lt;Texture2D&gt; m_AtlasList = <span class="keyword">new</span> List&lt;Texture2D&gt;();</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">CollectAtlasSprite</span>(<span class="params"></span>)</div><div class="line"></span>&#123;</div><div class="line">    <span class="comment">//Travel all AtlasSprite</span></div><div class="line">    m_AtlasList.Add(obj <span class="keyword">as</span> Texture2D);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 </ul>
         
@@ -613,7 +613,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近项目里的自动打包脚本不能用了，一直提示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Check dependencies</div><div class="line">Signing for &quot;Unity-iPhone&quot; requires a development team. Select a development team in the project editor.</div><div class="line">Code signing is required for product type &apos;Application&apos; in SDK &apos;iOS 10.0&apos;</div><div class="line"></div><div class="line">** BUILD FAILED **</div><div class="line"></div><div class="line">The following build commands failed:</div><div class="line"> Check dependencies</div><div class="line">(1 failure)</div></pre></td></tr></table></figure></p>
+        <p>最近项目里的自动打包脚本不能用了，一直提示<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">Check</span> dependencies</div><div class="line">Signing <span class="keyword">for</span> <span class="string">"Unity-iPhone"</span> requires a development team. <span class="keyword">Select</span> a development team <span class="keyword">in</span> the <span class="keyword">project</span> editor.</div><div class="line">Code signing <span class="keyword">is</span> <span class="keyword">required</span> <span class="keyword">for</span> product <span class="keyword">type</span> <span class="string">'Application'</span> <span class="keyword">in</span> SDK <span class="string">'iOS 10.0'</span></div><div class="line"></div><div class="line">** <span class="keyword">BUILD</span> <span class="keyword">FAILED</span> **</div><div class="line"></div><div class="line">The <span class="keyword">following</span> <span class="keyword">build</span> commands <span class="keyword">failed</span>:</div><div class="line"> <span class="keyword">Check</span> dependencies</div><div class="line">(<span class="number">1</span> <span class="keyword">failure</span>)</div></pre></td></tr></table></figure></p>
 <p>Google了一下发现是xcode新的自动管理签名机制的问题，你要不使用AutoMatic自动管理，要不使用Manual手动指定证书的模式。</p>
 <p>无奈我们打包的时候只有证书，没有对应的AppleID，所以自动管理的就用不了。但是UnityBuild出来的Xcode项目是自动勾选<code>Auto MaticallyManageSigning</code>的，而且Xcode也没有支持用命令行设置这个值。那这样的话，我们每次打包出Xcode项目的时候需要手动点一下，这就失去打包工具的意义了。</p>
 <p>无奈之下，找到一个办法解决这个问题。<br>
@@ -766,11 +766,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Unity Java C#</a>
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -786,23 +786,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua Slua Unity</a>
+                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Xcode打包</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Lua／Slua／Unity</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Slua</a>
               </li>
             
             <div class="clearfix"></div>
