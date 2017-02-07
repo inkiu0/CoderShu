@@ -267,10 +267,65 @@ static public bool checkType(IntPtr l, int p, out Vector3 v)
 material.SetFloat(&quot;_BlurAmount&quot;, 1.0f - blurAmount);
 Graphics.Blit(src, accumulationTexture, material);
 Graphics.Blit(accumulationTexture, dest);
-</code></pre>shader混合图像的方式为(last.rgb <em> BlurAmount + src.rgb </em> (1 - blurAmount), last.a)
-        
-          <a class="article-more-a" href="/2017/01/26/MotionBlur/#more">more >></a>
-        
+</code></pre>shader混合图像的方式为(last.rgb <em> BlurAmount + src.rgb </em> (1 - blurAmount), last.a)  <pre><code>Shader &quot;UnityShaderLearning/MotionBlur&quot;
+{
+  Properties
+  {
+      _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+      _BlurAmount(&quot;Blur Amount&quot;, FLoat) = 1.0
+  }
+  SubShader
+  {
+      CGINCLUDE
+      #include &quot;UnityCG.cginc&quot;
+      sampler2D _MainTex;
+      fixed _BlurAmount;
+      struct v2f
+      {
+          float4 pos : SV_POSITION;
+          half2 uv : TEXCOORD0;
+      };
+      v2f vert(appdata_img v)
+      {
+          v2f o;
+          o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+          o.uv = v.texcoord;
+          return o;
+      }
+      fixed fragRGB(v2f i) : SV_Target
+      {
+          return fixed4(tex2D(_MainTex, i.uv).rgb, _BlurAmount);
+      }
+          half4 fragA(v2f i) : SV_Target
+      {
+          return tex2D(_MainTex, i.uv);
+      }
+      ENDCG
+      ZTest Always Cull Off ZWrite Off
+      Pass
+      {
+          Blend SrcAlpha OneMinusSrcAlpha
+          ColorMask RGB
+          CGPROGRAM
+          #pragma vertex vert
+          #pragma fragment fragRGB
+          ENDCG
+      }
+      Pass
+      {
+          Blend One Zero
+          ColorMask A
+          CGPROGRAM
+          #pragma vertex vert
+          #pragma fragment fragA
+          ENDCG
+      }
+  }
+Fallback Off
+}
+</code></pre></li>
+</ul>
+
       
 
       
@@ -1198,11 +1253,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
               </li>
              
               <li class="article-tag-list-item">
