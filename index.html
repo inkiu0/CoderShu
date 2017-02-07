@@ -570,19 +570,19 @@ Graphics.Blit(accumulationTexture, dest);
 
 
   
-    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
+      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
     </h1>
   
 
         
-        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
+        <a href="/2017/01/16/alphatest/" class="archive-article-date">
   	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
 </a>
         
@@ -590,26 +590,11 @@ Graphics.Blit(accumulationTexture, dest);
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
-<pre><code>//给shader传对应的亮度/饱和度/对比度
-void OnRenderImage(RenderTexture src, RenderTexture dest)
-{
-    if(material != null)
-    {
-        material.SetFloat(&quot;_Brightness&quot;, brightness);
-        material.SetFloat(&quot;_Saturation&quot;, saturation);
-        material.SetFloat(&quot;_Contrast&quot;, contrast);
-
-        Graphics.Blit(src, dest, material);
-    }
-    else
-    {
-        Graphics.Blit(src, dest);
-    }
-}
-</code></pre>
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
+<ul>
+<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
         
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
+          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
         
       
 
@@ -633,7 +618,7 @@ void OnRenderImage(RenderTexture src, RenderTexture dest)
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
         </p>
       
 
@@ -756,19 +741,19 @@ print(Map.Find(&quot;weight&quot;, 50))
 
 
   
-    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
+      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
     </h1>
   
 
         
-        <a href="/2017/01/16/alphatest/" class="archive-article-date">
+        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
   	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
 </a>
         
@@ -776,11 +761,26 @@ print(Map.Find(&quot;weight&quot;, 50))
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
-<ul>
-<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
+        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
+<pre><code>//给shader传对应的亮度/饱和度/对比度
+void OnRenderImage(RenderTexture src, RenderTexture dest)
+{
+    if(material != null)
+    {
+        material.SetFloat(&quot;_Brightness&quot;, brightness);
+        material.SetFloat(&quot;_Saturation&quot;, saturation);
+        material.SetFloat(&quot;_Contrast&quot;, contrast);
+
+        Graphics.Blit(src, dest, material);
+    }
+    else
+    {
+        Graphics.Blit(src, dest);
+    }
+}
+</code></pre>
         
-          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
         
       
 
@@ -804,7 +804,7 @@ print(Map.Find(&quot;weight&quot;, 50))
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
         </p>
       
 
@@ -1064,11 +1064,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
+                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
