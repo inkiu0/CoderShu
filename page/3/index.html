@@ -516,6 +516,73 @@
 
 
   
+    <article id="post-xcode8automaticallymanag" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/31/xcode8automaticallymanag/">Xcode8自动打包去掉AutoMaticallyManageSigning</a>
+    </h1>
+  
+
+        
+        <a href="/2016/10/31/xcode8automaticallymanag/" class="archive-article-date">
+  	<time datetime="2016-10-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近项目里的自动打包脚本不能用了，一直提示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Check dependencies</div><div class="line">Signing for &quot;Unity-iPhone&quot; requires a development team. Select a development team in the project editor.</div><div class="line">Code signing is required for product type &apos;Application&apos; in SDK &apos;iOS 10.0&apos;</div><div class="line"></div><div class="line">** BUILD FAILED **</div><div class="line"></div><div class="line">The following build commands failed:</div><div class="line"> Check dependencies</div><div class="line">(1 failure)</div></pre></td></tr></table></figure></p>
+<p>Google了一下发现是xcode新的自动管理签名机制的问题，你要不使用AutoMatic自动管理，要不使用Manual手动指定证书的模式。</p>
+<p>无奈我们打包的时候只有证书，没有对应的AppleID，所以自动管理的就用不了。但是UnityBuild出来的Xcode项目是自动勾选<code>Auto MaticallyManageSigning</code>的，而且Xcode也没有支持用命令行设置这个值。那这样的话，我们每次打包出Xcode项目的时候需要手动点一下，这就失去打包工具的意义了。</p>
+<p>无奈之下，找到一个办法解决这个问题。<br>
+        
+          <a class="article-more-a" href="/2016/10/31/xcode8automaticallymanag/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Xcode打包</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/10/31/xcode8automaticallymanag/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-RBTree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -576,73 +643,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/10/31/RBTree/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-xcode8automaticallymanag" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/31/xcode8automaticallymanag/">Xcode8自动打包去掉AutoMaticallyManageSigning</a>
-    </h1>
-  
-
-        
-        <a href="/2016/10/31/xcode8automaticallymanag/" class="archive-article-date">
-  	<time datetime="2016-10-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近项目里的自动打包脚本不能用了，一直提示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Check dependencies</div><div class="line">Signing for &quot;Unity-iPhone&quot; requires a development team. Select a development team in the project editor.</div><div class="line">Code signing is required for product type &apos;Application&apos; in SDK &apos;iOS 10.0&apos;</div><div class="line"></div><div class="line">** BUILD FAILED **</div><div class="line"></div><div class="line">The following build commands failed:</div><div class="line"> Check dependencies</div><div class="line">(1 failure)</div></pre></td></tr></table></figure></p>
-<p>Google了一下发现是xcode新的自动管理签名机制的问题，你要不使用AutoMatic自动管理，要不使用Manual手动指定证书的模式。</p>
-<p>无奈我们打包的时候只有证书，没有对应的AppleID，所以自动管理的就用不了。但是UnityBuild出来的Xcode项目是自动勾选<code>Auto MaticallyManageSigning</code>的，而且Xcode也没有支持用命令行设置这个值。那这样的话，我们每次打包出Xcode项目的时候需要手动点一下，这就失去打包工具的意义了。</p>
-<p>无奈之下，找到一个办法解决这个问题。<br>
-        
-          <a class="article-more-a" href="/2016/10/31/xcode8automaticallymanag/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Xcode打包</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/10/31/xcode8automaticallymanag/">展开全文 >></a>
         </p>
       
 
