@@ -150,49 +150,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-OptimtizeColorOperator" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h1><ol>
-<li>MacMini + Unity5.3.6</li>
-<li>trunk/Develop</li>
-<li>服务器[18]前端开发</li>
-<li>测试流程从登录到在南门随意走动  <h1 id="Profiler剖析"><a href="#Profiler剖析" class="headerlink" title="Profiler剖析"></a>Profiler剖析</h1>从图中可以看出只是取<strong>RoleRender_ChangeColor.running</strong>就占了ms，%。<br>原代码如下<figure class="highlight vala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">bool</span> running</div><div class="line">&#123;</div><div class="line">    <span class="keyword">get</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> current != to;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">```  </div><div class="line"><span class="meta"># 优化方案</span></div><div class="line">```  </div><div class="line"><span class="keyword">public</span> <span class="keyword">bool</span> running</div><div class="line">&#123;</div><div class="line">    <span class="keyword">get</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> current.r != to.r;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">```  </div><div class="line"><span class="meta"># 性能测试</span></div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>//测试代码如下<br>bool m_running = false;<br>float time = 0;<br>float totalTime = 0;<br>int count = 0;<br>System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();<br>public bool running<br>{<br>    get<br>    {<br>        stopwatch.Start ();<br>        //m_running = current != to;<br>        //m_running = current.r != to.r || current.g != to.g || current.b != to.b || current.a != to.a;<br>        m_running = timeElapsed &lt; duration;<br>        stopwatch.Stop ();<br>        totalTime += stopwatch.ElapsedMilliseconds;<br>        count += 1;<br>        if (count == 1000)<br>        {<br>            Debug.Log (“totalTime = “ + totalTime + “ timeFromStart =  “ + Time.realtimeSinceStartup + “ per = “ + (totalTime / Time.realtimeSinceStartup * 1000));<br>        }<br>        return m_running;<br>    }<br>}<br>```<br>分别测试了调用1000次/5000次/10000次消耗的性能，并和优化后的代码作比较，得出下表。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/08/OptimtizeColorOperator/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
     <article id="post-sluaunitytransform.position" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -902,6 +859,74 @@ print(Map.Find(&quot;weight&quot;, 50))
 
 
   
+    <article id="post-uvanimationshader" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/11/uvanimationshader/">顶点动画</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/11/uvanimationshader/" class="archive-article-date">
+  	<time datetime="2017-01-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/UVAnimation.gif" alt=""><br><img src="/assets/blogImg/UnityShader/UVAnimation2.gif" alt=""><br>对顶点进行位移以使得图片看起来像动画  </p>
+<ul>
+<li>_Frequency 是震动频率</li>
+<li>_InvWaveLength 是波长的倒数</li>
+<li><p>_Magnitude 是振幅  </p>
+        
+          <a class="article-more-a" href="/2017/01/11/uvanimationshader/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/11/uvanimationshader/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1008,15 +1033,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -150,74 +150,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-uvanimationshader" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/11/uvanimationshader/">顶点动画</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/11/uvanimationshader/" class="archive-article-date">
-  	<time datetime="2017-01-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/UnityShader/UVAnimation.gif" alt=""><br><img src="/assets/blogImg/UnityShader/UVAnimation2.gif" alt=""><br>对顶点进行位移以使得图片看起来像动画  </p>
-<ul>
-<li>_Frequency 是震动频率</li>
-<li>_InvWaveLength 是波长的倒数</li>
-<li><p>_Magnitude 是振幅  </p>
-        
-          <a class="article-more-a" href="/2017/01/11/uvanimationshader/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/11/uvanimationshader/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
     <article id="post-imagesequence" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -853,6 +785,75 @@
 
 
   
+    <article id="post-ramptexture" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/07/ramptexture/">渐变纹理</a>
+    </h1>
+  
+
+        
+        <a href="/2016/12/07/ramptexture/" class="archive-article-date">
+  	<time datetime="2016-12-06T17:07:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161207010742.png" alt=""><br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">fixed halfLambert = <span class="number">0</span>.<span class="number">5</span> * dot(worldNormal, worldLightDir) + <span class="number">0</span>.<span class="number">5</span><span class="comment">;</span></div><div class="line">fixed3 <span class="keyword">diffuseColor </span>= tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb<span class="comment">;</span></div></pre></td></tr></table></figure></p>
+<p>关键代码有两行</p>
+<ul>
+<li>第一行代码获得了法线和光线方向的夹角的余弦值*0.5 + 0.5, 即把余弦值映射到[0, 1]。</li>
+<li>第二行代码在渐变纹理上采样</li>
+</ul>
+        
+          <a class="article-more-a" href="/2016/12/07/ramptexture/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/12/07/ramptexture/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -959,15 +960,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
