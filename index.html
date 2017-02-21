@@ -681,6 +681,87 @@ Graphics.Blit(accumulationTexture, dest);
 
 
   
+    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
+  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
+<pre><code>//给shader传对应的亮度/饱和度/对比度
+void OnRenderImage(RenderTexture src, RenderTexture dest)
+{
+    if(material != null)
+    {
+        material.SetFloat(&quot;_Brightness&quot;, brightness);
+        material.SetFloat(&quot;_Saturation&quot;, saturation);
+        material.SetFloat(&quot;_Contrast&quot;, contrast);
+
+        Graphics.Blit(src, dest, material);
+    }
+    else
+    {
+        Graphics.Blit(src, dest);
+    }
+}
+</code></pre>
+        
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-luaIter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -769,87 +850,6 @@ print(Map.Find(&quot;weight&quot;, 50))
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/01/16/luaIter/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
-  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
-<pre><code>//给shader传对应的亮度/饱和度/对比度
-void OnRenderImage(RenderTexture src, RenderTexture dest)
-{
-    if(material != null)
-    {
-        material.SetFloat(&quot;_Brightness&quot;, brightness);
-        material.SetFloat(&quot;_Saturation&quot;, saturation);
-        material.SetFloat(&quot;_Contrast&quot;, contrast);
-
-        Graphics.Blit(src, dest, material);
-    }
-    else
-    {
-        Graphics.Blit(src, dest);
-    }
-}
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
         </p>
       
 
@@ -1037,6 +1037,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
               </li>
              
@@ -1046,10 +1050,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Unity</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
