@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="这个Profiler主要由3部分组成：
 
-重写luaC库钩子函数的C类  
+C类重写luaC库钩子函数  
 lua类在钩子的回调中采集信息，并生成报表供C#使用。  
 C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。">
 <meta property="og:type" content="article">
@@ -19,16 +19,16 @@ C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器�
 <meta property="og:site_name" content="南昌小白龙的blog">
 <meta property="og:description" content="这个Profiler主要由3部分组成：
 
-重写luaC库钩子函数的C类  
+C类重写luaC库钩子函数  
 lua类在钩子的回调中采集信息，并生成报表供C#使用。  
 C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。">
 <meta property="og:image" content="blog.codershu.com/assets/blogImg/Unity/luaprofiler.gif">
-<meta property="og:updated_time" content="2017-02-21T16:29:15.177Z">
+<meta property="og:updated_time" content="2017-02-21T16:32:18.557Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lua性能分析器的实现">
 <meta name="twitter:description" content="这个Profiler主要由3部分组成：
 
-重写luaC库钩子函数的C类  
+C类重写luaC库钩子函数  
 lua类在钩子的回调中采集信息，并生成报表供C#使用。  
 C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。">
 <meta name="twitter:image" content="blog.codershu.com/assets/blogImg/Unity/luaprofiler.gif">
@@ -185,7 +185,7 @@ C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器�
       
         <p><img src="/assets/blogImg/Unity/luaprofiler.gif" alt=""><br>这个Profiler主要由3部分组成：</p>
 <ol>
-<li>重写luaC库钩子函数的C类  </li>
+<li>C类重写luaC库钩子函数  </li>
 <li>lua类在钩子的回调中采集信息，并生成报表供C#使用。  </li>
 <li>C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。  <a id="more"></a>
 <h2 id="lua第三方C库的编写"><a href="#lua第三方C库的编写" class="headerlink" title="lua第三方C库的编写"></a>lua第三方C库的编写</h2>想要编写一个第三方的luaC库，主要需要以下几点知识：</li>
@@ -420,19 +420,19 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Unity</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
