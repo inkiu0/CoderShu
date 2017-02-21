@@ -6,18 +6,32 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="blog.codershu.com">
-  <title>Lua OO 实现  | 南昌小白龙的blog</title>
+  <title>Lua性能分析器的实现 | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Lua OO 实现##1. 类的实现12345678910111213141516171819testClass =&amp;#123;    id,    num&amp;#125;;testClass.__index = testClassfunction testClass:new(id, num)    local self = &amp;#123;&amp;#125;    setmetatable(self, tes">
+  <meta name="description" content="Lua性能分析器的实现这个Profiler主要由3部分组成：
+
+重写luaC库钩子函数的C类  
+lua类在钩子的回调中采集信息，并生成报表供C#使用。  
+C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Lua OO 实现 ">
-<meta property="og:url" content="blog.codershu.com/2016/12/09/luaoo/index.html">
+<meta property="og:title" content="Lua性能分析器的实现">
+<meta property="og:url" content="blog.codershu.com/2017/02/21/luaprofiler/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="Lua OO 实现##1. 类的实现12345678910111213141516171819testClass =&amp;#123;    id,    num&amp;#125;;testClass.__index = testClassfunction testClass:new(id, num)    local self = &amp;#123;&amp;#125;    setmetatable(self, tes">
-<meta property="og:updated_time" content="2017-02-07T11:54:28.000Z">
+<meta property="og:description" content="Lua性能分析器的实现这个Profiler主要由3部分组成：
+
+重写luaC库钩子函数的C类  
+lua类在钩子的回调中采集信息，并生成报表供C#使用。  
+C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。">
+<meta property="og:image" content="blog.codershu.com/assets/blogImg/Unity/luaprofiler.gif">
+<meta property="og:updated_time" content="2017-02-21T16:18:01.747Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lua OO 实现 ">
-<meta name="twitter:description" content="Lua OO 实现##1. 类的实现12345678910111213141516171819testClass =&amp;#123;    id,    num&amp;#125;;testClass.__index = testClassfunction testClass:new(id, num)    local self = &amp;#123;&amp;#125;    setmetatable(self, tes">
+<meta name="twitter:title" content="Lua性能分析器的实现">
+<meta name="twitter:description" content="Lua性能分析器的实现这个Profiler主要由3部分组成：
+
+重写luaC库钩子函数的C类  
+lua类在钩子的回调中采集信息，并生成报表供C#使用。  
+C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。">
+<meta name="twitter:image" content="blog.codershu.com/assets/blogImg/Unity/luaprofiler.gif">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -149,35 +163,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-luaoo" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-luaprofiler" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Lua OO 实现 
+      Lua性能分析器的实现
     </h1>
   
 
         
-        <a href="/2016/12/09/luaoo/" class="archive-article-date">
-  	<time datetime="2016-12-09T13:49:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-09</time>
+        <a href="/2017/02/21/luaprofiler/" class="archive-article-date">
+  	<time datetime="2017-02-21T15:44:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-21</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Lua-OO-实现"><a href="#Lua-OO-实现" class="headerlink" title="Lua OO 实现"></a>Lua OO 实现</h1><p>##1. 类的实现<br><figure class="highlight monkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">testClass =</div><div class="line">&#123;</div><div class="line">    id,</div><div class="line">    num</div><div class="line">&#125;;</div><div class="line"></div><div class="line">testClass.__index = testClass</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">testClass</span>:</span><span class="keyword">new</span>(id, num)</div><div class="line">    <span class="keyword">local</span> <span class="built_in">self</span> = &#123;&#125;</div><div class="line">    setmetatable(<span class="built_in">self</span>, testClass)</div><div class="line">    <span class="built_in">self</span>.id = id</div><div class="line">    <span class="built_in">self</span>.num = num</div><div class="line">    <span class="keyword">return</span> <span class="built_in">self</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">testClass</span>:</span>PrintNum()</div><div class="line">    <span class="built_in">print</span>(<span class="string">"num is "</span> .. <span class="built_in">self</span>.num)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<p>简单使用<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">local obj = testClass:<span class="keyword">new</span>(10, 11)</div><div class="line">obj:PrintNum()</div></pre></td></tr></table></figure></p>
-<p>得到输出<code>num is 11</code><br><a id="more"></a></p>
-<p>##2. 类的继承<br>Class A<br><figure class="highlight monkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">A = &#123;&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>:</span><span class="keyword">new</span>(o)</div><div class="line">    o = o <span class="literal">or</span> &#123;&#125;</div><div class="line">    //<span class="built_in">self</span>指向o</div><div class="line">    setmetatable(o, <span class="built_in">self</span>)</div><div class="line">    //__index设为A</div><div class="line">    <span class="built_in">self</span>.__index = <span class="built_in">self</span></div><div class="line">    <span class="keyword">return</span> o;</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>:</span>PrintClassName()</div><div class="line">    <span class="built_in">print</span>(<span class="string">"this is class A"</span>)</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>:</span>AMethod()</div><div class="line">    <span class="built_in">print</span>(<span class="string">"this is AMethod !"</span>)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<p>Class B继承Class A<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">B = A:<span class="keyword">new</span>()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">B</span>:PrintClassName<span class="params">()</span></span></div><div class="line">    <span class="title">print</span><span class="params">(<span class="string">"this is class B !"</span>)</span></div><div class="line"><span class="title">end</span></div></pre></td></tr></table></figure></p>
-<p>使用示例<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">local obj = B:<span class="keyword">new</span>()</div><div class="line">obj:PrintClassName()</div><div class="line">obj:AMethod()</div></pre></td></tr></table></figure></p>
-<p>输出</p>
-<p><code>this is class B !</code></p>
-<p><code>this is AMethod !</code></p>
+        <h1 id="Lua性能分析器的实现"><a href="#Lua性能分析器的实现" class="headerlink" title="Lua性能分析器的实现"></a>Lua性能分析器的实现</h1><p><img src="/assets/blogImg/Unity/luaprofiler.gif" alt=""><br>这个Profiler主要由3部分组成：</p>
+<ol>
+<li>重写luaC库钩子函数的C类  </li>
+<li>lua类在钩子的回调中采集信息，并生成报表供C#使用。  </li>
+<li>C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。  <a id="more"></a>
+<h2 id="lua第三方C库的编写"><a href="#lua第三方C库的编写" class="headerlink" title="lua第三方C库的编写"></a>lua第三方C库的编写</h2>想要编写一个第三方的luaC库，主要需要以下几点知识：</li>
+<li>lua栈的概念  </li>
+<li>lua栈的常用操作  </li>
+<li>其他常用的lua C API  <h3 id="lua栈的概念"><a href="#lua栈的概念" class="headerlink" title="lua栈的概念"></a>lua栈的概念</h3></li>
+</ol>
 
       
 
@@ -212,7 +227,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Lua</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Lua - Unity</a>
         		</li>
       		
 		</ul>
@@ -268,7 +283,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http:blog.codershu.com/2016/12/09/luaoo/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http:blog.codershu.com/2017/02/21/luaprofiler/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -282,18 +297,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2016/12/15/shadow/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          实时阴影
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/12/08/CSharpAndJava/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Unity和Java交互</div>
+    <a href="/2017/02/05/sluaunitytransform.position/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Slua的优化初探</div>
       <i class="icon-circle-right"></i>
     </a>
   

@@ -6,18 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="blog.codershu.com">
-  <title>Lua OO 实现  | 南昌小白龙的blog</title>
+  <title>Tag: Lua - Unity | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Lua OO 实现##1. 类的实现12345678910111213141516171819testClass =&amp;#123;    id,    num&amp;#125;;testClass.__index = testClassfunction testClass:new(id, num)    local self = &amp;#123;&amp;#125;    setmetatable(self, tes">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Lua OO 实现 ">
-<meta property="og:url" content="blog.codershu.com/2016/12/09/luaoo/index.html">
+  <meta name="description" content="游戏程序员，现就职于心动网络。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="南昌小白龙的blog">
+<meta property="og:url" content="blog.codershu.com/tags/Lua-Unity/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="Lua OO 实现##1. 类的实现12345678910111213141516171819testClass =&amp;#123;    id,    num&amp;#125;;testClass.__index = testClassfunction testClass:new(id, num)    local self = &amp;#123;&amp;#125;    setmetatable(self, tes">
-<meta property="og:updated_time" content="2017-02-07T11:54:28.000Z">
+<meta property="og:description" content="游戏程序员，现就职于心动网络。">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lua OO 实现 ">
-<meta name="twitter:description" content="Lua OO 实现##1. 类的实现12345678910111213141516171819testClass =&amp;#123;    id,    num&amp;#125;;testClass.__index = testClassfunction testClass:new(id, num)    local self = &amp;#123;&amp;#125;    setmetatable(self, tes">
+<meta name="twitter:title" content="南昌小白龙的blog">
+<meta name="twitter:description" content="游戏程序员，现就职于心动网络。">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -149,166 +148,60 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-luaoo" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      Lua OO 实现 
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/02/21/luaprofiler/" class="archive-article-date">
+  	<time datetime="2017-02-21T15:44:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-21</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/02/21/luaprofiler/">Lua性能分析器的实现</a>
     </h1>
   
 
-        
-        <a href="/2016/12/09/luaoo/" class="archive-article-date">
-  	<time datetime="2016-12-09T13:49:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Lua-OO-实现"><a href="#Lua-OO-实现" class="headerlink" title="Lua OO 实现"></a>Lua OO 实现</h1><p>##1. 类的实现<br><figure class="highlight monkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">testClass =</div><div class="line">&#123;</div><div class="line">    id,</div><div class="line">    num</div><div class="line">&#125;;</div><div class="line"></div><div class="line">testClass.__index = testClass</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">testClass</span>:</span><span class="keyword">new</span>(id, num)</div><div class="line">    <span class="keyword">local</span> <span class="built_in">self</span> = &#123;&#125;</div><div class="line">    setmetatable(<span class="built_in">self</span>, testClass)</div><div class="line">    <span class="built_in">self</span>.id = id</div><div class="line">    <span class="built_in">self</span>.num = num</div><div class="line">    <span class="keyword">return</span> <span class="built_in">self</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">testClass</span>:</span>PrintNum()</div><div class="line">    <span class="built_in">print</span>(<span class="string">"num is "</span> .. <span class="built_in">self</span>.num)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<p>简单使用<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">local obj = testClass:<span class="keyword">new</span>(10, 11)</div><div class="line">obj:PrintNum()</div></pre></td></tr></table></figure></p>
-<p>得到输出<code>num is 11</code><br><a id="more"></a></p>
-<p>##2. 类的继承<br>Class A<br><figure class="highlight monkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">A = &#123;&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>:</span><span class="keyword">new</span>(o)</div><div class="line">    o = o <span class="literal">or</span> &#123;&#125;</div><div class="line">    //<span class="built_in">self</span>指向o</div><div class="line">    setmetatable(o, <span class="built_in">self</span>)</div><div class="line">    //__index设为A</div><div class="line">    <span class="built_in">self</span>.__index = <span class="built_in">self</span></div><div class="line">    <span class="keyword">return</span> o;</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>:</span>PrintClassName()</div><div class="line">    <span class="built_in">print</span>(<span class="string">"this is class A"</span>)</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>:</span>AMethod()</div><div class="line">    <span class="built_in">print</span>(<span class="string">"this is AMethod !"</span>)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<p>Class B继承Class A<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">B = A:<span class="keyword">new</span>()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">B</span>:PrintClassName<span class="params">()</span></span></div><div class="line">    <span class="title">print</span><span class="params">(<span class="string">"this is class B !"</span>)</span></div><div class="line"><span class="title">end</span></div></pre></td></tr></table></figure></p>
-<p>使用示例<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">local obj = B:<span class="keyword">new</span>()</div><div class="line">obj:PrintClassName()</div><div class="line">obj:AMethod()</div></pre></td></tr></table></figure></p>
-<p>输出</p>
-<p><code>this is class B !</code></p>
-<p><code>this is AMethod !</code></p>
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Lua</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Lua - Unity</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http:blog.codershu.com/2016/12/09/luaoo/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2016/12/15/shadow/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          实时阴影
-        
-      </div>
-    </a>
   
   
-    <a href="/2016/12/08/CSharpAndJava/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Unity和Java交互</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-
-
-
-
-  
-    <div class="duoshuo"></div>
+    </div></section>
   
 
-
+    
 
 
           </div>
@@ -331,9 +224,9 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		root: "/",
