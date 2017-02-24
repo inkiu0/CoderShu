@@ -8,22 +8,40 @@
   <link rel="dns-prefetch" href="blog.codershu.com">
   <title>LuaMemoryProfiler的实现 | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="编写C代码lua_newtable创建一个 table 并压入栈顶。  
-lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)LUA_REGISTRYINDEX 是lua注册表的伪索引, LUA_RIDX_GLOBALS 是lua中全局环境即 _G 在注册表中的索引。这行代码获取得了 _G 并压入栈顶。
-lua_next(lua_State *L,">
+  <meta name="description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
+local test_table = 
+{
+    [&quot;a&quot;] = 1,
+    [&quot;b&quot;] = 2,
+    [&quot;c&quot;] = &quot;ccc&quot;
+}
+
+lua">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LuaMemoryProfiler的实现">
 <meta property="og:url" content="blog.codershu.com/2017/02/24/memoryprofiler/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="编写C代码lua_newtable创建一个 table 并压入栈顶。  
-lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)LUA_REGISTRYINDEX 是lua注册表的伪索引, LUA_RIDX_GLOBALS 是lua中全局环境即 _G 在注册表中的索引。这行代码获取得了 _G 并压入栈顶。
-lua_next(lua_State *L,">
-<meta property="og:updated_time" content="2017-02-24T11:34:39.812Z">
+<meta property="og:description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
+local test_table = 
+{
+    [&quot;a&quot;] = 1,
+    [&quot;b&quot;] = 2,
+    [&quot;c&quot;] = &quot;ccc&quot;
+}
+
+lua">
+<meta property="og:updated_time" content="2017-02-24T17:39:20.761Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LuaMemoryProfiler的实现">
-<meta name="twitter:description" content="编写C代码lua_newtable创建一个 table 并压入栈顶。  
-lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)LUA_REGISTRYINDEX 是lua注册表的伪索引, LUA_RIDX_GLOBALS 是lua中全局环境即 _G 在注册表中的索引。这行代码获取得了 _G 并压入栈顶。
-lua_next(lua_State *L,">
+<meta name="twitter:description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
+local test_table = 
+{
+    [&quot;a&quot;] = 1,
+    [&quot;b&quot;] = 2,
+    [&quot;c&quot;] = &quot;ccc&quot;
+}
+
+lua">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -175,9 +193,7 @@ lua_next(lua_State *L,">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="编写C代码"><a href="#编写C代码" class="headerlink" title="编写C代码"></a>编写C代码</h2><h3 id="lua-newtable"><a href="#lua-newtable" class="headerlink" title="lua_newtable"></a>lua_newtable</h3><p>创建一个 table 并压入栈顶。  </p>
-<h3 id="lua-rawgeti-L-LUA-REGISTRYINDEX-LUA-RIDX-GLOBALS"><a href="#lua-rawgeti-L-LUA-REGISTRYINDEX-LUA-RIDX-GLOBALS" class="headerlink" title="lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)"></a>lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)</h3><p><strong>LUA_REGISTRYINDEX</strong> 是lua注册表的伪索引, <strong>LUA_RIDX_GLOBALS</strong> 是lua中全局环境即 <strong>_G</strong> 在注册表中的索引。这行代码获取得了 <strong>_G</strong> 并压入栈顶。</p>
-<h3 id="lua-next-lua-State-L-int-idx"><a href="#lua-next-lua-State-L-int-idx" class="headerlink" title="lua_next(lua_State *L, int idx)"></a>lua_next(lua_State *L, int idx)</h3><p>lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  </p>
+        <h2 id="编写C代码"><a href="#编写C代码" class="headerlink" title="编写C代码"></a>编写C代码</h2><h3 id="lua-next-lua-State-L-int-idx"><a href="#lua-next-lua-State-L-int-idx" class="headerlink" title="lua_next(lua_State *L, int idx)"></a>lua_next(lua_State *L, int idx)</h3><p>lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  </p>
 <pre><code class="lua"><span class="keyword">local</span> test_table = 
 {
     [<span class="string">"a"</span>] = <span class="number">1</span>,
@@ -240,8 +256,11 @@ lua_pop(L, <span class="number">1</span>);
 --------------------
 */</span>
 </code></pre>
+<a id="more"></a>
 <p>需要注意的是 <strong>lua_next 先把 table 的下一索引弹出</strong> , 下一索引是相对于上一个索引的。所以我们在循环开始的时候入栈了nil，表示我们是从头开始遍历table。而在循环中，每次都保留了上次的key。直到 lua_next 返回0, 表示 table 已经遍历完, 此时退出循环, 最后一个 key 才出栈。  </p>
-<h3 id="lua-pushvalue"><a href="#lua-pushvalue" class="headerlink" title="lua_pushvalue"></a>lua_pushvalue</h3><p>取得栈上索引处的值，并压入栈顶。lua_pushvalue(L, -2), 把 -2 位置的值移到栈顶。</p>
+<h3 id="lua-newtable"><a href="#lua-newtable" class="headerlink" title="lua_newtable"></a>lua_newtable</h3><p>创建一个 table 并压入栈顶。  </p>
+<h3 id="lua-rawgeti-L-LUA-REGISTRYINDEX-LUA-RIDX-GLOBALS"><a href="#lua-rawgeti-L-LUA-REGISTRYINDEX-LUA-RIDX-GLOBALS" class="headerlink" title="lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)"></a>lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)</h3><p><strong>LUA_REGISTRYINDEX</strong> 是lua注册表的伪索引, <strong>LUA_RIDX_GLOBALS</strong> 是lua中全局环境即 <strong>_G</strong> 在注册表中的索引。这行代码获取得了 <strong>_G</strong> 并压入栈顶。  </p>
+<h3 id="lua-pushvalue"><a href="#lua-pushvalue" class="headerlink" title="lua_pushvalue"></a>lua_pushvalue</h3><p>复制栈上索引处的值，并压入栈顶。lua_pushvalue(L, -2), 把 -2 位置的值复制一份压入到栈顶。</p>
 <pre><code class="c"><span class="comment">/*lua栈当前情况
 --------------------
 -1 level_111
@@ -255,6 +274,35 @@ lua_pushvalue(L, <span class="number">-2</span>);
 --------------------
 -1 level_222
 -2 level_111
+-3 level_222
+--------------------
+*/</span>
+</code></pre>
+<h3 id="lua-insert"><a href="#lua-insert" class="headerlink" title="lua_insert"></a>lua_insert</h3><p>将栈顶的元素压入索引处，索引处到栈顶的元素依次往上移，栈的大小不变。  </p>
+<pre><code class="c"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">6</span>; i++)
+{
+    lua_pushnumber(L, i);
+}
+
+<span class="comment">/*lua栈当前情况
+--------------------
+-1 5
+-2 4
+-3 3
+-4 2
+-5 1
+--------------------
+*/</span>
+
+lua_insert(L, <span class="number">2</span>);
+
+<span class="comment">/*lua栈当前情况
+--------------------
+-1 4
+-2 3
+-3 2
+-4 5
+-5 1
 --------------------
 */</span>
 </code></pre>
@@ -493,11 +541,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Unity</a>
+                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
+                <a href="javascript:void(0)" class="js-tag color1">Unity</a>
               </li>
              
               <li class="article-tag-list-item">
