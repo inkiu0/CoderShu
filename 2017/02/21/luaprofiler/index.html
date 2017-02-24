@@ -22,8 +22,7 @@ C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器�
 C类重写luaC库钩子函数  
 lua类在钩子的回调中采集信息，并生成报表供C#使用。  
 C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/Unity/luaprofiler.gif">
-<meta property="og:updated_time" content="2017-02-23T16:30:59.135Z">
+<meta property="og:updated_time" content="2017-02-24T11:34:39.812Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lua性能分析器的实现">
 <meta name="twitter:description" content="这个Profiler主要由3部分组成：
@@ -31,7 +30,6 @@ C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器�
 C类重写luaC库钩子函数  
 lua类在钩子的回调中采集信息，并生成报表供C#使用。  
 C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。">
-<meta name="twitter:image" content="blog.codershu.com/assets/blogImg/Unity/luaprofiler.gif">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -183,27 +181,128 @@ C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器�
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImg/Unity/luaprofiler.gif" alt=""><br>这个Profiler主要由3部分组成：</p>
+        <p>这个Profiler主要由3部分组成：</p>
 <ol>
 <li>C类重写luaC库钩子函数  </li>
 <li>lua类在钩子的回调中采集信息，并生成报表供C#使用。  </li>
 <li>C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器中。编辑器窗口完成一些自有功能。  <a id="more"></a>
-<h2 id="lua第三方C库的编写"><a href="#lua第三方C库的编写" class="headerlink" title="lua第三方C库的编写"></a>lua第三方C库的编写</h2>想要编写一个第三方的luaC库，主要需要以下几点知识：</li>
+<h2 id="编写lua第三方C库"><a href="#编写lua第三方C库" class="headerlink" title="编写lua第三方C库"></a>编写lua第三方C库</h2>想要编写一个第三方的luaC库，主要需要以下几点知识：</li>
 <li>lua栈的概念  </li>
 <li>lua栈的常用操作  </li>
-<li>其他常用的lua C API  <h3 id="lua栈的概念"><a href="#lua栈的概念" class="headerlink" title="lua栈的概念"></a>lua栈的概念</h3>lua可以作为一个独立运行的程序，也可以作为一个嵌入其他应用的程序库。但是在游戏开发中，lua基本都是作为一个嵌入式的语言存在的。并且把C作为lua的第三方库调用，而C和lua通信的API称为C API。<blockquote>
+<li>C代码示例  </li>
+</ol>
+<h3 id="lua栈的概念"><a href="#lua栈的概念" class="headerlink" title="lua栈的概念"></a>lua栈的概念</h3><p>lua可以作为一个独立运行的程序，也可以作为一个嵌入其他应用的程序库。但是在游戏开发中，lua基本都是作为一个嵌入式的语言存在的。同时把C作为lua的第三方库调用，C和lua通信的API称为C API。</p>
+<blockquote>
 <p>C API 是一个 C 代码与 Lua 进行交互的函数集。他有以下部分组成：读写 Lua 全局 变量的函数,调用 Lua 函数的函数，运行 Lua 代码片断的函数，注册 C 函数然后可以在 Lua 中被调用的函数，等等。  </p>
 </blockquote>
-</li>
-</ol>
-<p>lua的虚拟栈是为了解决lua数据和其他语言数据交互而设计的，否则我们就要面对：</p>
+<p>而 C 和 lua 交互是基于一个虚拟的栈，所有的API调用都是对这个栈上的值的操作。<br>lua的虚拟栈是为了解决lua数据和其他语言数据交互而设计的，否则我们就要面对这两个问题：</p>
 <ol>
 <li>动态类型和静态类型不匹配  </li>
 <li>手动管理内存和自动管理内存  </li>
 </ol>
-<p>这两个问题的。</p>
-<p>而 C 和 lua 交互是基于一个虚拟的栈，所有的API调用都是对这个栈上的值的操作。  </p>
 <h3 id="lua栈的常用操作"><a href="#lua栈的常用操作" class="headerlink" title="lua栈的常用操作"></a>lua栈的常用操作</h3><h4 id="lua-open"><a href="#lua-open" class="headerlink" title="lua_open()"></a>lua_open()</h4><p>创建一个luastate，即lua的运行环境。但这个环境不包括任何预定义的函数，比如 print 。lualib.h定义了我们打开其他标准库的方法，比如 <strong>luaopen_io(L)</strong> 和 <strong>luaopen_table(L)</strong> 可以创建io table和table table，并把I/O函数、table操作函数注册到lua环境中（比如io.write、table.insert）。  </p>
+<h4 id="lua-push"><a href="#lua-push" class="headerlink" title="lua_push*"></a>lua_push*</h4><p>压入元素，把数据压入栈中。例如lua_pushstring、lua_pushnil等等。</p>
+<h4 id="lua-is"><a href="#lua-is" class="headerlink" title="lua_is*"></a>lua_is*</h4><p>查询函数，判断数据类型。例如lua_isnumber、lua_istable、lua_isstring、lua_isboolean。  </p>
+<h4 id="lua-to"><a href="#lua-to" class="headerlink" title="lua_to*"></a>lua_to*</h4><p>取值函数，从栈中取得值。例如lua_tonumber、lua_tostring等。  </p>
+<h4 id="其他lua栈操作"><a href="#其他lua栈操作" class="headerlink" title="其他lua栈操作"></a>其他lua栈操作</h4><ul>
+<li>lua_gettop  </li>
+<li>lua_settop  </li>
+<li>lua_pushvalue  </li>
+<li>lua_remove  </li>
+<li>lua_insert  </li>
+<li>lua_replace  </li>
+<li>stack_dump<br>dump整个堆栈的内容  </li>
+</ul>
+<h3 id="C代码示例"><a href="#C代码示例" class="headerlink" title="C代码示例"></a>C代码示例</h3><pre><code class="c"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">const</span> hooknames[] = {<span class="string">"call"</span>, <span class="string">"return"</span>, <span class="string">"line"</span>, <span class="string">"count"</span>, <span class="string">"tail call"</span>};
+<span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hook</span><span class="params">(lua_State *L, lua_Debug *db)</span>
+</span>{
+    <span class="keyword">int</span> event;
+
+    <span class="comment">//入栈light userdata 索引为1</span>
+    lua_pushlightuserdata(L, (<span class="keyword">void</span> *)p);
+    <span class="comment">//取值LUA_REGISTRYINDEX，并绕过__index。取得注册的函数后，将函数移到栈顶，即索引为2。</span>
+    lua_rawget(L, LUA_REGISTRYINDEX);
+
+    event = db-&gt;event;
+    <span class="comment">//入栈string，索引为3。</span>
+    lua_pushstring(L, hooknames[event]);
+    <span class="comment">//得到debug信息</span>
+    lua_getinfo(L, <span class="string">"nS"</span>, db);
+    <span class="keyword">if</span>(*(db-&gt;what) == <span class="string">'C'</span>)
+    {
+        <span class="comment">//如果是C函数，入栈此string，索引为4。</span>
+        lua_pushfstring(L, <span class="string">"[C?%s]"</span>, db-&gt;name);
+    }
+    <span class="keyword">else</span>
+    {
+        <span class="comment">//如果不是C函数，入栈此string，索引为4。</span>
+        lua_pushfstring(L, <span class="string">"%s-%d"</span>, db-&gt;short_src, db-&gt;linedefined &gt; <span class="number">0</span> ? db-&gt;linedefined : <span class="number">0</span>);
+    }
+    <span class="comment">//调用索引为2的函数，即lua注册的hook回调。</span>
+    lua_call(L, <span class="number">2</span>, <span class="number">0</span>);
+    <span class="comment">//C函数退出，并清空当前虚拟栈。</span>
+}
+</code></pre>
+<pre><code class="lua"><span class="comment">-- 这时候回调给lua的函数如下</span>
+<span class="function"><span class="keyword">function</span> <span class="title">OnHook</span><span class="params">(event, id)</span></span>
+    <span class="comment">-- event    即索引为3的string</span>
+    <span class="comment">-- id        即索引为4的string</span>
+<span class="keyword">end</span>
+</code></pre>
+<h3 id="lua5-3第三方库的注册"><a href="#lua5-3第三方库的注册" class="headerlink" title="lua5.3第三方库的注册"></a>lua5.3第三方库的注册</h3><pre><code class="c">//这是lua5.3新版的写法
+LUAMOD_API int luaopen_profiler(lua_State *L)
+{
+    luaL_checkversion(L);
+    luaL_Reg l[] = {
+        { "sethook", profiler_set_hook },
+        { NULL, NULL }
+    };
+    luaL_newlib(L, l);
+    lua_setglobal(L, "profiler");
+    return 1;
+}
+
+//两者兼容的写法
+LUALIB_API int luaopen_bitLib(lua_State *L)
+{
+    luaL_Reg l[] = 
+    {
+        { "sethook", profiler_set_hook },
+        { NULL, NULL }
+    };
+#if LUA_VERSION_NUM &lt; 502
+  luaL_register(L, "profiler", l);
+  lua_pop(L, 1);
+#else
+  luaL_newlib(L, l);
+  lua_setglobal(L, "profiler");
+#endif
+  return 1;
+}
+</code></pre>
+<h3 id="编译动态链接库"><a href="#编译动态链接库" class="headerlink" title="编译动态链接库"></a>编译动态链接库</h3><p>mac下用gcc生成动态链接库和linux有点不同  </p>
+<pre><code>gcc -c profiler.c;gcc -O2 -bundle -undefined dynamic_lookup -o profiler.so profiler.o
+</code></pre><h2 id="编写lua函数"><a href="#编写lua函数" class="headerlink" title="编写lua函数"></a>编写lua函数</h2><p>lua代码的编写比较简单，主要有以下一些不常用的用法需要注意。  </p>
+<h3 id="引入C库"><a href="#引入C库" class="headerlink" title="引入C库"></a>引入C库</h3><pre><code class="lua"><span class="comment">-- 如果我们设置了global名字就可以用全局的名字调用C库里的函数</span>
+<span class="built_in">require</span> <span class="string">"profiler"</span>
+<span class="keyword">local</span> sethook = profiler.sethook
+
+<span class="comment">-- 如果我们没有设置global</span>
+<span class="keyword">local</span> p = <span class="built_in">require</span> <span class="string">"profiler"</span> 
+<span class="keyword">local</span> sethook = p.sethook
+</code></pre>
+<h3 id="sethook"><a href="#sethook" class="headerlink" title="sethook"></a>sethook</h3><p>debug.sethook(onhook, ‘crl’)的第一个参数是回调函数，第二个参数是事件的mask字符串。  </p>
+<ul>
+<li>LUA_MASKCALL 0<br>在解释器调用一个函数时被调用。 钩子将于 Lua 进入一个新函数后，函数获取参数前被调用。  </li>
+<li>LUA_MASKRET 1<br>在解释器从一个函数中返回时调用。 钩子将于 Lua 离开函数之前的那一刻被调用。执行到returnhook的时候已经函数已经退出了。  </li>
+<li>LUA_MASKLINE 2<br>在解释器准备开始执行新一行代码，或者跳转到这行代码（即使是同一行跳转）时被调用。  </li>
+<li>LUA_MASKCOUNT 3<br>在解释器执行一个lua函数的cout指令时被调用。  </li>
+<li>LUA_HOOKTAILCALL 4<br>在解释器执行一个尾调用的时候触发，尾调用对应的return同时也是它父级的return。<br>回调函数onhook(event, line)第一个参数是事件类型，值为call, tail call, return。line参数是可选的。<br>当我们调用了sethook(onhook, ‘cr’)的时候，第一个触发的钩子是return sethook。同样当我们调用debug.sethook()来停止的时候，最后一个触发的钩子是call sethook。<h3 id="getinfo"><a href="#getinfo" class="headerlink" title="getinfo"></a>getinfo</h3>debug.getinfo(2, ‘Sn’)的第一个参数是要查询的调用层级，第二个参数是要查询的数据的掩码，具体可以查询lua手册去了解。如果得到的信息不准确，比如得到一个C#的函数，往往信息都不对。这个时候我们可以往上回溯，即getinfo(level, ‘Sn’)，加大level。  <h3 id="报表"><a href="#报表" class="headerlink" title="报表"></a>报表</h3>为了方便C#中取得我们采集的信息，lua被设计成每次report时：</li>
+<li>暂停hook  </li>
+<li>整理数据  </li>
+<li>返回所有累计记录的数据  </li>
+<li>重启hook，并清空数据。  <h2 id="编写C-类"><a href="#编写C-类" class="headerlink" title="编写C#类"></a>编写C#类</h2>C#主要由2部分组成，处理数据和更新UI。  <h3 id="处理数据"><a href="#处理数据" class="headerlink" title="处理数据"></a>处理数据</h3>每帧的Update会从lua中取得最新的数据，然后缓存下来。每0.5s取最新的数据解析到树状结构中，由于在lua返回的已经是一个树状结构的json字符串了，所以解析的过程比较简单，一个递归就可以解决了。<br><em>已存在的节点保存了flodout状态，所以当我们解析到一个已存在节点的时候需要的是更新</em><h3 id="OnGUI"><a href="#OnGUI" class="headerlink" title="OnGUI"></a>OnGUI</h3>每帧编辑器都会尝试绘制树状结构，而当我们更新树状结构数据后，OnGUI才真正显示出新的数据。<br><em>OnGUI每帧都要绘制，要不然点击事件等等都不会响应了，所有一切视图上的操作反馈都以来OnGUI的更新</em><br>OnGUI不同的是在于各种Editor下控件的使用，还可以利用反射去的Unity内置的各种图标，使得编辑器的表现形式更多样。  <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2>实践出真知，只有做了以后才理解的更深刻。要不然只是侃侃而谈，流于表面罢了。这次写编辑器让我对lua的使用更深入了一些，虽然还谈不上什么造诣。但是至少比普通人了解的更多、更深了，了解的更深入对我平时写代码并没有什么帮助，但是当遇到问题的时候，那么我能探究的深度就比别人更深了。总之来说，就是能查的bug更多了，范围更广了。深切感觉到，技术上想要牛逼，全靠同行衬托……</li>
+</ul>
 
       
 
@@ -311,6 +410,15 @@ C#类每帧取得数据存下来，并每0.5s取最新一帧显示在编辑器�
 
   
 <nav id="article-nav">
+  
+    <a href="/2017/02/24/memoryprofiler/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          LuaMemoryProfiler的实现
+        
+      </div>
+    </a>
   
   
     <a href="/2017/02/05/sluaunitytransform.position/" id="article-nav-older" class="article-nav-link-wrap">
@@ -435,15 +543,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Unity</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
               </li>
              
               <li class="article-tag-list-item">
