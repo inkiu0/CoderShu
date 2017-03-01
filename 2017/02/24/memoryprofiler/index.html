@@ -30,7 +30,7 @@ local test_table =
 }
 
 lua">
-<meta property="og:updated_time" content="2017-03-01T12:34:36.599Z">
+<meta property="og:updated_time" content="2017-03-01T12:37:04.565Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LuaMemoryProfiler的实现">
 <meta name="twitter:description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
@@ -248,7 +248,6 @@ lua">
 */</span>
 
 }
-lua_pop(L, <span class="number">1</span>);
 
 <span class="comment">/*lua栈当前情况
 --------------------
