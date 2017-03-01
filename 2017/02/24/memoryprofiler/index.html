@@ -30,7 +30,7 @@ local test_table =
 }
 
 lua">
-<meta property="og:updated_time" content="2017-03-01T12:41:53.302Z">
+<meta property="og:updated_time" content="2017-03-01T12:43:17.014Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LuaMemoryProfiler的实现">
 <meta name="twitter:description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
@@ -314,9 +314,11 @@ size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof
 <li>sizeof(Table)  = 56  </li>
 <li>sizeof(TValue) = 16  </li>
 <li>sizeof(Node)   = 32  </li>
-<li><p>sizenode(t)  </p>
-<blockquote>
-<p>table的hashtable部分长度，值总是2的幂，a power of 2。hashtable.len为0时，sizenode为1，hashtable.len为1时，sizenode为1。所以想要分辨出0和1需要判断一下t-&gt;lastfress，定义宏如下：</p>
+<li>sizenode(t)  <blockquote>
+<p>table的hashtable部分长度，值总是2的幂，a power of 2。hashtable.len为0时，sizenode为1，hashtable.len为1时，sizenode为1。所以想要分辨出0和1需要判断一下t-&gt;lastfress，定义宏如下：  </p>
+</blockquote>
+</li>
+</ul>
 <pre><code class="c"><span class="meta">#<span class="meta-keyword">define</span> isdummy(t)        ((t)-&gt;lastfree == NULL)</span>
 </code></pre>
 <h3 id="function"><a href="#function" class="headerlink" title="function"></a>function</h3><p>在lua中function分为 <strong>LColsure</strong> 和 <strong>CColsure</strong>，即Lua函数和C函数。  </p>
@@ -324,10 +326,8 @@ size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof
 <span class="comment">//sizeCclosure(n) = sizeof(CClosure) + sizeof(TValue)* (n-1)</span>
 <span class="comment">//sizeLclosure(n) = sizeof(LClosure) + sizeof(TValue)* (n-1)</span>
 </code></pre>
-</blockquote>
-</li>
-<li><p>sizeof(CClosure) = 48  </p>
-</li>
+<ul>
+<li>sizeof(CClosure) = 48  </li>
 <li>sizeof(LClosure) = 40  </li>
 </ul>
 <h3 id="thread"><a href="#thread" class="headerlink" title="thread"></a>thread</h3><p>lua中的thread即为Coroutine  </p>
