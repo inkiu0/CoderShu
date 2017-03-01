@@ -30,7 +30,7 @@ local test_table =
 }
 
 lua">
-<meta property="og:updated_time" content="2017-03-01T12:37:04.565Z">
+<meta property="og:updated_time" content="2017-03-01T12:41:53.302Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LuaMemoryProfiler的实现">
 <meta name="twitter:description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
@@ -314,42 +314,90 @@ size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof
 <li>sizeof(Table)  = 56  </li>
 <li>sizeof(TValue) = 16  </li>
 <li>sizeof(Node)   = 32  </li>
-<li>sizenode(t)<br>  table的hashtable部分长度，值总是2的幂，a power of 2。hashtable.len为0时，sizenode为1，hashtable.len为1时，sizenode为1。所以想要分辨出0和1需要判断一下t-&gt;lastfress，定义宏如下：<pre><code class="c"><span class="meta">#<span class="meta-keyword">define</span> isdummy(t)        ((t)-&gt;lastfree == NULL)</span>
+<li><p>sizenode(t)  </p>
+<blockquote>
+<p>table的hashtable部分长度，值总是2的幂，a power of 2。hashtable.len为0时，sizenode为1，hashtable.len为1时，sizenode为1。所以想要分辨出0和1需要判断一下t-&gt;lastfress，定义宏如下：</p>
+<pre><code class="c"><span class="meta">#<span class="meta-keyword">define</span> isdummy(t)        ((t)-&gt;lastfree == NULL)</span>
 </code></pre>
-<h3 id="function"><a href="#function" class="headerlink" title="function"></a>function</h3>在lua中function分为 <strong>LColsure</strong> 和 <strong>CColsure</strong>，即Lua函数和C函数。<br>```c<br>ttisCclosure(o) ? sizeCclosure(cl-&gt;c.nupvalues) : sizeLclosure(cl-&gt;l.nupvalues)</li>
+<h3 id="function"><a href="#function" class="headerlink" title="function"></a>function</h3><p>在lua中function分为 <strong>LColsure</strong> 和 <strong>CColsure</strong>，即Lua函数和C函数。  </p>
+<pre><code class="c">ttisCclosure(o) ? sizeCclosure(cl-&gt;c.nupvalues) : sizeLclosure(cl-&gt;l.nupvalues)
+<span class="comment">//sizeCclosure(n) = sizeof(CClosure) + sizeof(TValue)* (n-1)</span>
+<span class="comment">//sizeLclosure(n) = sizeof(LClosure) + sizeof(TValue)* (n-1)</span>
+</code></pre>
+</blockquote>
+</li>
+<li><p>sizeof(CClosure) = 48  </p>
+</li>
+<li>sizeof(LClosure) = 40  </li>
 </ul>
-<p>//sizeCclosure(n) = sizeof(CClosure) + sizeof(TValue)<em> (n-1)<br>//sizeLclosure(n) = sizeof(LClosure) + sizeof(TValue)</em> (n-1)</p>
-<pre><code>- sizeof(CClosure) = 48  
-- sizeof(LClosure) = 40  
-### thread  
-lua中的thread即为Coroutine  
-```lua  
-size = sizeof(lua_State) + sizeof(TValue) * th-&gt;stacksize + sizeof(CallInfo) * th-&gt;nci
-</code></pre><ul>
+<h3 id="thread"><a href="#thread" class="headerlink" title="thread"></a>thread</h3><p>lua中的thread即为Coroutine  </p>
+<pre><code class="lua">size = sizeof(lua_State) + sizeof(TValue) * th-&gt;stacksize + sizeof(CallInfo) * th-&gt;nci
+</code></pre>
+<ul>
 <li>sizeof(lua_State) = 208</li>
-<li>sizeof(CallInfo) = 72<br>```c<br>/*Current Lua Stack</li>
+<li>sizeof(CallInfo) = 72  </li>
 </ul>
-<hr>
-<h2 id="1-TABLE"><a href="#1-TABLE" class="headerlink" title="-1 TABLE"></a>-1 TABLE</h2><p>*/</p>
-<p>int n = 1;<br>lua_getfield(dL, -1, “infos”);</p>
-<h2 id="Current-Lua-Stack"><a href="#Current-Lua-Stack" class="headerlink" title="/*Current Lua Stack"></a>/*Current Lua Stack</h2><p>-1 infos(table)</p>
-<h2 id="2-TABLE"><a href="#2-TABLE" class="headerlink" title="-2 TABLE"></a>-2 TABLE</h2><p>*/</p>
-<p>lua_pushnil(dL);</p>
-<h2 id="Current-Lua-Stack-1"><a href="#Current-Lua-Stack-1" class="headerlink" title="/*Current Lua Stack"></a>/*Current Lua Stack</h2><p>-1 nil<br>-2 infos(table)</p>
-<h2 id="3-TABLE"><a href="#3-TABLE" class="headerlink" title="-3 TABLE"></a>-3 TABLE</h2><p>*/</p>
-<p>while (lua_next(dL, -2) != 0)<br>{</p>
-<h2 id="Current-Lua-Stack-2"><a href="#Current-Lua-Stack-2" class="headerlink" title="/*Current Lua Stack"></a>/*Current Lua Stack</h2><p>-1 value<br>-2 key<br>-3 infos(table)</p>
-<h2 id="4-TABLE"><a href="#4-TABLE" class="headerlink" title="-4 TABLE"></a>-4 TABLE</h2><p>*/</p>
-<pre><code>str = lua_tostring(dL, -1);
-lua_pushstring(L, str);
-lua_rawseti(L, -2, n);
-++n;
-lua_pop(dL, 1);
-</code></pre><h2 id="Current-Lua-Stack-3"><a href="#Current-Lua-Stack-3" class="headerlink" title="/*Current Lua Stack"></a>/*Current Lua Stack</h2><p>-1 key<br>-2 infos(table)</p>
-<h2 id="3-TABLE-1"><a href="#3-TABLE-1" class="headerlink" title="-3 TABLE"></a>-3 TABLE</h2><p>*/</p>
-<p>}</p>
-<h2 id="Current-Lua-Stack-4"><a href="#Current-Lua-Stack-4" class="headerlink" title="/*Current Lua Stack"></a>/*Current Lua Stack</h2><p>-1 infos(table)</p>
-<h2 id="2-TABLE-1"><a href="#2-TABLE-1" class="headerlink" title="-2 TABLE"></a>-2 TABLE</h2><p>*/<br>```  </p>
+<pre><code class="c"><span class="comment">/*Current Lua Stack
+--------------------
+-1 TABLE
+--------------------
+*/</span>
+
+<span class="keyword">int</span> n = <span class="number">1</span>;
+lua_getfield(dL, <span class="number">-1</span>, <span class="string">"infos"</span>);
+
+<span class="comment">/*Current Lua Stack
+--------------------
+-1 infos(table)
+-2 TABLE
+--------------------
+*/</span>
+
+lua_pushnil(dL);
+
+<span class="comment">/*Current Lua Stack
+--------------------
+-1 nil
+-2 infos(table)
+-3 TABLE
+--------------------
+*/</span>
+
+<span class="keyword">while</span> (lua_next(dL, <span class="number">-2</span>) != <span class="number">0</span>)
+{
+
+<span class="comment">/*Current Lua Stack
+--------------------
+-1 value
+-2 key
+-3 infos(table)
+-4 TABLE
+--------------------
+*/</span>
+
+    str = lua_tostring(dL, <span class="number">-1</span>);
+    lua_pushstring(L, str);
+    lua_rawseti(L, <span class="number">-2</span>, n);
+    ++n;
+    lua_pop(dL, <span class="number">1</span>);
+
+<span class="comment">/*Current Lua Stack
+--------------------
+-1 key
+-2 infos(table)
+-3 TABLE
+--------------------
+*/</span>
+
+}
+
+<span class="comment">/*Current Lua Stack
+--------------------
+-1 infos(table)
+-2 TABLE
+--------------------
+*/</span>
+</code></pre>
 
       
 
