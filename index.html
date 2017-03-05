@@ -150,6 +150,74 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-wechat" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/05/wechat/">我乱说的</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/05/wechat/" class="archive-article-date">
+  	<time datetime="2017-03-05T09:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>hello，黄欣。前天在朋友圈看到你分享的文章，我翻来翻去，看了好几遍。看完了以后，我有很多想说的。但是又怕唐突，心里踟蹰。我过了两天，发现自己还是想说，所以只能希望我没有给你造成困扰。以下就是我乱说的了。  </p>
+<h2 id="我的感受"><a href="#我的感受" class="headerlink" title="我的感受"></a>我的感受</h2><p>文章写的很好，景色也很好。但是我读下来以后，想要夸赞，又想不起来这篇文章哪里好了。所以我只得想想哪里做的不足了，这么一想我主要有2点发现：</p>
+<ol>
+<li>累<br>文章读下来，不知为什么，每次都我总感觉很累。总结起来，我觉得是因为，整篇行文比较散，像散文，但是有没有中心思想。我读着读着就像放弃，但是又想研究下去，所以感到很累。 <em>也有可能亦或者是我没有看懂……</em><br>平常我总是读一些晦涩的技术书，我自觉我阅读能力还是很强的。但是我也感觉到累，那么一般的人，习惯了快餐阅读，见不得长文字的可能更累了吧。  </li>
+<li>没有收获<br>读完了文章以后，我感到领略到了你要表达的意思，但是又感觉没有深入。当我再回想起来，读文章的时候行文间获得的那种情绪早就烟消云散了，更难提想要订阅收藏起来以便以后再来了。
+        
+          <a class="article-more-a" href="/2017/03/05/wechat/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">杂谈</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/05/wechat/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-memoryprofiler" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -744,6 +812,87 @@ Graphics.Blit(accumulationTexture, dest);
 
 
   
+    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
+  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
+<pre><code>//给shader传对应的亮度/饱和度/对比度
+void OnRenderImage(RenderTexture src, RenderTexture dest)
+{
+    if(material != null)
+    {
+        material.SetFloat(&quot;_Brightness&quot;, brightness);
+        material.SetFloat(&quot;_Saturation&quot;, saturation);
+        material.SetFloat(&quot;_Contrast&quot;, contrast);
+
+        Graphics.Blit(src, dest, material);
+    }
+    else
+    {
+        Graphics.Blit(src, dest);
+    }
+}
+</code></pre>
+        
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-luaIter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -832,153 +981,6 @@ print(Map.Find(&quot;weight&quot;, 50))
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/01/16/luaIter/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
-  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
-<pre><code>//给shader传对应的亮度/饱和度/对比度
-void OnRenderImage(RenderTexture src, RenderTexture dest)
-{
-    if(material != null)
-    {
-        material.SetFloat(&quot;_Brightness&quot;, brightness);
-        material.SetFloat(&quot;_Saturation&quot;, saturation);
-        material.SetFloat(&quot;_Contrast&quot;, contrast);
-
-        Graphics.Blit(src, dest, material);
-    }
-    else
-    {
-        Graphics.Blit(src, dest);
-    }
-}
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/16/alphatest/" class="archive-article-date">
-  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
-<ul>
-<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
-        
-          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
         </p>
       
 
@@ -1127,6 +1129,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Xcode打包</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
               </li>
             
             <div class="clearfix"></div>
