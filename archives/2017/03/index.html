@@ -6,36 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="blog.codershu.com">
-  <title>LuaMemory的实现(一) | 南昌小白龙的blog</title>
+  <title>Archives: 2017/3 | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
-local test_table = 
-{
-    [&quot;a&quot;] = 1,
-    [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}">
-<meta property="og:type" content="article">
-<meta property="og:title" content="LuaMemory的实现(一)">
-<meta property="og:url" content="blog.codershu.com/2017/02/24/luamemory_capi/index.html">
+  <meta name="description" content="游戏程序员，现就职于心动网络。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="南昌小白龙的blog">
+<meta property="og:url" content="blog.codershu.com/archives/2017/03/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
-local test_table = 
-{
-    [&quot;a&quot;] = 1,
-    [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}">
-<meta property="og:updated_time" content="2017-03-17T12:45:22.004Z">
+<meta property="og:description" content="游戏程序员，现就职于心动网络。">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LuaMemory的实现(一)">
-<meta name="twitter:description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
-local test_table = 
-{
-    [&quot;a&quot;] = 1,
-    [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}">
+<meta name="twitter:title" content="南昌小白龙的blog">
+<meta name="twitter:description" content="游戏程序员，现就职于心动网络。">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -167,276 +148,36 @@ local test_table =
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-luamemory_capi" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      LuaMemory的实现(一)
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/03/17/luamemory_editor/" class="archive-article-date">
+  	<time datetime="2017-03-17T12:46:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-17</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/03/17/luamemory_editor/">LuaMemory的实现(二)</a>
     </h1>
   
 
-        
-        <a href="/2017/02/24/luamemory_capi/" class="archive-article-date">
-  	<time datetime="2017-02-24T06:02:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="LuaC库的编写"><a href="#LuaC库的编写" class="headerlink" title="LuaC库的编写"></a>LuaC库的编写</h1><h3 id="lua-next-lua-State-L-int-idx"><a href="#lua-next-lua-State-L-int-idx" class="headerlink" title="lua_next(lua_State *L, int idx)"></a>lua_next(lua_State *L, int idx)</h3><p>lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  </p>
-<pre><code class="lua"><span class="keyword">local</span> test_table = 
-{
-    [<span class="string">"a"</span>] = <span class="number">1</span>,
-    [<span class="string">"b"</span>] = <span class="number">2</span>,
-    [<span class="string">"c"</span>] = <span class="string">"ccc"</span>
-}
-</code></pre>
-<pre><code class="c">lua_pushnil(L);
-
-<span class="comment">/*lua栈当前情况
---------------------
--1 nil
--2 test_table
---------------------
-*/</span>
-
-<span class="keyword">while</span>(lua_next(L, <span class="number">-2</span>) != <span class="number">0</span>)
-{
-
-<span class="comment">/*lua栈当前情况
---------------------
--1 value
--2 key
--3 test_table
---------------------
-*/</span>
-
-    <span class="keyword">if</span>(lua_isnumber(L,<span class="number">-2</span>))
-        <span class="built_in">cout</span>&lt;&lt;<span class="string">"key:"</span>&lt;&lt;lua_tonumber(L,<span class="number">-2</span>)&lt;&lt;<span class="string">'\t'</span>;
-    <span class="keyword">else</span> <span class="keyword">if</span>(lua_isstring(L,<span class="number">-2</span>))
-        <span class="built_in">cout</span>&lt;&lt;<span class="string">"key:"</span>&lt;&lt;lua_tostring(L,<span class="number">-2</span>)&lt;&lt;<span class="string">'\t'</span>;
-    <span class="keyword">if</span>(lua_isnumber(L,<span class="number">-1</span>))
-        <span class="built_in">cout</span>&lt;&lt;<span class="string">"value:"</span>&lt;&lt;lua_tonumber(L,<span class="number">-1</span>)&lt;&lt;<span class="built_in">endl</span>;
-    <span class="keyword">else</span> <span class="keyword">if</span>(lua_isstring(L,<span class="number">-1</span>))
-        <span class="built_in">cout</span>&lt;&lt;<span class="string">"value:"</span>&lt;&lt;lua_tostring(L,<span class="number">-1</span>)&lt;&lt;<span class="built_in">endl</span>;
-
-<span class="comment">/*lua栈当前情况
---------------------
--1 value
--2 key
--3 test_table
---------------------
-*/</span>
-
-    lua_pop(L, <span class="number">1</span>);
-
-<span class="comment">/*lua栈当前情况
---------------------
--1 key
--2 test_table
---------------------
-*/</span>
-
-}
-
-<span class="comment">/*lua栈当前情况
---------------------
--1 test_table
---------------------
-*/</span>
-</code></pre>
-<a id="more"></a>
-<p>需要注意的是 <strong>lua_next 先把 table 的下一索引弹出</strong> , 下一索引是相对于上一个索引的。所以我们在循环开始的时候入栈了nil，表示我们是从头开始遍历table。而在循环中，每次都保留了上次的key。直到 lua_next 返回0, 表示 table 已经遍历完, 此时退出循环, 最后一个 key 才出栈。  </p>
-<h3 id="lua-newtable"><a href="#lua-newtable" class="headerlink" title="lua_newtable"></a>lua_newtable</h3><p>创建一个 table 并压入栈顶。  </p>
-<h3 id="lua-rawgeti-L-LUA-REGISTRYINDEX-LUA-RIDX-GLOBALS"><a href="#lua-rawgeti-L-LUA-REGISTRYINDEX-LUA-RIDX-GLOBALS" class="headerlink" title="lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)"></a>lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS)</h3><p><strong>LUA_REGISTRYINDEX</strong> 是lua注册表的伪索引, <strong>LUA_RIDX_GLOBALS</strong> 是lua中全局环境即 <strong>_G</strong> 在注册表中的索引。这行代码获取得了 <strong>_G</strong> 并压入栈顶。  </p>
-<h3 id="lua-pushvalue"><a href="#lua-pushvalue" class="headerlink" title="lua_pushvalue"></a>lua_pushvalue</h3><p>复制栈上索引处的值，并压入栈顶。lua_pushvalue(L, -2), 把 -2 位置的值复制一份压入到栈顶。</p>
-<pre><code class="c"><span class="comment">/*lua栈当前情况
---------------------
--1 level_111
--2 level_222
---------------------
-*/</span>
-
-lua_pushvalue(L, <span class="number">-2</span>);
-
-<span class="comment">/*lua栈当前情况
---------------------
--1 level_222
--2 level_111
--3 level_222
---------------------
-*/</span>
-</code></pre>
-<h3 id="lua-insert"><a href="#lua-insert" class="headerlink" title="lua_insert"></a>lua_insert</h3><p>将栈顶的元素压入索引处，索引处到栈顶的元素依次往上移，栈的大小不变。  </p>
-<pre><code class="c"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">6</span>; i++)
-{
-    lua_pushnumber(L, i);
-}
-
-<span class="comment">/*lua栈当前情况
---------------------
--1 5
--2 4
--3 3
--4 2
--5 1
---------------------
-*/</span>
-
-lua_insert(L, <span class="number">2</span>);
-
-<span class="comment">/*lua栈当前情况
---------------------
--1 4
--2 3
--3 2
--4 5
--5 1
---------------------
-*/</span>
-</code></pre>
-<h2 id="Lua-G内存结构"><a href="#Lua-G内存结构" class="headerlink" title="Lua _G内存结构"></a>Lua _G内存结构</h2><h3 id="Lua内存结构"><a href="#Lua内存结构" class="headerlink" title="Lua内存结构"></a>Lua内存结构</h3><p>Lua内以下类型都是属于GCObject，是有gc方法的。</p>
-<ul>
-<li>table<ul>
-<li>[table]self</li>
-<li>[table]metatable</li>
-<li>[object]kv</li>
-</ul>
-</li>
-<li>function<ul>
-<li>[object]upvalue</li>
-<li>[lcl/ccl]self</li>
-</ul>
-</li>
-<li>thread<ul>
-<li>[object]stack</li>
-</ul>
-</li>
-<li>userdata<ul>
-<li>[table]metatable</li>
-<li>[table]uservalue</li>
-</ul>
-</li>
-<li>string<ul>
-<li>[TString]self  </li>
-</ul>
-</li>
-</ul>
-<h3 id="print"><a href="#print" class="headerlink" title="print"></a>print</h3><p>在编写统计代码的时候，我们时常会用到测试代码。但是需要注意的是，有些测试代码本身就会产生一些内存，以误导我们的测试。比如print，我猜测是因为每次print都产生了一个函数上值。所以我们在print后需要手动 <strong>collectgarbage()</strong> 。  </p>
-<h3 id="table"><a href="#table" class="headerlink" title="table"></a>table</h3><h4 id="table可能引用的内容"><a href="#table可能引用的内容" class="headerlink" title="table可能引用的内容"></a>table可能引用的内容</h4><ol>
-<li><p>metatable</p>
-<blockquote>
-<p>metatable即该table的原表，一定是一个table。</p>
-</blockquote>
-</li>
-<li><p>非weak的key</p>
-<blockquote>
-<p>key可以是任意类型  </p>
-</blockquote>
-</li>
-<li><p>非weak的value</p>
-<blockquote>
-<p>value可以是任意类型</p>
-</blockquote>
-</li>
-</ol>
-<h4 id="table大小计算"><a href="#table大小计算" class="headerlink" title="table大小计算"></a>table大小计算</h4><pre><code class="c"><span class="comment">//单位为byte</span>
-size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof</span>(TValue) * t-&gt;sizearray + <span class="keyword">sizeof</span>(Node) * sizenode(t)
-</code></pre>
-<ul>
-<li>sizeof(Table)  = 56  </li>
-<li>sizeof(TValue) = 16  </li>
-<li>sizeof(Node)   = 32  </li>
-<li>sizenode(t)  <blockquote>
-<p>table的hashtable部分长度，值总是2的幂，a power of 2。hashtable.len为0时，sizenode为1，hashtable.len为1时，sizenode为1。所以想要分辨出0和1需要判断一下t-&gt;lastfress，定义宏如下：  </p>
-</blockquote>
-</li>
-</ul>
-<pre><code class="c"><span class="meta">#<span class="meta-keyword">define</span> isdummy(t)        ((t)-&gt;lastfree == NULL)</span>
-</code></pre>
-<h3 id="function"><a href="#function" class="headerlink" title="function"></a>function</h3><h4 id="function可能引用的内容"><a href="#function可能引用的内容" class="headerlink" title="function可能引用的内容"></a>function可能引用的内容</h4><ol>
-<li><p>upvalue  </p>
-<blockquote>
-<p>upvalue可以是任意类型  </p>
-</blockquote>
-</li>
-<li><p>本身  </p>
-<blockquote>
-<p>function本身可能为Luafunction和Cfunction  </p>
-</blockquote>
-</li>
-</ol>
-<h4 id="function大小计算"><a href="#function大小计算" class="headerlink" title="function大小计算"></a>function大小计算</h4><p>在lua中function分为 <strong>LColsure</strong> 和 <strong>CColsure</strong>，即Lua函数和C函数。  </p>
-<pre><code class="c">ttisCclosure(o) ? sizeCclosure(cl-&gt;c.nupvalues) : sizeLclosure(cl-&gt;l.nupvalues)
-<span class="comment">//sizeCclosure(n) = sizeof(CClosure) + sizeof(TValue)* (n-1)</span>
-<span class="comment">//sizeLclosure(n) = sizeof(LClosure) + sizeof(TValue)* (n-1)</span>
-</code></pre>
-<ul>
-<li>sizeof(CClosure) = 48  </li>
-<li>sizeof(LClosure) = 40  </li>
-</ul>
-<h3 id="thread"><a href="#thread" class="headerlink" title="thread"></a>thread</h3><h4 id="thread可能引用的类型"><a href="#thread可能引用的类型" class="headerlink" title="thread可能引用的类型"></a>thread可能引用的类型</h4><ol>
-<li>stack  <blockquote>
-<p>stack中的值，以及这些值的local变量  </p>
-</blockquote>
-</li>
-</ol>
-<h4 id="thread大小计算"><a href="#thread大小计算" class="headerlink" title="thread大小计算"></a>thread大小计算</h4><p>lua中的thread即为Coroutine  </p>
-<pre><code class="c">(<span class="keyword">sizeof</span>(lua_State) + <span class="keyword">sizeof</span>(TValue) * th-&gt;stacksize + <span class="keyword">sizeof</span>(CallInfo) * th-&gt;nci);
-</code></pre>
-<h3 id="userdata"><a href="#userdata" class="headerlink" title="userdata"></a>userdata</h3><h4 id="userdata可能引用的类型"><a href="#userdata可能引用的类型" class="headerlink" title="userdata可能引用的类型"></a>userdata可能引用的类型</h4><ol>
-<li><p>metatable</p>
-<blockquote>
-<p>userdata可能有自己的元表  </p>
-</blockquote>
-</li>
-<li><p>uservalue  </p>
-<blockquote>
-<p>userdata的内容，是一个table类型。</p>
-</blockquote>
-</li>
-</ol>
-<h4 id="userdata大小计算"><a href="#userdata大小计算" class="headerlink" title="userdata大小计算"></a>userdata大小计算</h4><pre><code class="c">sizeudata(uvalue(o));
-</code></pre>
-<h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><h4 id="string大小计算"><a href="#string大小计算" class="headerlink" title="string大小计算"></a>string大小计算</h4><pre><code class="c"><span class="comment">//string分为LUA_TLNGSTR和LUA_TSHRSTR</span>
-<span class="keyword">case</span> LUA_TSHRSTR:
-    sizelstring(ts-&gt;shrlen);
-<span class="keyword">case</span> LUA_TLNGSTR:
-    sizelstring(ts-&gt;u.lnglen);
-</code></pre>
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -452,97 +193,19 @@ size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http:blog.codershu.com/2017/02/24/luamemory_capi/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2017/03/17/luamemory_editor/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          LuaMemory的实现(二)
-        
-      </div>
-    </a>
   
   
-    <a href="/2017/02/21/luaprofiler/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Lua性能分析器的实现</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-
-
-
-
-  
-    <div class="duoshuo"></div>
+    </div></section>
   
 
-
+    
 
 
           </div>
@@ -565,8 +228,8 @@ size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

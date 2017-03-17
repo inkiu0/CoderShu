@@ -150,6 +150,91 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-luamemory_editor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/17/luamemory_editor/">LuaMemory的实现(二)</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/17/luamemory_editor/" class="archive-article-date">
+  	<time datetime="2017-03-17T12:46:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="LeakMemoryEditor的编写"><a href="#LeakMemoryEditor的编写" class="headerlink" title="LeakMemoryEditor的编写"></a>LeakMemoryEditor的编写</h1><p>LuaMemory的核心是C库的编写，编写好C库以后，其他的周边的Editor的编写会比较简单，但是也最见策略。<br>LuaMemory的编辑器主要有三大功能：</p>
+<ol>
+<li><p>Snapshot的逻辑操作</p>
+<blockquote>
+<p>可以对两个或多个采样(Snapshot)之间使用逻辑操作，求交集和补集。这样可以很容易地缩小范围，更容易地定位泄露。  </p>
+</blockquote>
+</li>
+<li><p>内存的树状结构</p>
+<blockquote>
+<p>把所有地内存按树状结构展现出来，根节点是_G或者Registry。如果某一项被多次引用，则把他挂在层级最浅地那个节点上， _G层级1为最浅。  </p>
+</blockquote>
+</li>
+<li><p>数据存在另一个lua_state  </p>
+<blockquote>
+<p>如果把数据储存在当前地lua_state中，则要很小心地避免其对采样地影响。而在C中另起一个state来储存则不存在这个问题。  </p>
+</blockquote>
+</li>
+</ol>
+        
+          <a class="article-more-a" href="/2017/03/17/luamemory_editor/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Unity</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Lua</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/17/luamemory_editor/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-luamemory_capi" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -744,19 +829,19 @@ Graphics.Blit(accumulationTexture, dest);
 
 
   
-    <article id="post-luaIter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/luaIter/">Lua迭代器和遍历</a>
+      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
     </h1>
   
 
         
-        <a href="/2017/01/16/luaIter/" class="archive-article-date">
+        <a href="/2017/01/16/alphatest/" class="archive-article-date">
   	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
 </a>
         
@@ -764,50 +849,11 @@ Graphics.Blit(accumulationTexture, dest);
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1-Lua遍历"><a href="#1-Lua遍历" class="headerlink" title="1. Lua遍历"></a>1. Lua遍历</h1><p>在用Lua开发过程中经常会用到一些库, 最近看到了<code>Map</code>类中的<code>FindIf</code>方法。 感觉用的很巧妙, 遂分析学习一下。<br><code>FindIf</code>方法我用原生的Lua实现了一遍, 去除了自定义的一些方法, 便于理解。  </p>
-<pre><code>Map = {}
-Map.data = {}
-local hank = { name = &quot;hank&quot;, weight = 75 }
-local marry = { name = &quot;marry&quot;, weight = 50 }
-table.insert(Map.data, hank)
-table.insert(Map.data, marry)
-
-Map.Comparator = function(classNumber, equalValue)
-    if classNumber == nil or equalValue == nil then
-        print(&quot;参数错误! classNumber = &quot; .. tostring(classNumber) .. &quot;equalValue = &quot; .. tostring(equalValue))
-    end
-    local func = function(equalValue)
-        local comparator = function(data)
-            return equalValue == data[classNumber]
-        end
-        return comparator;
-    end
-    return func(equalValue)
-end
-
-Map.Find = function(classNumber, equalValue)
-    local comparator = Map.Comparator(classNumber, equalValue)
-    local find = nil
-    local index = -1;
-    if Map.data ~= nil and #Map.data &gt; 0 then
-        for i = 1, #Map.data do
-            if comparator(Map.data[i]) then
-                find = Map.data[i]
-                index = i;
-                break;
-            end
-        end
-    end
-    return find, index;
-end
-
--- 使用示例
-print(Map.Find(&quot;name&quot;, &quot;hank&quot;))
-print(Map.Find(&quot;name&quot;, &quot;marry&quot;))
-print(Map.Find(&quot;weight&quot;, 50))
-</code></pre>
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
+<ul>
+<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
         
-          <a class="article-more-a" href="/2017/01/16/luaIter/#more">more >></a>
+          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
         
       
 
@@ -821,7 +867,7 @@ print(Map.Find(&quot;weight&quot;, 50))
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Lua</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
         		</li>
       		
 		</ul>
@@ -831,7 +877,7 @@ print(Map.Find(&quot;weight&quot;, 50))
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/luaIter/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
         </p>
       
 
@@ -913,72 +959,6 @@ void OnRenderImage(RenderTexture src, RenderTexture dest)
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/16/alphatest/" class="archive-article-date">
-  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
-<ul>
-<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
-        
-          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
         </p>
       
 

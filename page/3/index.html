@@ -150,6 +150,80 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-CSharpAndJava" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/08/CSharpAndJava/">Unity和Java交互</a>
+    </h1>
+  
+
+        
+        <a href="/2016/12/08/CSharpAndJava/" class="archive-article-date">
+  	<time datetime="2016-12-07T20:42:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#CSharpToJava  </p>
+<p>##1. new Java类<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> AndroidJavaClass _UnityPlayer;</div><div class="line"><span class="keyword">static</span> AndroidJavaClass unityPlayer</div><div class="line">&#123;</div><div class="line">    <span class="keyword">get</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span> (_UnityPlayer == <span class="literal">null</span>)</div><div class="line">            _UnityPlayer = <span class="keyword">new</span> <span class="type">AndroidJavaClass</span>(<span class="string">"com.unity3d.player.UnityPlayer"</span>);</div><div class="line">        <span class="keyword">return</span> _UnityPlayer;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>##2. 调用Java函数  </p>
+<ul>
+<li><p>调用无参无返回函数</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//调用静态函数为CallStatic</span></div><div class="line">androidJavaClass.<span class="keyword">Call</span>(<span class="string">"methodName"</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>调用带参数有返回函数</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//返回值为int则为Call&lt;int&gt;</span></div><div class="line"><span class="comment">//返回值为Java自定义的数据类型, 比如Java类。则为CallStatic&lt;AndroidJavaObject&gt;</span></div><div class="line"><span class="comment">//调用静态函数为CallStatic</span></div><div class="line">String str = androidJavaClass.Call&lt;String&gt;(<span class="string">"methodName"</span>, param1, param2);</div><div class="line">```  </div><div class="line"></div><div class="line">&lt;!-- more --&gt;</div><div class="line">##<span class="number">3.</span> 访问Java类的属性</div><div class="line">- 访问普通属性</div><div class="line">```  </div><div class="line"><span class="comment">//访问int属性则为Get&lt;int&gt;</span></div><div class="line">String str = androidJavaClass.Get&lt;String&gt;(<span class="string">"PropertyName"</span>)</div><div class="line">```  </div><div class="line">- 访问静态属性</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>//示例如下:<br>unityPlayer.GetStatic<androidjavaobject>(“currentActivity”)<br><figure class="highlight vala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#JavaToCSharp  </span></div><div class="line"><span class="meta">## 1. Java调用CSharp</span></div><div class="line">**需要在场景中创建一个名为AScript的GameObject**</div></pre></td></tr></table></figure></androidjavaobject></p>
+<p>//调用场景中的GameObject:AScript挂载的脚本AScript中的BMethod，传入参数param。<br>UnityPlayer.UnitySendMessage(“AScript”,”BMethod”, param);<br>```</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Unity - Java - C#</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/12/08/CSharpAndJava/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-masktexture" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
