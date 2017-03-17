@@ -32,7 +32,7 @@ Snapshot的逻辑操作
 内存的树状结构
 
 把所有地内存按树状结构展现出来">
-<meta property="og:updated_time" content="2017-03-17T13:35:03.420Z">
+<meta property="og:updated_time" content="2017-03-17T13:36:49.826Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LuaMemory的实现(二)">
 <meta name="twitter:description" content="LeakMemoryEditor的编写LuaMemory的核心是C库的编写，编写好C库以后，其他的周边的Editor的编写会比较简单，但是也最见策略。LuaMemory的编辑器主要有三大功能：
@@ -266,12 +266,15 @@ Snapshot[pointer] =
 </li>
 </ul>
 <ol>
-<li>传输调整后的数据给C#<br>把得到的数据做了处理以后生成一串jsonstring传给c#，然后c#解析出一个树状的Dictonary。c#中有一个递归的结构LeakItemNode，用来储存数据。LuaMemoryEditor持有根节点m_Root    <pre><code class="c#">//...
-//一些从json中解析出来的数据
-//...
+<li>传输调整后的数据给C#<br>把得到的数据做了处理以后生成一串jsonstring传给c#，然后c#解析出一个树状的Dictonary。c#中有一个递归的结构LeakItemNode，用来储存数据。LuaMemoryEditor持有根节点m_Root    </li>
+</ol>
+<pre><code class="cs"><span class="comment">//...</span>
+<span class="comment">//一些从json中解析出来的数据</span>
+<span class="comment">//...</span>
 List&lt;LeakItemNode&gt; childList = list&lt;LeakItemNode&gt;();
 </code></pre>
-<h2 id="另一个lua-state"><a href="#另一个lua-state" class="headerlink" title="另一个lua_state"></a>另一个lua_state</h2>在C中用一个静态变量储存起来的lua_state *pL，所有的采样数据都储存在其中。另外提供3个重要的接口用以操作该栈：</li>
+<h2 id="另一个lua-state"><a href="#另一个lua-state" class="headerlink" title="另一个lua_state"></a>另一个lua_state</h2><p>在C中用一个静态变量储存起来的lua_state *pL，所有的采样数据都储存在其中。另外提供3个重要的接口用以操作该栈：</p>
+<ol>
 <li><p>insert(idx)<br>把栈顶的Snapshot插入idx处  </p>
 </li>
 <li><p>pop(num)<br>出栈num个Snapshot  </p>
