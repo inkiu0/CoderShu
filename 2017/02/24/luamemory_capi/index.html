@@ -6,42 +6,33 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="blog.codershu.com">
-  <title>LuaC库的编写 | 南昌小白龙的blog</title>
+  <title>LuaMemory的实现(一) | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
+  <meta name="description" content="LuaMemory的实现(一) LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
 local test_table = 
 {
     [&quot;a&quot;] = 1,
     [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}
-
-lua">
+    [">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LuaC库的编写">
+<meta property="og:title" content="LuaMemory的实现(一)">
 <meta property="og:url" content="blog.codershu.com/2017/02/24/luamemory_capi/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
+<meta property="og:description" content="LuaMemory的实现(一) LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
 local test_table = 
 {
     [&quot;a&quot;] = 1,
     [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}
-
-lua">
-<meta property="og:updated_time" content="2017-03-17T12:23:22.000Z">
+    [">
+<meta property="og:updated_time" content="2017-03-17T12:27:31.253Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LuaC库的编写">
-<meta name="twitter:description" content="编写C代码lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
+<meta name="twitter:title" content="LuaMemory的实现(一)">
+<meta name="twitter:description" content="LuaMemory的实现(一) LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
 local test_table = 
 {
     [&quot;a&quot;] = 1,
     [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}
-
-lua">
+    [">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -180,7 +171,7 @@ lua">
         
   
     <h1 class="article-title" itemprop="name">
-      LuaC库的编写
+      LuaMemory的实现(一)
     </h1>
   
 
@@ -193,7 +184,7 @@ lua">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="编写C代码"><a href="#编写C代码" class="headerlink" title="编写C代码"></a>编写C代码</h2><h3 id="lua-next-lua-State-L-int-idx"><a href="#lua-next-lua-State-L-int-idx" class="headerlink" title="lua_next(lua_State *L, int idx)"></a>lua_next(lua_State *L, int idx)</h3><p>lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  </p>
+        <h1 id="LuaMemory的实现-一-LuaC库的编写"><a href="#LuaMemory的实现-一-LuaC库的编写" class="headerlink" title="LuaMemory的实现(一) LuaC库的编写"></a>LuaMemory的实现(一) LuaC库的编写</h1><h3 id="lua-next-lua-State-L-int-idx"><a href="#lua-next-lua-State-L-int-idx" class="headerlink" title="lua_next(lua_State *L, int idx)"></a>lua_next(lua_State *L, int idx)</h3><p>lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  </p>
 <pre><code class="lua"><span class="keyword">local</span> test_table = 
 {
     [<span class="string">"a"</span>] = <span class="number">1</span>,
@@ -305,7 +296,33 @@ lua_insert(L, <span class="number">2</span>);
 --------------------
 */</span>
 </code></pre>
-<h2 id="getsize"><a href="#getsize" class="headerlink" title="getsize"></a>getsize</h2><h3 id="print"><a href="#print" class="headerlink" title="print"></a>print</h3><p>在编写统计代码的时候，我们时常会用到测试代码。但是需要注意的是，有些测试代码本身就会产生一些内存，以误导我们的测试。比如print，我猜测是因为每次print都产生了一个函数上值。所以我们在print后需要手动 <strong>collectgarbage()</strong> 。</p>
+<h2 id="Lua-G内存结构"><a href="#Lua-G内存结构" class="headerlink" title="Lua _G内存结构"></a>Lua _G内存结构</h2><h3 id="Lua内存结构"><a href="#Lua内存结构" class="headerlink" title="Lua内存结构"></a>Lua内存结构</h3><p>Lua内以下类型都是属于GCObject，是有gc方法的。</p>
+<ul>
+<li>table<ul>
+<li>[table]self</li>
+<li>[table]metatable</li>
+<li>[object]kv</li>
+</ul>
+</li>
+<li>function<ul>
+<li>[object]upvalue</li>
+<li>[lcl/ccl]self</li>
+</ul>
+</li>
+<li>thread<ul>
+<li>[object]stack</li>
+</ul>
+</li>
+<li>userdata<ul>
+<li>[table]metatable</li>
+<li>[table]uservalue</li>
+</ul>
+</li>
+<li>string<ul>
+<li>[TString]self<h3 id="print"><a href="#print" class="headerlink" title="print"></a>print</h3>在编写统计代码的时候，我们时常会用到测试代码。但是需要注意的是，有些测试代码本身就会产生一些内存，以误导我们的测试。比如print，我猜测是因为每次print都产生了一个函数上值。所以我们在print后需要手动 <strong>collectgarbage()</strong> 。  </li>
+</ul>
+</li>
+</ul>
 <h3 id="table"><a href="#table" class="headerlink" title="table"></a>table</h3><h4 id="table可能引用的内容"><a href="#table可能引用的内容" class="headerlink" title="table可能引用的内容"></a>table可能引用的内容</h4><ol>
 <li><p>metatable</p>
 <blockquote>
@@ -323,7 +340,7 @@ lua_insert(L, <span class="number">2</span>);
 </blockquote>
 </li>
 </ol>
-<h4 id="table本身的大小"><a href="#table本身的大小" class="headerlink" title="table本身的大小"></a>table本身的大小</h4><pre><code class="c"><span class="comment">//单位为byte</span>
+<h4 id="table大小计算"><a href="#table大小计算" class="headerlink" title="table大小计算"></a>table大小计算</h4><pre><code class="c"><span class="comment">//单位为byte</span>
 size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof</span>(TValue) * t-&gt;sizearray + <span class="keyword">sizeof</span>(Node) * sizenode(t)
 </code></pre>
 <ul>
@@ -337,7 +354,7 @@ size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof
 </ul>
 <pre><code class="c"><span class="meta">#<span class="meta-keyword">define</span> isdummy(t)        ((t)-&gt;lastfree == NULL)</span>
 </code></pre>
-<h3 id="function可能引用的内容"><a href="#function可能引用的内容" class="headerlink" title="function可能引用的内容"></a>function可能引用的内容</h3><ol>
+<h3 id="function"><a href="#function" class="headerlink" title="function"></a>function</h3><h4 id="function可能引用的内容"><a href="#function可能引用的内容" class="headerlink" title="function可能引用的内容"></a>function可能引用的内容</h4><ol>
 <li><p>upvalue  </p>
 <blockquote>
 <p>upvalue可以是任意类型  </p>
@@ -349,7 +366,7 @@ size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof
 </blockquote>
 </li>
 </ol>
-<h3 id="function本身大小"><a href="#function本身大小" class="headerlink" title="function本身大小"></a>function本身大小</h3><p>在lua中function分为 <strong>LColsure</strong> 和 <strong>CColsure</strong>，即Lua函数和C函数。  </p>
+<h4 id="function大小计算"><a href="#function大小计算" class="headerlink" title="function大小计算"></a>function大小计算</h4><p>在lua中function分为 <strong>LColsure</strong> 和 <strong>CColsure</strong>，即Lua函数和C函数。  </p>
 <pre><code class="c">ttisCclosure(o) ? sizeCclosure(cl-&gt;c.nupvalues) : sizeLclosure(cl-&gt;l.nupvalues)
 <span class="comment">//sizeCclosure(n) = sizeof(CClosure) + sizeof(TValue)* (n-1)</span>
 <span class="comment">//sizeLclosure(n) = sizeof(LClosure) + sizeof(TValue)* (n-1)</span>
@@ -358,7 +375,35 @@ size = <span class="keyword">sizeof</span>(Table) + <span class="keyword">sizeof
 <li>sizeof(CClosure) = 48  </li>
 <li>sizeof(LClosure) = 40  </li>
 </ul>
-<h3 id="thread"><a href="#thread" class="headerlink" title="thread"></a>thread</h3><p>lua中的thread即为Coroutine  </p>
+<h3 id="thread"><a href="#thread" class="headerlink" title="thread"></a>thread</h3><h4 id="thread可能引用的类型"><a href="#thread可能引用的类型" class="headerlink" title="thread可能引用的类型"></a>thread可能引用的类型</h4><ol>
+<li>stack  <blockquote>
+<p>stack中的值，以及这些值的local变量  </p>
+</blockquote>
+</li>
+</ol>
+<h4 id="thread大小计算"><a href="#thread大小计算" class="headerlink" title="thread大小计算"></a>thread大小计算</h4><p>lua中的thread即为Coroutine  </p>
+<pre><code class="c">(<span class="keyword">sizeof</span>(lua_State) + <span class="keyword">sizeof</span>(TValue) * th-&gt;stacksize + <span class="keyword">sizeof</span>(CallInfo) * th-&gt;nci);
+</code></pre>
+<h3 id="userdata"><a href="#userdata" class="headerlink" title="userdata"></a>userdata</h3><h4 id="userdata可能引用的类型"><a href="#userdata可能引用的类型" class="headerlink" title="userdata可能引用的类型"></a>userdata可能引用的类型</h4><ol>
+<li><p>metatable</p>
+<blockquote>
+<p>userdata可能有自己的元表  </p>
+</blockquote>
+</li>
+<li><p>uservalue  </p>
+<blockquote>
+<p>userdata的内容，是一个table类型。</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="userdata大小计算"><a href="#userdata大小计算" class="headerlink" title="userdata大小计算"></a>userdata大小计算</h4><pre><code class="c">sizeudata(uvalue(o));
+</code></pre>
+<h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><h4 id="string大小计算"><a href="#string大小计算" class="headerlink" title="string大小计算"></a>string大小计算</h4><pre><code class="c"><span class="comment">//string分为LUA_TLNGSTR和LUA_TSHRSTR</span>
+<span class="keyword">case</span> LUA_TSHRSTR:
+    sizelstring(ts-&gt;shrlen);
+<span class="keyword">case</span> LUA_TLNGSTR:
+    sizelstring(ts-&gt;u.lnglen);
+</code></pre>
 
       
 

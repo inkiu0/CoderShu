@@ -157,7 +157,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/24/luamemory_capi/">LuaC库的编写</a>
+      <a class="article-title" href="/2017/02/24/luamemory_capi/">LuaMemory的实现(一)</a>
     </h1>
   
 
@@ -170,7 +170,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="编写C代码"><a href="#编写C代码" class="headerlink" title="编写C代码"></a>编写C代码</h2><h3 id="lua-next-lua-State-L-int-idx"><a href="#lua-next-lua-State-L-int-idx" class="headerlink" title="lua_next(lua_State *L, int idx)"></a>lua_next(lua_State *L, int idx)</h3><p>lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  </p>
+        <h1 id="LuaMemory的实现-一-LuaC库的编写"><a href="#LuaMemory的实现-一-LuaC库的编写" class="headerlink" title="LuaMemory的实现(一) LuaC库的编写"></a>LuaMemory的实现(一) LuaC库的编写</h1><h3 id="lua-next-lua-State-L-int-idx"><a href="#lua-next-lua-State-L-int-idx" class="headerlink" title="lua_next(lua_State *L, int idx)"></a>lua_next(lua_State *L, int idx)</h3><p>lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  </p>
 <pre><code class="lua"><span class="keyword">local</span> test_table = 
 {
     [<span class="string">"a"</span>] = <span class="number">1</span>,
