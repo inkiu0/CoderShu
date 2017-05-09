@@ -170,7 +170,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Lua性能优化（一）：Lua内存优化"><a href="#Lua性能优化（一）：Lua内存优化" class="headerlink" title="Lua性能优化（一）：Lua内存优化"></a>Lua性能优化（一）：Lua内存优化</h1><p>大家好，我是舒航，现任职于心动网络，主要负责RO的优化工作。今天主要想和大家分享一下，我这段时间在Lua性能优化方面的一些经验。<br>现在市面上大部分Unity游戏都能支持热更，主要热更Lua和一些资源。而Lua主要实现一些UI界面之类的非核心逻辑，这样虽然Lua这部分代码非常灵活，增加功能、修复BUG都非常方便。但是由于Lua实现的大部分都是UI，那么lua热更出去的功能最多就是一些新UI界面罢了，或者用资源配合配置表来扩充下游戏既有内容。如果想做个特殊的玩法势必受到掣肘，一般最后都会发现导出的接口不全，非得打整包才行。为了使得RO的玩法更灵活，热更的游戏内容更丰富，其实就是为了满足策划们的各种需求啦，RO战斗逻辑的主体都是在Lua中完成。所以RO相对于其他的游戏，对Lua代码的性能要求会更高一些。<br>在我对Lua代码进行性能优化的时候，主要分为两部分：  </p>
+        <blockquote>
+<p>本文章仅供稿于知乎、UWA和我个人网页，未经允许禁止转载。</p>
+</blockquote>
+<p>大家好，我是舒航，现任职于心动网络，主要负责RO的优化工作。今天主要想和大家分享一下，我这段时间在Lua性能优化方面的一些经验。<br>现在市面上大部分Unity游戏都能支持热更，主要热更Lua和一些资源。而Lua主要实现一些UI界面之类的非核心逻辑，这样虽然Lua这部分代码非常灵活，增加功能、修复BUG都非常方便。但是由于Lua实现的大部分都是UI，那么lua热更出去的功能最多就是一些新UI界面罢了，或者用资源配合配置表来扩充下游戏既有内容。如果想做个特殊的玩法势必受到掣肘，一般最后都会发现导出的接口不全，非得打整包才行。为了使得RO的玩法更灵活，热更的游戏内容更丰富，其实就是为了满足策划们的各种需求啦，RO战斗逻辑的主体都是在Lua中完成。所以RO相对于其他的游戏，对Lua代码的性能要求会更高一些。<br>在我对Lua代码进行性能优化的时候，主要分为两部分：  </p>
 <ol>
 <li>内存优化  <ul>
 <li>常驻内存优化  </li>
@@ -1093,15 +1096,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Unity - Java - C#</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">UnityShader</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">数据结构与算法</a>
               </li>
              
               <li class="article-tag-list-item">
