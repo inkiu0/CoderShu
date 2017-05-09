@@ -150,6 +150,72 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-alphatest" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/16/alphatest/">透明测试</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/16/alphatest/" class="archive-article-date">
+  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161209002905.png" alt="">  </p>
+<ul>
+<li>AlphaTest<br>上图为简单的AlphaTest，Alpha值小于0.55的颜色抛弃。判断的语法<code>clip (texcoordColor.a - value)</code>也可写作
+        
+          <a class="article-more-a" href="/2017/01/16/alphatest/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/16/alphatest/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-luaIter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -811,75 +877,9 @@ print(Map.Find(&quot;weight&quot;, 50))
 
 
   
-    <article id="post-luaoo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/09/luaoo/">Lua OO 实现 </a>
-    </h1>
-  
-
-        
-        <a href="/2016/12/09/luaoo/" class="archive-article-date">
-  	<time datetime="2016-12-09T13:49:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Lua-OO-实现"><a href="#Lua-OO-实现" class="headerlink" title="Lua OO 实现"></a>Lua OO 实现</h1><p>##1. 类的实现<br><figure class="highlight monkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">testClass =</div><div class="line">&#123;</div><div class="line">    id,</div><div class="line">    num</div><div class="line">&#125;;</div><div class="line"></div><div class="line">testClass.__index = testClass</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">testClass</span>:</span><span class="keyword">new</span>(id, num)</div><div class="line">    <span class="keyword">local</span> <span class="built_in">self</span> = &#123;&#125;</div><div class="line">    setmetatable(<span class="built_in">self</span>, testClass)</div><div class="line">    <span class="built_in">self</span>.id = id</div><div class="line">    <span class="built_in">self</span>.num = num</div><div class="line">    <span class="keyword">return</span> <span class="built_in">self</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">testClass</span>:</span>PrintNum()</div><div class="line">    <span class="built_in">print</span>(<span class="string">"num is "</span> .. <span class="built_in">self</span>.num)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<p>简单使用<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">local obj = testClass:<span class="keyword">new</span>(10, 11)</div><div class="line">obj:PrintNum()</div></pre></td></tr></table></figure></p>
-<p>得到输出<code>num is 11</code><br>
-        
-          <a class="article-more-a" href="/2016/12/09/luaoo/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Lua</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/09/luaoo/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
