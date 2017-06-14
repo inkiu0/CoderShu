@@ -9,6 +9,7 @@
   <title>南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="游戏程序员，现就职于心动网络。">
+<meta name="keywords" content="Unity,c#,lua,Graphics,shader,开发者,程序员,程序猿,代码,Developer,Programmer,Coder,NGUI,UGUI,cpp">
 <meta property="og:type" content="website">
 <meta property="og:title" content="南昌小白龙的blog">
 <meta property="og:url" content="blog.codershu.com/index.html">
@@ -149,6 +150,73 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-UnityOptimizeAnimationClip" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/14/UnityOptimizeAnimationClip/">Unity动画文件优化探究</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/14/UnityOptimizeAnimationClip/" class="archive-article-date">
+  	<time datetime="2017-06-14T12:20:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="主要思路"><a href="#主要思路" class="headerlink" title="主要思路"></a>主要思路</h2><ol>
+<li>压缩浮点数精度  </li>
+<li>去除scale曲线  </li>
+</ol>
+        
+          <a class="article-more-a" href="/2017/06/14/UnityOptimizeAnimationClip/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Unity</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/14/UnityOptimizeAnimationClip/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
   
     <article id="post-luaperformance" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -892,87 +960,6 @@ Graphics.Blit(accumulationTexture, dest);
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/01/17/sobel/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-bscposteffects" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/16/bscposteffects/">亮度饱和度对比度屏幕后处理效果</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/16/bscposteffects/" class="archive-article-date">
-  	<time datetime="2017-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>以下是调节屏幕亮度饱和度对比度的关键代码，cs脚本挂在Camera上。</p>
-<pre><code>//给shader传对应的亮度/饱和度/对比度
-void OnRenderImage(RenderTexture src, RenderTexture dest)
-{
-    if(material != null)
-    {
-        material.SetFloat(&quot;_Brightness&quot;, brightness);
-        material.SetFloat(&quot;_Saturation&quot;, saturation);
-        material.SetFloat(&quot;_Contrast&quot;, contrast);
-
-        Graphics.Blit(src, dest, material);
-    }
-    else
-    {
-        Graphics.Blit(src, dest);
-    }
-}
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/16/bscposteffects/">展开全文 >></a>
         </p>
       
 

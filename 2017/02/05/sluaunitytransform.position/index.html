@@ -8,39 +8,19 @@
   <link rel="dns-prefetch" href="blog.codershu.com">
   <title>Slua的优化初探 | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。  
-tolua取值赋值的过程  
-slua的取值赋值过程
-取出object的缓存  
-
-ObjectCache oc = ObjectCache.get(l);
-
-取得c#中的index然后再ObjectCache里面查找">
+  <meta name="description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。   tolua取值赋值的过程   slua的取值赋值过程 取出object的缓存    ObjectCache oc = ObjectCache.get(l);  取得c#中的index然后再ObjectCache里面查找">
+<meta name="keywords" content="Unity,Lua,Slua">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Slua的优化初探">
 <meta property="og:url" content="blog.codershu.com/2017/02/05/sluaunitytransform.position/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。  
-tolua取值赋值的过程  
-slua的取值赋值过程
-取出object的缓存  
-
-ObjectCache oc = ObjectCache.get(l);
-
-取得c#中的index然后再ObjectCache里面查找">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/setcsharpobjectvalue.png">
+<meta property="og:description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。   tolua取值赋值的过程   slua的取值赋值过程 取出object的缓存    ObjectCache oc = ObjectCache.get(l);  取得c#中的index然后再ObjectCache里面查找">
+<meta property="og:image" content="/assets/blogImg/UnityShader/setcsharpobjectvalue.png">
 <meta property="og:updated_time" content="2017-02-21T16:32:43.972Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Slua的优化初探">
-<meta name="twitter:description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。  
-tolua取值赋值的过程  
-slua的取值赋值过程
-取出object的缓存  
-
-ObjectCache oc = ObjectCache.get(l);
-
-取得c#中的index然后再ObjectCache里面查找">
-<meta name="twitter:image" content="blog.codershu.com/assets/blogImg/UnityShader/setcsharpobjectvalue.png">
+<meta name="twitter:description" content="看了UWA的blog以后，了解到了tolua对c#对象取值赋值的过程。并且发现slua对比tolua在test1里性能是tolua的6倍，所以很好奇slua做了哪些优化。   tolua取值赋值的过程   slua的取值赋值过程 取出object的缓存    ObjectCache oc = ObjectCache.get(l);  取得c#中的index然后再ObjectCache里面查找">
+<meta name="twitter:image" content="/assets/blogImg/UnityShader/setcsharpobjectvalue.png">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   

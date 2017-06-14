@@ -9,6 +9,7 @@
   <title>南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="游戏程序员，现就职于心动网络。">
+<meta name="keywords" content="Unity,c#,lua,Graphics,shader,开发者,程序员,程序猿,代码,Developer,Programmer,Coder,NGUI,UGUI,cpp">
 <meta property="og:type" content="website">
 <meta property="og:title" content="南昌小白龙的blog">
 <meta property="og:url" content="blog.codershu.com/page/3/index.html">
@@ -149,6 +150,99 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-shadow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/15/shadow/">实时阴影</a>
+    </h1>
+  
+
+        
+        <a href="/2016/12/15/shadow/" class="archive-article-date">
+  	<time datetime="2016-12-15T02:42:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-Unity内部的ShadowCasterShader"><a href="#1-Unity内部的ShadowCasterShader" class="headerlink" title="1. Unity内部的ShadowCasterShader"></a>1. Unity内部的ShadowCasterShader</h2><pre><code>Pass
+{
+    Name &quot;ShadowCaster&quot;
+    Tags { &quot;LightMode&quot;=&quot;ShadowCaster&quot; }
+
+    CGPROGRAM
+    #pragma vertex vert
+    #pragma fragment frag
+    #pragma multi_compile_shadowcaster
+    #include &quot;UnityCG.cginc&quot;
+
+    struct v2f
+    {
+        V2F_SHADOW_CASTER;
+    };
+
+    v2f vert(appdata_base v)
+    {
+        v2f o;
+        TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+        return o;
+    }
+
+    float4 frag(v2f i) : SV_Target
+    {
+        SHADOW_CASTER_FRAGMENT(i)
+    }
+    ENDCG
+}
+</code></pre>
+        
+          <a class="article-more-a" href="/2016/12/15/shadow/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/12/15/shadow/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
   
     <article id="post-luaoo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -779,83 +873,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/10/31/separateAlpha/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-RBTree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/31/RBTree/">AVL树和红黑树 </a>
-    </h1>
-  
-
-        
-        <a href="/2016/10/31/RBTree/" class="archive-article-date">
-  	<time datetime="2016-10-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>技术分享会旨在：抛砖引玉，促进程序之间互相交流，培养公司内部良好的技术氛围。</strong></p>
-<h2 id="1-Base"><a href="#1-Base" class="headerlink" title="1. Base"></a>1. Base</h2><p>此次分享会默认大家清楚了解以下知识点：  </p>
-<ul>
-<li>二叉查找树(binary search tree)的定义和实现  </li>
-<li>AVL树的定义和实现  </li>
-<li>基础的C/C++知识  </li>
-</ul>
-<p>此次分享会主要和大家分享探讨以下内容  </p>
-<ul>
-<li>AVL树和红黑树的异同 </li>
-<li>树的旋转  </li>
-<li>红黑树的在STL中的应用(SGI STL)  </li>
-<li>红黑树在跳跃表中的应用  </li>
-</ul>
-        
-          <a class="article-more-a" href="/2016/10/31/RBTree/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">数据结构与算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/10/31/RBTree/">展开全文 >></a>
         </p>
       
 

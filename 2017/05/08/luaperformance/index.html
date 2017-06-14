@@ -8,24 +8,19 @@
   <link rel="dns-prefetch" href="blog.codershu.com">
   <title>Lua性能优化（一）：Lua内存优化 | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文章仅供稿于知乎、UWA和我个人网页，未经允许禁止转载。
-
-大家好，我是舒航，现任职于心动网络，主要负责RO的优化工作。今天主要想和大家分享一下，我这段时间在Lua性能优化方面的一些经验。现在市面上大部分Unity游戏都能支持热更，主要热更Lua和一些资源。而Lua主要实现一些UI界面之类的非核心逻辑，这样虽然Lua这部分代码非常灵活，增加功能、修复BUG都非常方便。但是由于Lua实现的大部分">
+  <meta name="description" content="本文章仅供稿于知乎、UWA和我个人网页，未经允许禁止转载。  大家好，我是舒航，现任职于心动网络，主要负责RO的优化工作。今天主要想和大家分享一下，我这段时间在Lua性能优化方面的一些经验。现在市面上大部分Unity游戏都能支持热更，主要热更Lua和一些资源。而Lua主要实现一些UI界面之类的非核心逻辑，这样虽然Lua这部分代码非常灵活，增加功能、修复BUG都非常方便。但是由于Lua实现的大部分">
+<meta name="keywords" content="Unity,Lua">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Lua性能优化（一）：Lua内存优化">
 <meta property="og:url" content="blog.codershu.com/2017/05/08/luaperformance/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="本文章仅供稿于知乎、UWA和我个人网页，未经允许禁止转载。
-
-大家好，我是舒航，现任职于心动网络，主要负责RO的优化工作。今天主要想和大家分享一下，我这段时间在Lua性能优化方面的一些经验。现在市面上大部分Unity游戏都能支持热更，主要热更Lua和一些资源。而Lua主要实现一些UI界面之类的非核心逻辑，这样虽然Lua这部分代码非常灵活，增加功能、修复BUG都非常方便。但是由于Lua实现的大部分">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/Any/GCObject.png">
+<meta property="og:description" content="本文章仅供稿于知乎、UWA和我个人网页，未经允许禁止转载。  大家好，我是舒航，现任职于心动网络，主要负责RO的优化工作。今天主要想和大家分享一下，我这段时间在Lua性能优化方面的一些经验。现在市面上大部分Unity游戏都能支持热更，主要热更Lua和一些资源。而Lua主要实现一些UI界面之类的非核心逻辑，这样虽然Lua这部分代码非常灵活，增加功能、修复BUG都非常方便。但是由于Lua实现的大部分">
+<meta property="og:image" content="/assets/blogImg/Any/GCObject.png">
 <meta property="og:updated_time" content="2017-05-09T02:27:52.656Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lua性能优化（一）：Lua内存优化">
-<meta name="twitter:description" content="本文章仅供稿于知乎、UWA和我个人网页，未经允许禁止转载。
-
-大家好，我是舒航，现任职于心动网络，主要负责RO的优化工作。今天主要想和大家分享一下，我这段时间在Lua性能优化方面的一些经验。现在市面上大部分Unity游戏都能支持热更，主要热更Lua和一些资源。而Lua主要实现一些UI界面之类的非核心逻辑，这样虽然Lua这部分代码非常灵活，增加功能、修复BUG都非常方便。但是由于Lua实现的大部分">
-<meta name="twitter:image" content="blog.codershu.com/assets/blogImg/Any/GCObject.png">
+<meta name="twitter:description" content="本文章仅供稿于知乎、UWA和我个人网页，未经允许禁止转载。  大家好，我是舒航，现任职于心动网络，主要负责RO的优化工作。今天主要想和大家分享一下，我这段时间在Lua性能优化方面的一些经验。现在市面上大部分Unity游戏都能支持热更，主要热更Lua和一些资源。而Lua主要实现一些UI界面之类的非核心逻辑，这样虽然Lua这部分代码非常灵活，增加功能、修复BUG都非常方便。但是由于Lua实现的大部分">
+<meta name="twitter:image" content="/assets/blogImg/Any/GCObject.png">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -421,6 +416,15 @@ size = size + <span class="keyword">sizeof</span>(metatble) + <span class="keywo
 
   
 <nav id="article-nav">
+  
+    <a href="/2017/06/14/UnityOptimizeAnimationClip/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Unity动画文件优化探究
+        
+      </div>
+    </a>
   
   
     <a href="/2017/03/17/luamemory_editor/" id="article-nav-older" class="article-nav-link-wrap">

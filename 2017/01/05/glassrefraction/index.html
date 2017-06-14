@@ -8,27 +8,19 @@
   <link rel="dns-prefetch" href="blog.codershu.com">
   <title>玻璃透明效果 | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="用ComputeGrabScreenPos取得被抓取的屏幕的对应对标。  
-计算出切线空间到世界坐标的转换矩阵，存在3个float4中，剩下的一位存入worldPos。  
-用_Distortion和_RefractionTex_TexelSize来计算出一个偏移量来偏移屏幕采样坐标，模拟折射的效果。   
-用反射方向对Cubemap采样，得到反射颜色，反射颜色+折射颜色得到最后的输出颜色">
+  <meta name="description" content="用ComputeGrabScreenPos取得被抓取的屏幕的对应对标。   计算出切线空间到世界坐标的转换矩阵，存在3个float4中，剩下的一位存入worldPos。   用_Distortion和_RefractionTex_TexelSize来计算出一个偏移量来偏移屏幕采样坐标，模拟折射的效果。    用反射方向对Cubemap采样，得到反射颜色，反射颜色+折射颜色得到最后的输出颜色">
+<meta name="keywords" content="UnityShader">
 <meta property="og:type" content="article">
 <meta property="og:title" content="玻璃透明效果">
 <meta property="og:url" content="blog.codershu.com/2017/01/05/glassrefraction/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="用ComputeGrabScreenPos取得被抓取的屏幕的对应对标。  
-计算出切线空间到世界坐标的转换矩阵，存在3个float4中，剩下的一位存入worldPos。  
-用_Distortion和_RefractionTex_TexelSize来计算出一个偏移量来偏移屏幕采样坐标，模拟折射的效果。   
-用反射方向对Cubemap采样，得到反射颜色，反射颜色+折射颜色得到最后的输出颜色">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/GlassRefraction.png">
+<meta property="og:description" content="用ComputeGrabScreenPos取得被抓取的屏幕的对应对标。   计算出切线空间到世界坐标的转换矩阵，存在3个float4中，剩下的一位存入worldPos。   用_Distortion和_RefractionTex_TexelSize来计算出一个偏移量来偏移屏幕采样坐标，模拟折射的效果。    用反射方向对Cubemap采样，得到反射颜色，反射颜色+折射颜色得到最后的输出颜色">
+<meta property="og:image" content="/assets/blogImg/UnityShader/GlassRefraction.png">
 <meta property="og:updated_time" content="2017-02-07T11:34:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="玻璃透明效果">
-<meta name="twitter:description" content="用ComputeGrabScreenPos取得被抓取的屏幕的对应对标。  
-计算出切线空间到世界坐标的转换矩阵，存在3个float4中，剩下的一位存入worldPos。  
-用_Distortion和_RefractionTex_TexelSize来计算出一个偏移量来偏移屏幕采样坐标，模拟折射的效果。   
-用反射方向对Cubemap采样，得到反射颜色，反射颜色+折射颜色得到最后的输出颜色">
-<meta name="twitter:image" content="blog.codershu.com/assets/blogImg/UnityShader/GlassRefraction.png">
+<meta name="twitter:description" content="用ComputeGrabScreenPos取得被抓取的屏幕的对应对标。   计算出切线空间到世界坐标的转换矩阵，存在3个float4中，剩下的一位存入worldPos。   用_Distortion和_RefractionTex_TexelSize来计算出一个偏移量来偏移屏幕采样坐标，模拟折射的效果。    用反射方向对Cubemap采样，得到反射颜色，反射颜色+折射颜色得到最后的输出颜色">
+<meta name="twitter:image" content="/assets/blogImg/UnityShader/GlassRefraction.png">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   

@@ -8,43 +8,17 @@
   <link rel="dns-prefetch" href="blog.codershu.com">
   <title>LuaMemory的实现(二) | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="LeakMemoryEditor的编写LuaMemory的核心是C库的编写，编写好C库以后，其他的周边的Editor的编写会比较简单，但是也最见策略。LuaMemory的编辑器主要有三大功能：
-
-Snapshot的逻辑操作
-
-可以对两个或多个采样(Snapshot)之间使用逻辑操作，求交集和补集。这样可以很容易地缩小范围，更容易地定位泄露。  
-
-
-内存的树状结构
-
-把所有地内存按树状结构展现出来">
+  <meta name="description" content="LeakMemoryEditor的编写LuaMemory的核心是C库的编写，编写好C库以后，其他的周边的Editor的编写会比较简单，但是也最见策略。LuaMemory的编辑器主要有三大功能：  Snapshot的逻辑操作  可以对两个或多个采样(Snapshot)之间使用逻辑操作，求交集和补集。这样可以很容易地缩小范围，更容易地定位泄露。     内存的树状结构  把所有地内存按树状结构展现出来">
+<meta name="keywords" content="Unity,Lua">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LuaMemory的实现(二)">
 <meta property="og:url" content="blog.codershu.com/2017/03/17/luamemory_editor/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="LeakMemoryEditor的编写LuaMemory的核心是C库的编写，编写好C库以后，其他的周边的Editor的编写会比较简单，但是也最见策略。LuaMemory的编辑器主要有三大功能：
-
-Snapshot的逻辑操作
-
-可以对两个或多个采样(Snapshot)之间使用逻辑操作，求交集和补集。这样可以很容易地缩小范围，更容易地定位泄露。  
-
-
-内存的树状结构
-
-把所有地内存按树状结构展现出来">
+<meta property="og:description" content="LeakMemoryEditor的编写LuaMemory的核心是C库的编写，编写好C库以后，其他的周边的Editor的编写会比较简单，但是也最见策略。LuaMemory的编辑器主要有三大功能：  Snapshot的逻辑操作  可以对两个或多个采样(Snapshot)之间使用逻辑操作，求交集和补集。这样可以很容易地缩小范围，更容易地定位泄露。     内存的树状结构  把所有地内存按树状结构展现出来">
 <meta property="og:updated_time" content="2017-03-17T13:38:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LuaMemory的实现(二)">
-<meta name="twitter:description" content="LeakMemoryEditor的编写LuaMemory的核心是C库的编写，编写好C库以后，其他的周边的Editor的编写会比较简单，但是也最见策略。LuaMemory的编辑器主要有三大功能：
-
-Snapshot的逻辑操作
-
-可以对两个或多个采样(Snapshot)之间使用逻辑操作，求交集和补集。这样可以很容易地缩小范围，更容易地定位泄露。  
-
-
-内存的树状结构
-
-把所有地内存按树状结构展现出来">
+<meta name="twitter:description" content="LeakMemoryEditor的编写LuaMemory的核心是C库的编写，编写好C库以后，其他的周边的Editor的编写会比较简单，但是也最见策略。LuaMemory的编辑器主要有三大功能：  Snapshot的逻辑操作  可以对两个或多个采样(Snapshot)之间使用逻辑操作，求交集和补集。这样可以很容易地缩小范围，更容易地定位泄露。     内存的树状结构  把所有地内存按树状结构展现出来">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   

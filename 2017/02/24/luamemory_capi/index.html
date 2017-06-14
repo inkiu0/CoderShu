@@ -8,34 +8,17 @@
   <link rel="dns-prefetch" href="blog.codershu.com">
   <title>LuaMemory的实现(一) | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
-local test_table = 
-{
-    [&quot;a&quot;] = 1,
-    [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}">
+  <meta name="description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。   local test_table =  {     [&quot;a&quot;] = 1,     [&quot;b&quot;] = 2,     [&quot;c&quot;] = &quot;ccc&quot; }">
+<meta name="keywords" content="Unity,Lua">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LuaMemory的实现(一)">
 <meta property="og:url" content="blog.codershu.com/2017/02/24/luamemory_capi/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
-local test_table = 
-{
-    [&quot;a&quot;] = 1,
-    [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}">
+<meta property="og:description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。   local test_table =  {     [&quot;a&quot;] = 1,     [&quot;b&quot;] = 2,     [&quot;c&quot;] = &quot;ccc&quot; }">
 <meta property="og:updated_time" content="2017-03-17T12:45:22.004Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LuaMemory的实现(一)">
-<meta name="twitter:description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。  
-local test_table = 
-{
-    [&quot;a&quot;] = 1,
-    [&quot;b&quot;] = 2,
-    [&quot;c&quot;] = &quot;ccc&quot;
-}">
+<meta name="twitter:description" content="LuaC库的编写lua_next(lua_State *L, int idx)lua_next 先把 table ( lua 栈中 idx 所指的 table )的下一索引弹出，再把 table 当前索引的值弹出。没有数据了返回0，有数据返回非0。   local test_table =  {     [&quot;a&quot;] = 1,     [&quot;b&quot;] = 2,     [&quot;c&quot;] = &quot;ccc&quot; }">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   

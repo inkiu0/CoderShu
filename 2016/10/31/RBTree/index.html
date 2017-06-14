@@ -8,72 +8,37 @@
   <link rel="dns-prefetch" href="blog.codershu.com">
   <title>AVL树和红黑树  | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="技术分享会旨在：抛砖引玉，促进程序之间互相交流，培养公司内部良好的技术氛围。
-1. Base此次分享会默认大家清楚了解以下知识点：  
-
-二叉查找树(binary search tree)的定义和实现  
-AVL树的定义和实现  
-基础的C/C++知识  
-
-此次分享会主要和大家分享探讨以下内容  
-
-AVL树和红黑树的异同 
-树的旋转  
-红黑树的在STL中的应用(SGI STL)  
-红黑树在">
+  <meta name="description" content="技术分享会旨在：抛砖引玉，促进程序之间互相交流，培养公司内部良好的技术氛围。 1. Base此次分享会默认大家清楚了解以下知识点：    二叉查找树(binary search tree)的定义和实现   AVL树的定义和实现   基础的C/C++知识    此次分享会主要和大家分享探讨以下内容    AVL树和红黑树的异同  树的旋转   红黑树的在STL中的应用(SGI STL)   红黑树在">
+<meta name="keywords" content="数据结构与算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AVL树和红黑树 ">
 <meta property="og:url" content="blog.codershu.com/2016/10/31/RBTree/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="技术分享会旨在：抛砖引玉，促进程序之间互相交流，培养公司内部良好的技术氛围。
-1. Base此次分享会默认大家清楚了解以下知识点：  
-
-二叉查找树(binary search tree)的定义和实现  
-AVL树的定义和实现  
-基础的C/C++知识  
-
-此次分享会主要和大家分享探讨以下内容  
-
-AVL树和红黑树的异同 
-树的旋转  
-红黑树的在STL中的应用(SGI STL)  
-红黑树在">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/QQ图片20161030141407.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/left.gif">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/right.gif">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image2.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image1.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image6.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image7.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image8.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image3.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image4.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/image5.png">
+<meta property="og:description" content="技术分享会旨在：抛砖引玉，促进程序之间互相交流，培养公司内部良好的技术氛围。 1. Base此次分享会默认大家清楚了解以下知识点：    二叉查找树(binary search tree)的定义和实现   AVL树的定义和实现   基础的C/C++知识    此次分享会主要和大家分享探讨以下内容    AVL树和红黑树的异同  树的旋转   红黑树的在STL中的应用(SGI STL)   红黑树在">
+<meta property="og:image" content="/assets/blogImg/UnityShader/QQ图片20161030141407.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/left.gif">
+<meta property="og:image" content="/assets/blogImg/UnityShader/right.gif">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image2.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image1.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image6.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image7.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image8.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image3.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image4.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/image5.png">
 <meta property="og:image" content="http://ww4.sinaimg.cn/mw690/df41a921jw1f9as3ais9vg20gj08m7wi.gif">
 <meta property="og:image" content="http://ww2.sinaimg.cn/mw690/df41a921jw1f9as3d99pxg20gc0a9b2a.gif">
 <meta property="og:image" content="http://ww4.sinaimg.cn/mw690/df41a921jw1f9as3gmhukg20ge08nnpe.gif">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/1.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/2.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/3.png">
-<meta property="og:image" content="blog.codershu.com/assets/blogImg/UnityShader/4.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/1.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/2.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/3.png">
+<meta property="og:image" content="/assets/blogImg/UnityShader/4.png">
 <meta property="og:updated_time" content="2017-02-07T11:59:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AVL树和红黑树 ">
-<meta name="twitter:description" content="技术分享会旨在：抛砖引玉，促进程序之间互相交流，培养公司内部良好的技术氛围。
-1. Base此次分享会默认大家清楚了解以下知识点：  
-
-二叉查找树(binary search tree)的定义和实现  
-AVL树的定义和实现  
-基础的C/C++知识  
-
-此次分享会主要和大家分享探讨以下内容  
-
-AVL树和红黑树的异同 
-树的旋转  
-红黑树的在STL中的应用(SGI STL)  
-红黑树在">
-<meta name="twitter:image" content="blog.codershu.com/assets/blogImg/UnityShader/QQ图片20161030141407.png">
+<meta name="twitter:description" content="技术分享会旨在：抛砖引玉，促进程序之间互相交流，培养公司内部良好的技术氛围。 1. Base此次分享会默认大家清楚了解以下知识点：    二叉查找树(binary search tree)的定义和实现   AVL树的定义和实现   基础的C/C++知识    此次分享会主要和大家分享探讨以下内容    AVL树和红黑树的异同  树的旋转   红黑树的在STL中的应用(SGI STL)   红黑树在">
+<meta name="twitter:image" content="/assets/blogImg/UnityShader/QQ图片20161030141407.png">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -531,20 +496,15 @@ return (j == end() || key_compare(k, key(j.node())) ? end() : j;
   
 <nav id="article-nav">
   
-    <a href="/2016/10/31/separateAlpha/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/10/31/xcode8automaticallymanag/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Alpha分离
+          Xcode8自动打包去掉AutoMaticallyManageSigning
         
       </div>
     </a>
   
-  
-    <a href="/2016/10/31/xcode8automaticallymanag/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Xcode8自动打包去掉AutoMaticallyManageSigning</div>
-      <i class="icon-circle-right"></i>
-    </a>
   
 </nav>
 

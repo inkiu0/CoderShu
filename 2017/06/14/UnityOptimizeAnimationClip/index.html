@@ -6,21 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="blog.codershu.com">
-  <title>广告牌 | 南昌小白龙的blog</title>
+  <title>Unity动画文件优化探究 | 南昌小白龙的blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="我们根据设置的法线y方向偏移来得到偏移后的法线，然后和upDir叉乘得到右方向，最后用法线和右方向叉乘得到准确的upDir。最后把顶点坐标通过我们构造的矩阵进行变化，从而得到新的顶点坐标，最后转换到观察空间。我们就可以得到始终面向我们的物体。">
-<meta name="keywords" content="UnityShader">
+  <meta name="description" content="主要思路 压缩浮点数精度   去除scale曲线">
+<meta name="keywords" content="Unity">
 <meta property="og:type" content="article">
-<meta property="og:title" content="广告牌">
-<meta property="og:url" content="blog.codershu.com/2017/01/14/billboarding/index.html">
+<meta property="og:title" content="Unity动画文件优化探究">
+<meta property="og:url" content="blog.codershu.com/2017/06/14/UnityOptimizeAnimationClip/index.html">
 <meta property="og:site_name" content="南昌小白龙的blog">
-<meta property="og:description" content="我们根据设置的法线y方向偏移来得到偏移后的法线，然后和upDir叉乘得到右方向，最后用法线和右方向叉乘得到准确的upDir。最后把顶点坐标通过我们构造的矩阵进行变化，从而得到新的顶点坐标，最后转换到观察空间。我们就可以得到始终面向我们的物体。">
-<meta property="og:image" content="/assets/blogImg/UnityShader/BillBoarding.gif">
-<meta property="og:updated_time" content="2017-02-07T11:34:40.000Z">
+<meta property="og:description" content="主要思路 压缩浮点数精度   去除scale曲线">
+<meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/noscalecurve.png">
+<meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/animationclipinspector.png">
+<meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/hasscalecurve.png">
+<meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/OptimizeAnimationClip.gif">
+<meta property="og:updated_time" content="2017-06-14T14:43:58.700Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="广告牌">
-<meta name="twitter:description" content="我们根据设置的法线y方向偏移来得到偏移后的法线，然后和upDir叉乘得到右方向，最后用法线和右方向叉乘得到准确的upDir。最后把顶点坐标通过我们构造的矩阵进行变化，从而得到新的顶点坐标，最后转换到观察空间。我们就可以得到始终面向我们的物体。">
-<meta name="twitter:image" content="/assets/blogImg/UnityShader/BillBoarding.gif">
+<meta name="twitter:title" content="Unity动画文件优化探究">
+<meta name="twitter:description" content="主要思路 压缩浮点数精度   去除scale曲线">
+<meta name="twitter:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/noscalecurve.png">
   
     <link rel="alternative" href="/atom.xml" title="南昌小白龙的blog" type="application/atom+xml">
   
@@ -152,99 +155,307 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-billboarding" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-UnityOptimizeAnimationClip" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      广告牌
+      Unity动画文件优化探究
     </h1>
   
 
         
-        <a href="/2017/01/14/billboarding/" class="archive-article-date">
-  	<time datetime="2017-01-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-14</time>
+        <a href="/2017/06/14/UnityOptimizeAnimationClip/" class="archive-article-date">
+  	<time datetime="2017-06-14T12:20:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImg/UnityShader/BillBoarding.gif" alt=""><br>我们根据设置的法线y方向偏移来得到偏移后的法线，然后和upDir叉乘得到右方向，最后用法线和右方向叉乘得到准确的upDir。<br>最后把顶点坐标通过我们构造的矩阵进行变化，从而得到新的顶点坐标，最后转换到观察空间。我们就可以得到始终面向我们的物体。<br><a id="more"></a></p>
-<pre><code>Shader &quot;UnityShaderlearning/BillBoarding&quot;
+        <h2 id="主要思路"><a href="#主要思路" class="headerlink" title="主要思路"></a>主要思路</h2><ol>
+<li>压缩浮点数精度  </li>
+<li>去除scale曲线  </li>
+</ol>
+<a id="more"></a>  
+<h2 id="各Size含义"><a href="#各Size含义" class="headerlink" title="各Size含义"></a>各Size含义</h2><p>在参考了王亮的代码后，我也尝试优化了动画文件，发现一个很奇怪的现象。下图中Inspector中显示的大小并没有任何变化，但是文件大小和Profiler中的内存大小确实是减小了。那么Inspector中显示的Size是什么含义呢？<br>下图中的动画文件不包含Scale曲线，所以这次优化中只压缩了浮点数精度。<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/noscalecurve.png" alt=""><br>我分别对比了动画文件优化前和优化后的大小  </p>
+<ul>
+<li>FileSize<ul>
+<li>FileInfo.Length取得的文件大小  </li>
+<li>可以在操作系统的文件系统中看到  </li>
+</ul>
+</li>
+<li>MemorySize<ul>
+<li>Profiler.GetRuntimeMemorySize取得的内存大小  </li>
+<li>可以在Profiler中通过采样看到  </li>
+</ul>
+</li>
+<li>BlobSize<ul>
+<li>反射取得的AnimationClipStats.size二进制大小  </li>
+<li>显示在AnimationClip的Inspector的面板上  </li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">前后</th>
+<th style="text-align:center">FileSize</th>
+<th style="text-align:center">MemorySize</th>
+<th style="text-align:center">BlobSize</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">优化前</td>
+<td style="text-align:center">11.75kb</td>
+<td style="text-align:center">8.75kb</td>
+<td style="text-align:center">2.8kb</td>
+</tr>
+<tr>
+<td style="text-align:center">优化后</td>
+<td style="text-align:center">5.87kb</td>
+<td style="text-align:center">3.63kb</td>
+<td style="text-align:center">2.8kb</td>
+</tr>
+<tr>
+<td style="text-align:center">对比</td>
+<td style="text-align:center">-50%</td>
+<td style="text-align:center">-58%</td>
+<td style="text-align:center">-0%</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/assets/blogImg/Unity/OptimizeAnimationClip/animationclipinspector.png" alt=""><br>红色框内即是BlobSize，在我的理解，FileSize是指文件在硬盘中占的大小，MemorySize是指把文件读进内存后占的大小，而BlobSize是从内存中的文件序列化出来的对象的二进制大小。所以只压缩精度的动画文件，BlobSize是不会有任何变化的，因为每个浮点数固定占32bit。而文件大小，还是内存大小和AB大小，压缩精度后都会变小。  </p>
+<p>下面这次测试证实了我的想法，下图这个动画文件原来Inspector中Scale的值为4，即有Scale曲线。所以BlobSize减小了27%。<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/hasscalecurve.png" alt="">  </p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">前后</th>
+<th style="text-align:center">FileSize</th>
+<th style="text-align:center">MemorySize</th>
+<th style="text-align:center">BlobSize</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">优化前</td>
+<td style="text-align:center">85.43kb</td>
+<td style="text-align:center">46.29kb</td>
+<td style="text-align:center">10.2kb</td>
+</tr>
+<tr>
+<td style="text-align:center">优化后</td>
+<td style="text-align:center">23.34kb</td>
+<td style="text-align:center">18.69kb</td>
+<td style="text-align:center">7.4kb</td>
+</tr>
+<tr>
+<td style="text-align:center">对比</td>
+<td style="text-align:center">-73%</td>
+<td style="text-align:center">-60</td>
+<td style="text-align:center">-27%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>隔壁项目组对他们项目中所有的动画文件都进行了优化。其中文件大小从820m-&gt;225, ab大小从72m-&gt;64m, 内存大小从50m-&gt;40m。总的来说动画文件的scale越多优化越明显。  </p>
+<h2 id="取BlobSize代码"><a href="#取BlobSize代码" class="headerlink" title="取BlobSize代码"></a>取BlobSize代码</h2><pre><code class="csharp">AnimationClip aniClip = AssetDatabase.LoadAssetAtPath&lt;AnimationClip&gt; (path);
+<span class="keyword">var</span> fileInfo = <span class="keyword">new</span> System.IO.FileInfo(path);
+Debug.Log(fileInfo.Length);<span class="comment">//FileSize</span>
+Debug.Log(Profiler.GetRuntimeMemorySize (aniClip));<span class="comment">//MemorySize</span>
+
+Assembly asm = Assembly.GetAssembly(<span class="keyword">typeof</span>(Editor));
+MethodInfo getAnimationClipStats = <span class="keyword">typeof</span>(AnimationUtility).GetMethod(<span class="string">"GetAnimationClipStats"</span>, BindingFlags.Static | BindingFlags.NonPublic);
+Type aniclipstats = asm.GetType(<span class="string">"UnityEditor.AnimationClipStats"</span>);
+FieldInfo sizeInfo = aniclipstats.GetField (<span class="string">"size"</span>, BindingFlags.Public | BindingFlags.Instance);
+
+<span class="keyword">var</span> stats = getAnimationClipStats.Invoke(<span class="literal">null</span>, <span class="keyword">new</span> <span class="keyword">object</span>[]{aniClip});
+Debug.Log(EditorUtility.FormatBytes((<span class="keyword">int</span>)sizeInfo.GetValue(stats)));<span class="comment">//BlobSize</span>
+</code></pre>
+<h2 id="工具代码"><a href="#工具代码" class="headerlink" title="工具代码"></a>工具代码</h2><p>最后附上工具的代码和简要使用说明，选中想要优化的文件夹或文件，右键Animation-&gt;裁剪浮点数去除Scale。<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/OptimizeAnimationClip.gif" alt="">  </p>
+<pre><code class="csharp"><span class="keyword">using</span> System;
+<span class="keyword">using</span> System.Collections.Generic;
+<span class="keyword">using</span> UnityEngine;
+<span class="keyword">using</span> System.Reflection;
+<span class="keyword">using</span> UnityEditor;
+<span class="keyword">using</span> System.IO;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OptimizeAnimationClipTool</span>
 {
-    Properties
-    {
-        _MainTex (&quot;Main Tex&quot;, 2D) = &quot;white&quot; {}
-        _Color (&quot;Color Tint&quot;, Color) = (1, 1, 1, 1)
-        _VerticalBillboarding (&quot;Vertical Restraints&quot;, Range(0, 1)) = 1
-    }
-    SubShader
-    {
-        Tags { &quot;Queue&quot;=&quot;Transparent&quot; &quot;IgnoreProjector&quot;=&quot;True&quot; &quot;RenderType&quot;=&quot;Transparent&quot; &quot;DisableBatching&quot;=&quot;True&quot; }
+    <span class="keyword">const</span> <span class="keyword">string</span> _AnimationClipExtension = <span class="string">".anim"</span>;
+    <span class="keyword">static</span> List&lt;<span class="keyword">string</span>&gt; _FilesList = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt; ();
+    <span class="keyword">static</span> List&lt;<span class="keyword">string</span>&gt; _Errors = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
+    <span class="keyword">static</span> <span class="keyword">int</span> _FileIndex = <span class="number">0</span>;
 
-        Pass
+    [MenuItem(<span class="string">"Assets/Animation/裁剪浮点数去除Scale"</span>)]
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Optimize</span>(<span class="params"></span>)
+    </span>{
+        CollectFileWithExtension(<span class="keyword">out</span> _FilesList, _AnimationClipExtension);
+        <span class="keyword">if</span> (_FilesList.Count &gt; <span class="number">0</span>)
         {
-            Tags { &quot;LightMode&quot;=&quot;ForwardBase&quot; }
-
-            ZWrite Off
-            Blend SrcAlpha OneMinusSrcAlpha
-            Cull Off
-
-            CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            #include &quot;Lighting.cginc&quot;
-
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-            fixed4 _Color;
-            fixed _VerticalBillboarding;
-
-            struct a2v
-            {
-                float4 vertex : POSITION;
-                float4 texcoord : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float4 pos : SV_POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            v2f vert(a2v v)
-            {
-                v2f o;
-                float3 center = float3(0, 0, 0)
-                float3 viewer = mul(_World2Object, float4(_WorldSpaceCameraPos, 1));
-                float3 normalDir = viewer - center;
-                normalDir.y = normalDir.y * _VerticalBillboarding;
-                normalDir = normalize(normalDir);
-                float3 upDir = abs(normalDir.y) &gt; 0.99 ? float3(0, 0, 1) : float3(0, 1, 0);
-                float3 rightDir = normalize(cross(upDir, normalDir));
-                upDir = normalize(cross(normalDir, rightDir));
-                floar3 centerOffs = v.vertex.xyz - center;
-                floar3 localPos = center + rightDir * centerOffs.x + upDir * centerOffs.y = normalDir * centerOffs.z;
-                o.pos = mul(UNITY_MATRIX_MVP, float4(localPos, 1));
-                o.uv = TRANSFORM_TEX(v.texcoord,_MainTex);
-                return o;
-            }
-
-            fixed4 frag(v2f i) : SV_Target
-            {
-                fixed4 c = tex2D (_MainTex, i.uv);
-                c.rgb *= _Color.rgb;
-                return c;
-            }
-            ENDCG
+            _FileIndex = <span class="number">0</span>;
+            _Errors.Clear ();
+            EditorApplication.update = ScanAnimationClip;
         }
     }
-    Fallback &quot;Transparent/VertexLit&quot;
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ScanAnimationClip</span>(<span class="params"></span>)
+    </span>{
+        <span class="keyword">string</span> file = _FilesList[_FileIndex];
+        <span class="keyword">bool</span> isCancel = EditorUtility.DisplayCancelableProgressBar(<span class="string">"优化AnimationClip"</span>, file, (<span class="keyword">float</span>)_FileIndex / (<span class="keyword">float</span>)_FilesList.Count);
+        OptimizeAnimationClip (_FilesList[_FileIndex]);
+        _FileIndex++;
+        <span class="keyword">if</span> (isCancel || _FileIndex &gt;= _FilesList.Count)
+        {
+            EditorUtility.ClearProgressBar();
+            Debug.Log(<span class="keyword">string</span>.Format(<span class="string">"--优化完成--    错误数量: {0}    总数量: {1}/{2}    错误信息↓:\n{3}\n----------输出完毕----------"</span>, _Errors.Count, _FileIndex, _FilesList.Count, <span class="keyword">string</span>.Join(<span class="keyword">string</span>.Empty, _Errors.ToArray())));
+            Resources.UnloadUnusedAssets();
+            GC.Collect();
+            AssetDatabase.SaveAssets();
+            EditorApplication.update = <span class="literal">null</span>;
+            _FilesList.Clear();
+            _FileIndex = <span class="number">0</span>;
+        }
+    }
+
+    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">OptimizeAnimationClip</span>(<span class="params"><span class="keyword">string</span> path</span>)
+    </span>{
+        AnimationClip aniClip = AssetDatabase.LoadAssetAtPath&lt;AnimationClip&gt; (path);
+        <span class="keyword">if</span>(aniClip != <span class="literal">null</span>)
+        {
+            <span class="keyword">try</span>
+            {
+                <span class="comment">//clear scale curve</span>
+                <span class="keyword">foreach</span>(EditorCurveBinding curveBinding <span class="keyword">in</span> AnimationUtility.GetCurveBindings(aniClip))
+                {
+                    <span class="keyword">string</span> name = curveBinding.propertyName.ToLower();
+                    <span class="keyword">if</span>(name.Contains(<span class="string">"scale"</span>))
+                    {
+                        AnimationUtility.SetEditorCurve(aniClip, curveBinding, <span class="literal">null</span>);
+                    }
+                }
+
+                <span class="comment">//float cut to f3</span>
+                AnimationClipCurveData[] curveDatas = <span class="literal">null</span>;
+                curveDatas = AnimationUtility.GetAllCurves(aniClip);
+                Keyframe key;
+                Keyframe[] keyFrames;
+                <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; curveDatas.Length; ++i)
+                {
+                    AnimationClipCurveData curveData = curveDatas[i];
+                    <span class="keyword">if</span>(curveData.curve == <span class="literal">null</span> || curveData.curve.keys == <span class="literal">null</span>)
+                    {
+                        <span class="keyword">string</span> error = <span class="keyword">string</span>.Format(<span class="string">"AnimationClipCurveData {0} don't have any curve;Animation name {1}"</span>, curveData, path);
+                        _Errors.Add(error + <span class="string">"\n"</span>);
+                        Debug.LogWarning(error);
+                    }
+                    keyFrames = curveData.curve.keys;
+                    <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; keyFrames.Length; k++)
+                    {
+                        key = keyFrames[k];
+                        key.<span class="keyword">value</span> = <span class="keyword">float</span>.Parse(key.<span class="keyword">value</span>.ToString(<span class="string">"F3"</span>));
+                        key.inTangent = <span class="keyword">float</span>.Parse(key.inTangent.ToString(<span class="string">"F3"</span>));
+                        key.outTangent = <span class="keyword">float</span>.Parse(key.outTangent.ToString(<span class="string">"F3"</span>));
+                        keyFrames[k] = key;
+                    }
+                    curveData.curve.keys = keyFrames;
+                    aniClip.SetCurve(curveData.path, curveData.type, curveData.propertyName, curveData.curve);
+                }
+            }
+            <span class="keyword">catch</span>(System.Exception e)
+            {
+                <span class="keyword">string</span> error = <span class="keyword">string</span>.Format (<span class="string">"CompressAnimationClip Failed ! animationPath = {0} error = {1}"</span>, path, e);
+                _Errors.Add(error + <span class="string">"\n"</span>);
+                Debug.LogError(error);
+            }
+
+        }
+    }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CollectFileWithExtension</span>(<span class="params"><span class="keyword">out</span> List&lt;<span class="keyword">string</span>&gt; files, <span class="keyword">string</span> extension</span>)
+    </span>{
+        files = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt; ();
+        List&lt;<span class="keyword">string</span>&gt; _TopLvPath = GetTopLvSelected();
+        <span class="keyword">string</span> path = <span class="keyword">string</span>.Empty;
+        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; _TopLvPath.Count; i++)
+        {
+            path = _TopLvPath[i];
+            <span class="keyword">if</span> (File.Exists(path))
+            {
+                <span class="keyword">if</span> (Path.GetExtension(path) == extension &amp;&amp; !files.Contains(path))
+                    files.Add(path);
+            }
+            <span class="keyword">else</span>
+            {
+                CollectFile (<span class="keyword">ref</span> files, path, extension);
+            }
+        }
+    }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CollectFile</span>(<span class="params"><span class="keyword">ref</span> List&lt;<span class="keyword">string</span>&gt; files, <span class="keyword">string</span> folder, <span class="keyword">string</span> extension, <span class="keyword">bool</span> recursive = <span class="literal">true</span></span>)
+    </span>{
+        folder = AppendSlash (folder);
+        DirectoryInfo dir = <span class="keyword">new</span> DirectoryInfo(folder);
+        <span class="keyword">foreach</span> (<span class="keyword">var</span> file <span class="keyword">in</span> dir.GetFiles())
+        {
+            <span class="keyword">string</span> fpath = folder + file.Name;
+            <span class="keyword">if</span> (file.Extension == extension &amp;&amp; !files.Contains(fpath))
+                files.Add(fpath);
+        }
+        <span class="keyword">if</span> (recursive)
+        {
+            <span class="keyword">foreach</span> (<span class="keyword">var</span> sub <span class="keyword">in</span> dir.GetDirectories())
+            {
+                CollectFile(<span class="keyword">ref</span> files, folder + sub.Name, extension, recursive);
+            }
+        }
+    }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;<span class="keyword">string</span>&gt; <span class="title">GetTopLvSelected</span>(<span class="params"></span>)
+    </span>{
+        UnityEngine.Object[] objs = Selection.GetFiltered(<span class="keyword">typeof</span>(<span class="keyword">object</span>), SelectionMode.Assets);
+        List&lt;<span class="keyword">string</span>&gt; _SelectedPath = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
+        List&lt;<span class="keyword">string</span>&gt; _TopLvPath = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
+        <span class="keyword">bool</span> _IsTopLv = <span class="literal">true</span>;
+        <span class="keyword">string</span> path = <span class="keyword">string</span>.Empty;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; objs.Length; i++)
+        {
+            _SelectedPath.Add(AssetDatabase.GetAssetPath(objs[i]));
+        }
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; _SelectedPath.Count; i++)
+        {
+            path = _SelectedPath[i];
+            _IsTopLv = <span class="literal">true</span>;
+            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; _SelectedPath.Count; k++)
+            {
+                <span class="keyword">if</span> (i != k &amp;&amp; path.Contains(_SelectedPath[k]))
+                {
+                    _IsTopLv = <span class="literal">false</span>;
+                    <span class="keyword">break</span>;
+                }
+            }
+            <span class="keyword">if</span> (_IsTopLv)
+                _TopLvPath.Add(path);
+        }
+        <span class="keyword">return</span> _TopLvPath;
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">string</span> <span class="title">AppendSlash</span>(<span class="params"><span class="keyword">string</span> path</span>)
+    </span>{
+        <span class="keyword">if</span> (path == <span class="literal">null</span> || path == <span class="string">""</span>)
+            <span class="keyword">return</span> <span class="string">""</span>;
+        <span class="keyword">int</span> idx = path.LastIndexOf(<span class="string">'/'</span>);
+        <span class="keyword">if</span> (idx == <span class="number">-1</span>)
+            <span class="keyword">return</span> path + <span class="string">"/"</span>;
+        <span class="keyword">if</span> (idx == path.Length - <span class="number">1</span>)
+            <span class="keyword">return</span> path;
+        <span class="keyword">return</span> path + <span class="string">"/"</span>;
+    }
 }
 </code></pre>
+
       
 
       
@@ -278,7 +489,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Unity</a>
         		</li>
       		
 		</ul>
@@ -334,7 +545,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http:blog.codershu.com/2017/01/14/billboarding/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http:blog.codershu.com/2017/06/14/UnityOptimizeAnimationClip/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -348,18 +559,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/01/16/alphatest/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          透明测试
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/01/11/uvanimationshader/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">顶点动画</div>
+    <a href="/2017/05/08/luaperformance/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Lua性能优化（一）：Lua内存优化</div>
       <i class="icon-circle-right"></i>
     </a>
   
