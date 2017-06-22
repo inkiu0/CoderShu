@@ -16,10 +16,10 @@
 <meta property="og:site_name" content="南昌小白龙的blog">
 <meta property="og:description" content="主要思路 压缩浮点数精度   去除scale曲线">
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/noscalecurve.png">
-<meta property="og:image" content="blog.codershu.com/2017/06/14/UnityOptimizeAnimationClip/animationclipinspector.png">
-<meta property="og:image" content="blog.codershu.com/2017/06/14/UnityOptimizeAnimationClip/hasscalecurve.png">
+<meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/animationclipinspector.png">
+<meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/hasscalecurve.png">
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/OptimizeAnimationClip.gif">
-<meta property="og:updated_time" content="2017-06-22T16:31:26.991Z">
+<meta property="og:updated_time" content="2017-06-22T16:34:30.823Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unity动画文件优化探究">
 <meta name="twitter:description" content="主要思路 压缩浮点数精度   去除scale曲线">
@@ -232,8 +232,8 @@
 </tr>
 </tbody>
 </table>
-<p><img src="animationclipinspector.png" alt=""><br>红色框内即是BlobSize，在我的理解，FileSize是指文件在硬盘中占的大小，BlobSize是从内存中的文件序列化出来的对象的二进制大小。Editor下的MemorySize不仅有序列化后的内存大小，还维护了一份原文件的内存。就像我们在Editor下加载一张Texture内存是双份一样，而真机下就约等于BlobSize。真机下的MemorySize和Inspector里的BlobSize非常接近，BlobSize可以认为是真机上的内存大小，这个大小更有参考意义。所以只压缩精度的动画文件，BlobSize是不会有任何变化的，因为每个浮点数固定占32bit。而文件大小、AB大小、Editor下的内存大小，压缩精度后都会变小。  </p>
-<p>下面这次测试证实了我的想法，下图这个动画文件原来Inspector中Scale的值为4，即有Scale曲线。所以BlobSize减小了27%。<br><img src="hasscalecurve.png" alt="">  </p>
+<p><img src="/assets/blogImg/Unity/OptimizeAnimationClip/animationclipinspector.png" alt=""><br>红色框内即是BlobSize，在我的理解，FileSize是指文件在硬盘中占的大小，BlobSize是从内存中的文件序列化出来的对象的二进制大小。Editor下的MemorySize不仅有序列化后的内存大小，还维护了一份原文件的内存。就像我们在Editor下加载一张Texture内存是双份一样，而真机下就约等于BlobSize。真机下的MemorySize和Inspector里的BlobSize非常接近，BlobSize可以认为是真机上的内存大小，这个大小更有参考意义。所以只压缩精度的动画文件，BlobSize是不会有任何变化的，因为每个浮点数固定占32bit。而文件大小、AB大小、Editor下的内存大小，压缩精度后都会变小。  </p>
+<p>下面这次测试证实了我的想法，下图这个动画文件原来Inspector中Scale的值为4，即有Scale曲线。所以BlobSize减小了27%。<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/hasscalecurve.png" alt="">  </p>
 <table>
 <thead>
 <tr>
