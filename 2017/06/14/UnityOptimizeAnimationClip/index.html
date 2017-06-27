@@ -18,8 +18,9 @@
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/noscalecurve.png">
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/animationclipinspector.png">
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/hasscalecurve.png">
+<meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/ConstantCurve.png">
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/OptimizeAnimationClip.gif">
-<meta property="og:updated_time" content="2017-06-22T16:34:30.823Z">
+<meta property="og:updated_time" content="2017-06-27T05:53:28.253Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unity动画文件优化探究">
 <meta name="twitter:description" content="主要思路 压缩浮点数精度   去除scale曲线">
@@ -232,7 +233,7 @@
 </tr>
 </tbody>
 </table>
-<p><img src="/assets/blogImg/Unity/OptimizeAnimationClip/animationclipinspector.png" alt=""><br>红色框内即是BlobSize，在我的理解，FileSize是指文件在硬盘中占的大小，BlobSize是从内存中的文件序列化出来的对象的二进制大小。Editor下的MemorySize不仅有序列化后的内存大小，还维护了一份原文件的内存。就像我们在Editor下加载一张Texture内存是双份一样，而真机下就约等于BlobSize。真机下的MemorySize和Inspector里的BlobSize非常接近，BlobSize可以认为是真机上的内存大小，这个大小更有参考意义。所以只压缩精度的动画文件，BlobSize是不会有任何变化的，因为每个浮点数固定占32bit。而文件大小、AB大小、Editor下的内存大小，压缩精度后都会变小。  </p>
+<p><img src="/assets/blogImg/Unity/OptimizeAnimationClip/animationclipinspector.png" alt=""><br>红色框内即是BlobSize，在我的理解，FileSize是指文件在硬盘中占的大小，BlobSize是从文件反序列化出来的对象的二进制大小。Editor下的MemorySize不仅有序列化后的内存大小，还维护了一份原文件的内存。就像我们在Editor下加载一张Texture内存是双份一样，而真机下就约等于BlobSize。真机下的MemorySize和Inspector里的BlobSize非常接近，BlobSize可以认为是真机上的内存大小，这个大小更有参考意义。  </p>
 <p>下面这次测试证实了我的想法，下图这个动画文件原来Inspector中Scale的值为4，即有Scale曲线。所以BlobSize减小了27%。<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/hasscalecurve.png" alt="">  </p>
 <table>
 <thead>
@@ -265,6 +266,8 @@
 </tr>
 </tbody>
 </table>
+<h2 id="Curve减少导致内存减小"><a href="#Curve减少导致内存减小" class="headerlink" title="Curve减少导致内存减小"></a>Curve减少导致内存减小</h2><p>从上面的实验可以看出来，只动画文件的压缩精度，没有引起Curve减少。BlobSize是不会有任何变化的，因为每个浮点数固定占32bit。而文件大小、AB大小、Editor下的内存大小，压缩精度后不管有没有引起Curve的变化，都会变小。<br>裁剪动画文件的精度，意味着点的位置发生了变化，所以Constant Curve和Dense Curve的数量也有可能发生变化。由于是裁剪精度所以动画的点更稀疏了，而连续相同的点更多了。所以Dense Curve是减少了，Constant Curve是增多了，总的内存是减小了。  </p>
+<p>Constant Curve只需要最左边的点就可以描述一个曲线段<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/ConstantCurve.png" alt=""></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>隔壁项目组对他们项目中所有的动画文件都进行了优化。其中文件大小从820m-&gt;225, ab大小从72m-&gt;64m, 内存大小从50m-&gt;40m。总的来说动画文件的scale越多优化越明显。  </p>
 <h2 id="取BlobSize代码"><a href="#取BlobSize代码" class="headerlink" title="取BlobSize代码"></a>取BlobSize代码</h2><pre><code class="csharp">AnimationClip aniClip = AssetDatabase.LoadAssetAtPath&lt;AnimationClip&gt; (path);
 <span class="keyword">var</span> fileInfo = <span class="keyword">new</span> System.IO.FileInfo(path);
@@ -280,183 +283,266 @@ FieldInfo sizeInfo = aniclipstats.GetField (<span class="string">"size"</span>, 
 Debug.Log(EditorUtility.FormatBytes((<span class="keyword">int</span>)sizeInfo.GetValue(stats)));<span class="comment">//BlobSize</span>
 </code></pre>
 <h2 id="工具代码"><a href="#工具代码" class="headerlink" title="工具代码"></a>工具代码</h2><p>最后附上工具的代码和简要使用说明，选中想要优化的文件夹或文件，右键Animation-&gt;裁剪浮点数去除Scale。<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/OptimizeAnimationClip.gif" alt="">  </p>
-<pre><code class="csharp"><span class="keyword">using</span> System;
+<pre><code class="csharp"><span class="comment">/*
+Author: suijiabin
+*/</span>
+<span class="keyword">using</span> System;
 <span class="keyword">using</span> System.Collections.Generic;
 <span class="keyword">using</span> UnityEngine;
 <span class="keyword">using</span> System.Reflection;
 <span class="keyword">using</span> UnityEditor;
 <span class="keyword">using</span> System.IO;
 
-<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OptimizeAnimationClipTool</span>
+<span class="keyword">namespace</span> <span class="title">EditorTool</span>
 {
-    <span class="keyword">const</span> <span class="keyword">string</span> _AnimationClipExtension = <span class="string">".anim"</span>;
-    <span class="keyword">static</span> List&lt;<span class="keyword">string</span>&gt; _FilesList = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt; ();
-    <span class="keyword">static</span> List&lt;<span class="keyword">string</span>&gt; _Errors = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
-    <span class="keyword">static</span> <span class="keyword">int</span> _FileIndex = <span class="number">0</span>;
+    <span class="keyword">class</span> <span class="title">AnimationOpt</span>
+    {
+        <span class="keyword">static</span> Dictionary&lt;<span class="keyword">uint</span>,<span class="keyword">string</span>&gt; _FLOAT_FORMAT;
+        <span class="keyword">static</span> MethodInfo getAnimationClipStats;
+        <span class="keyword">static</span> FieldInfo sizeInfo;
+        <span class="keyword">static</span> <span class="keyword">object</span>[] _param = <span class="keyword">new</span> <span class="keyword">object</span>[<span class="number">1</span>];
 
-    [MenuItem(<span class="string">"Assets/Animation/裁剪浮点数去除Scale"</span>)]
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Optimize</span>(<span class="params"></span>)
-    </span>{
-        CollectFileWithExtension(<span class="keyword">out</span> _FilesList, _AnimationClipExtension);
-        <span class="keyword">if</span> (_FilesList.Count &gt; <span class="number">0</span>)
-        {
-            _FileIndex = <span class="number">0</span>;
-            _Errors.Clear ();
-            EditorApplication.update = ScanAnimationClip;
+        <span class="function"><span class="keyword">static</span> <span class="title">AnimationOpt</span> (<span class="params"></span>)
+        </span>{
+            _FLOAT_FORMAT = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">uint</span>, <span class="keyword">string</span>&gt; ();
+            <span class="keyword">for</span> (<span class="keyword">uint</span> i = <span class="number">1</span>; i &lt; <span class="number">6</span>; i++) {
+                _FLOAT_FORMAT.Add (i, <span class="string">"f"</span> + i.ToString ());
+            }
+            Assembly asm = Assembly.GetAssembly (<span class="keyword">typeof</span>(Editor));
+            getAnimationClipStats = <span class="keyword">typeof</span>(AnimationUtility).GetMethod (<span class="string">"GetAnimationClipStats"</span>, BindingFlags.Static | BindingFlags.NonPublic);
+            Type aniclipstats = asm.GetType (<span class="string">"UnityEditor.AnimationClipStats"</span>);
+            sizeInfo = aniclipstats.GetField (<span class="string">"size"</span>, BindingFlags.Public | BindingFlags.Instance);
         }
-    }
 
-    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ScanAnimationClip</span>(<span class="params"></span>)
-    </span>{
-        <span class="keyword">string</span> file = _FilesList[_FileIndex];
-        <span class="keyword">bool</span> isCancel = EditorUtility.DisplayCancelableProgressBar(<span class="string">"优化AnimationClip"</span>, file, (<span class="keyword">float</span>)_FileIndex / (<span class="keyword">float</span>)_FilesList.Count);
-        OptimizeAnimationClip (_FilesList[_FileIndex]);
-        _FileIndex++;
-        <span class="keyword">if</span> (isCancel || _FileIndex &gt;= _FilesList.Count)
-        {
-            EditorUtility.ClearProgressBar();
-            Debug.Log(<span class="keyword">string</span>.Format(<span class="string">"--优化完成--    错误数量: {0}    总数量: {1}/{2}    错误信息↓:\n{3}\n----------输出完毕----------"</span>, _Errors.Count, _FileIndex, _FilesList.Count, <span class="keyword">string</span>.Join(<span class="keyword">string</span>.Empty, _Errors.ToArray())));
-            Resources.UnloadUnusedAssets();
-            GC.Collect();
-            AssetDatabase.SaveAssets();
-            EditorApplication.update = <span class="literal">null</span>;
-            _FilesList.Clear();
-            _FileIndex = <span class="number">0</span>;
+        AnimationClip _clip;
+        <span class="keyword">string</span> _path;
+
+        <span class="keyword">public</span> <span class="keyword">string</span> path { <span class="keyword">get</span>{ <span class="keyword">return</span> _path;} }
+
+        <span class="keyword">public</span> <span class="keyword">long</span> originFileSize { <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; }
+
+        <span class="keyword">public</span> <span class="keyword">int</span> originMemorySize { <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; }
+
+        <span class="keyword">public</span> <span class="keyword">int</span> originInspectorSize { <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; }
+
+        <span class="keyword">public</span> <span class="keyword">long</span> optFileSize { <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; }
+
+        <span class="keyword">public</span> <span class="keyword">int</span> optMemorySize { <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; }
+
+        <span class="keyword">public</span> <span class="keyword">int</span> optInspectorSize { <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; }
+
+        <span class="function"><span class="keyword">public</span> <span class="title">AnimationOpt</span> (<span class="params"><span class="keyword">string</span> path, AnimationClip clip</span>)
+        </span>{
+            _path = path;
+            _clip = clip;
+            _GetOriginSize ();
         }
-    }
 
-    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">OptimizeAnimationClip</span>(<span class="params"><span class="keyword">string</span> path</span>)
-    </span>{
-        AnimationClip aniClip = AssetDatabase.LoadAssetAtPath&lt;AnimationClip&gt; (path);
-        <span class="keyword">if</span>(aniClip != <span class="literal">null</span>)
+        <span class="keyword">void</span> _GetOriginSize ()
         {
-            <span class="keyword">try</span>
-            {
-                <span class="comment">//clear scale curve</span>
-                <span class="keyword">foreach</span>(EditorCurveBinding curveBinding <span class="keyword">in</span> AnimationUtility.GetCurveBindings(aniClip))
-                {
-                    <span class="keyword">string</span> name = curveBinding.propertyName.ToLower();
-                    <span class="keyword">if</span>(name.Contains(<span class="string">"scale"</span>))
-                    {
-                        AnimationUtility.SetEditorCurve(aniClip, curveBinding, <span class="literal">null</span>);
+            originFileSize = _GetFileZie ();
+            originMemorySize = _GetMemSize ();
+            originInspectorSize = _GetInspectorSize ();
+        }
+
+        <span class="keyword">void</span> _GetOptSize ()
+        {
+            optFileSize = _GetFileZie ();
+            optMemorySize = _GetMemSize ();
+            optInspectorSize = _GetInspectorSize ();
+        }
+
+        <span class="keyword">long</span> _GetFileZie ()
+        {
+            FileInfo fi = <span class="keyword">new</span> FileInfo (_path);
+            <span class="keyword">return</span> fi.Length;
+        }
+
+        <span class="keyword">int</span> _GetMemSize ()
+        {
+            <span class="keyword">return</span> Profiler.GetRuntimeMemorySize (_clip);
+        }
+
+        <span class="keyword">int</span> _GetInspectorSize ()
+        {
+            _param [<span class="number">0</span>] = _clip;
+            <span class="keyword">var</span> stats = getAnimationClipStats.Invoke (<span class="literal">null</span>, _param);
+            <span class="keyword">return</span> (<span class="keyword">int</span>)sizeInfo.GetValue (stats);
+        }
+
+        <span class="keyword">void</span> _OptmizeAnimationScaleCurve ()
+        {
+            <span class="keyword">if</span> (_clip != <span class="literal">null</span>) {
+                <span class="comment">//去除scale曲线</span>
+                <span class="keyword">foreach</span> (EditorCurveBinding theCurveBinding <span class="keyword">in</span> AnimationUtility.GetCurveBindings(_clip)) {
+                    <span class="keyword">string</span> name = theCurveBinding.propertyName.ToLower ();
+                    <span class="keyword">if</span> (name.Contains (<span class="string">"scale"</span>)) {
+                        AnimationUtility.SetEditorCurve (_clip, theCurveBinding, <span class="literal">null</span>);
+                        Debug.LogFormat (<span class="string">"关闭{0}的scale curve"</span>, _clip.name);
                     }
-                }
+                } 
+            }
+        }
 
-                <span class="comment">//float cut to f3</span>
-                AnimationClipCurveData[] curveDatas = <span class="literal">null</span>;
-                curveDatas = AnimationUtility.GetAllCurves(aniClip);
+        <span class="keyword">void</span> _OptmizeAnimationFloat_X (<span class="keyword">uint</span> x)
+        {
+            <span class="keyword">if</span> (_clip != <span class="literal">null</span> &amp;&amp; x &gt; <span class="number">0</span>) {
+                <span class="comment">//浮点数精度压缩到f3</span>
+                AnimationClipCurveData[] curves = <span class="literal">null</span>;
+                curves = AnimationUtility.GetAllCurves (_clip);
                 Keyframe key;
                 Keyframe[] keyFrames;
-                <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; curveDatas.Length; ++i)
-                {
-                    AnimationClipCurveData curveData = curveDatas[i];
-                    <span class="keyword">if</span>(curveData.curve == <span class="literal">null</span> || curveData.curve.keys == <span class="literal">null</span>)
-                    {
-                        <span class="keyword">string</span> error = <span class="keyword">string</span>.Format(<span class="string">"AnimationClipCurveData {0} don't have any curve;Animation name {1}"</span>, curveData, path);
-                        _Errors.Add(error + <span class="string">"\n"</span>);
-                        Debug.LogWarning(error);
+                <span class="keyword">string</span> floatFormat;
+                <span class="keyword">if</span> (_FLOAT_FORMAT.TryGetValue (x, <span class="keyword">out</span> floatFormat)) {
+                    <span class="keyword">if</span> (curves != <span class="literal">null</span> &amp;&amp; curves.Length &gt; <span class="number">0</span>) {
+                        <span class="keyword">for</span> (<span class="keyword">int</span> ii = <span class="number">0</span>; ii &lt; curves.Length; ++ii) {
+                            AnimationClipCurveData curveDate = curves [ii];
+                            <span class="keyword">if</span> (curveDate.curve == <span class="literal">null</span> || curveDate.curve.keys == <span class="literal">null</span>) {
+                                <span class="comment">//Debug.LogWarning(string.Format("AnimationClipCurveData {0} don't have curve; Animation name {1} ", curveDate, animationPath));</span>
+                                <span class="keyword">continue</span>;
+                            }
+                            keyFrames = curveDate.curve.keys;
+                            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; keyFrames.Length; i++) {
+                                key = keyFrames [i];
+                                key.<span class="keyword">value</span> = <span class="keyword">float</span>.Parse (key.<span class="keyword">value</span>.ToString (floatFormat));
+                                key.inTangent = <span class="keyword">float</span>.Parse (key.inTangent.ToString (floatFormat));
+                                key.outTangent = <span class="keyword">float</span>.Parse (key.outTangent.ToString (floatFormat));
+                                keyFrames [i] = key;
+                            }
+                            curveDate.curve.keys = keyFrames;
+                            _clip.SetCurve (curveDate.path, curveDate.type, curveDate.propertyName, curveDate.curve);
+                        }
                     }
-                    keyFrames = curveData.curve.keys;
-                    <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; keyFrames.Length; k++)
-                    {
-                        key = keyFrames[k];
-                        key.<span class="keyword">value</span> = <span class="keyword">float</span>.Parse(key.<span class="keyword">value</span>.ToString(<span class="string">"F3"</span>));
-                        key.inTangent = <span class="keyword">float</span>.Parse(key.inTangent.ToString(<span class="string">"F3"</span>));
-                        key.outTangent = <span class="keyword">float</span>.Parse(key.outTangent.ToString(<span class="string">"F3"</span>));
-                        keyFrames[k] = key;
-                    }
-                    curveData.curve.keys = keyFrames;
-                    aniClip.SetCurve(curveData.path, curveData.type, curveData.propertyName, curveData.curve);
+                } <span class="keyword">else</span> {
+                    Debug.LogErrorFormat (<span class="string">"目前不支持{0}位浮点"</span>, x);
                 }
             }
-            <span class="keyword">catch</span>(System.Exception e)
-            {
-                <span class="keyword">string</span> error = <span class="keyword">string</span>.Format (<span class="string">"CompressAnimationClip Failed ! animationPath = {0} error = {1}"</span>, path, e);
-                _Errors.Add(error + <span class="string">"\n"</span>);
-                Debug.LogError(error);
-            }
+        }
 
+        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Optimize</span> (<span class="params"><span class="keyword">bool</span> scaleOpt, <span class="keyword">uint</span> floatSize</span>)
+        </span>{
+            <span class="keyword">if</span> (scaleOpt) {
+                _OptmizeAnimationScaleCurve ();
+            }
+            _OptmizeAnimationFloat_X (floatSize);
+            _GetOptSize ();
+        }
+
+        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Optimize_Scale_Float3</span> (<span class="params"></span>)
+        </span>{
+            Optimize (<span class="literal">true</span>, <span class="number">3</span>);
+        }
+
+        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LogOrigin</span> (<span class="params"></span>)
+        </span>{
+            _logSize (originFileSize, originMemorySize, originInspectorSize);
+        }
+
+        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LogOpt</span> (<span class="params"></span>)
+        </span>{
+            _logSize (optFileSize, optMemorySize, optInspectorSize);
+        }
+
+        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LogDelta</span> (<span class="params"></span>)
+        </span>{
+
+        }
+
+        <span class="keyword">void</span> _logSize (<span class="keyword">long</span> fileSize, <span class="keyword">int</span> memSize, <span class="keyword">int</span> inspectorSize)
+        {
+            Debug.LogFormat (<span class="string">"{0} \nSize=[ {1} ]"</span>, _path, <span class="keyword">string</span>.Format (<span class="string">"FSize={0} ; Mem-&gt;{1} ; inspector-&gt;{2}"</span>,
+                EditorUtility.FormatBytes (fileSize), EditorUtility.FormatBytes (memSize), EditorUtility.FormatBytes (inspectorSize)));
         }
     }
 
-    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CollectFileWithExtension</span>(<span class="params"><span class="keyword">out</span> List&lt;<span class="keyword">string</span>&gt; files, <span class="keyword">string</span> extension</span>)
-    </span>{
-        files = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt; ();
-        List&lt;<span class="keyword">string</span>&gt; _TopLvPath = GetTopLvSelected();
-        <span class="keyword">string</span> path = <span class="keyword">string</span>.Empty;
-        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; _TopLvPath.Count; i++)
-        {
-            path = _TopLvPath[i];
-            <span class="keyword">if</span> (File.Exists(path))
+    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OptimizeAnimationClipTool</span>
+    {
+        <span class="keyword">static</span> List&lt;AnimationOpt&gt; _AnimOptList = <span class="keyword">new</span> List&lt;AnimationOpt&gt; ();
+        <span class="keyword">static</span> List&lt;<span class="keyword">string</span>&gt; _Errors = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
+        <span class="keyword">static</span> <span class="keyword">int</span> _Index = <span class="number">0</span>;
+
+        [MenuItem(<span class="string">"Assets/Animation/裁剪浮点数去除Scale"</span>)]
+        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Optimize</span>(<span class="params"></span>)
+        </span>{
+            _AnimOptList = FindAnims ();
+            <span class="keyword">if</span> (_AnimOptList.Count &gt; <span class="number">0</span>)
             {
-                <span class="keyword">if</span> (Path.GetExtension(path) == extension &amp;&amp; !files.Contains(path))
-                    files.Add(path);
+                _Index = <span class="number">0</span>;
+                _Errors.Clear ();
+                EditorApplication.update = ScanAnimationClip;
+            }
+        }
+
+        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ScanAnimationClip</span>(<span class="params"></span>)
+        </span>{
+            AnimationOpt _AnimOpt = _AnimOptList[_Index];
+            <span class="keyword">bool</span> isCancel = EditorUtility.DisplayCancelableProgressBar(<span class="string">"优化AnimationClip"</span>, _AnimOpt.path, (<span class="keyword">float</span>)_Index / (<span class="keyword">float</span>)_AnimOptList.Count);
+            _AnimOpt.Optimize_Scale_Float3();
+            _Index++;
+            <span class="keyword">if</span> (isCancel || _Index &gt;= _AnimOptList.Count)
+            {
+                EditorUtility.ClearProgressBar();
+                Debug.Log(<span class="keyword">string</span>.Format(<span class="string">"--优化完成--    错误数量: {0}    总数量: {1}/{2}    错误信息↓:\n{3}\n----------输出完毕----------"</span>, _Errors.Count, _Index, _AnimOptList.Count, <span class="keyword">string</span>.Join(<span class="keyword">string</span>.Empty, _Errors.ToArray())));
+                Resources.UnloadUnusedAssets();
+                GC.Collect();
+                AssetDatabase.SaveAssets();
+                EditorApplication.update = <span class="literal">null</span>;
+                _AnimOptList.Clear();
+                _cachedOpts.Clear ();
+                _Index = <span class="number">0</span>;
+            }
+        }
+
+        <span class="keyword">static</span> Dictionary&lt;<span class="keyword">string</span>,AnimationOpt&gt; _cachedOpts = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, AnimationOpt&gt; ();
+
+        <span class="keyword">static</span> AnimationOpt _GetNewAOpt (<span class="keyword">string</span> path)
+        {
+            AnimationOpt opt = <span class="literal">null</span>;
+            <span class="keyword">if</span> (!_cachedOpts.ContainsKey(path)) {
+                AnimationClip clip = AssetDatabase.LoadAssetAtPath&lt;AnimationClip&gt; (path);
+                <span class="keyword">if</span> (clip != <span class="literal">null</span>) {
+                    opt = <span class="keyword">new</span> AnimationOpt (path, clip);
+                    _cachedOpts [path] = opt;
+                }
+            }
+            <span class="keyword">return</span> opt;
+        }
+
+        <span class="function"><span class="keyword">static</span> List&lt;AnimationOpt&gt; <span class="title">FindAnims</span>(<span class="params"></span>)
+        </span>{
+            <span class="keyword">string</span>[] guids = <span class="literal">null</span>;
+            List&lt;<span class="keyword">string</span>&gt; path = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
+            List&lt;AnimationOpt&gt; assets = <span class="keyword">new</span> List&lt;AnimationOpt&gt; ();
+            UnityEngine.Object[] objs = Selection.GetFiltered(<span class="keyword">typeof</span>(<span class="keyword">object</span>), SelectionMode.Assets);
+            <span class="keyword">if</span> (objs.Length &gt; <span class="number">0</span>)
+            {
+                <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; objs.Length; i++)
+                {
+                    <span class="keyword">if</span> (objs [i].GetType () == <span class="keyword">typeof</span>(AnimationClip))
+                    {
+                        <span class="keyword">string</span> p = AssetDatabase.GetAssetPath (objs [i]);
+                        AnimationOpt animopt = _GetNewAOpt (p);
+                        <span class="keyword">if</span> (animopt != <span class="literal">null</span>)
+                            assets.Add (animopt);
+                    }
+                    <span class="keyword">else</span>
+                        path.Add(AssetDatabase.GetAssetPath (objs [i]));
+                }
+                guids = AssetDatabase.FindAssets (<span class="keyword">string</span>.Format (<span class="string">"t:{0}"</span>, <span class="keyword">typeof</span>(AnimationClip).ToString().Replace(<span class="string">"UnityEngine."</span>, <span class="string">""</span>)), path.ToArray());
             }
             <span class="keyword">else</span>
             {
-                CollectFile (<span class="keyword">ref</span> files, path, extension);
+                guids = AssetDatabase.FindAssets (<span class="keyword">string</span>.Format (<span class="string">"t:{0}"</span>, <span class="keyword">typeof</span>(AnimationClip).ToString().Replace(<span class="string">"UnityEngine."</span>, <span class="string">""</span>)));
             }
-        }
-    }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CollectFile</span>(<span class="params"><span class="keyword">ref</span> List&lt;<span class="keyword">string</span>&gt; files, <span class="keyword">string</span> folder, <span class="keyword">string</span> extension, <span class="keyword">bool</span> recursive = <span class="literal">true</span></span>)
-    </span>{
-        folder = AppendSlash (folder);
-        DirectoryInfo dir = <span class="keyword">new</span> DirectoryInfo(folder);
-        <span class="keyword">foreach</span> (<span class="keyword">var</span> file <span class="keyword">in</span> dir.GetFiles())
-        {
-            <span class="keyword">string</span> fpath = folder + file.Name;
-            <span class="keyword">if</span> (file.Extension == extension &amp;&amp; !files.Contains(fpath))
-                files.Add(fpath);
-        }
-        <span class="keyword">if</span> (recursive)
-        {
-            <span class="keyword">foreach</span> (<span class="keyword">var</span> sub <span class="keyword">in</span> dir.GetDirectories())
+            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; guids.Length; i++)
             {
-                CollectFile(<span class="keyword">ref</span> files, folder + sub.Name, extension, recursive);
+                <span class="keyword">string</span> assetPath = AssetDatabase.GUIDToAssetPath (guids [i]);
+                AnimationOpt animopt = _GetNewAOpt (assetPath);
+                <span class="keyword">if</span> (animopt != <span class="literal">null</span>)
+                    assets.Add (animopt);
             }
+            <span class="keyword">return</span> assets;
         }
-    }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;<span class="keyword">string</span>&gt; <span class="title">GetTopLvSelected</span>(<span class="params"></span>)
-    </span>{
-        UnityEngine.Object[] objs = Selection.GetFiltered(<span class="keyword">typeof</span>(<span class="keyword">object</span>), SelectionMode.Assets);
-        List&lt;<span class="keyword">string</span>&gt; _SelectedPath = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
-        List&lt;<span class="keyword">string</span>&gt; _TopLvPath = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
-        <span class="keyword">bool</span> _IsTopLv = <span class="literal">true</span>;
-        <span class="keyword">string</span> path = <span class="keyword">string</span>.Empty;
-        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; objs.Length; i++)
-        {
-            _SelectedPath.Add(AssetDatabase.GetAssetPath(objs[i]));
-        }
-        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; _SelectedPath.Count; i++)
-        {
-            path = _SelectedPath[i];
-            _IsTopLv = <span class="literal">true</span>;
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; _SelectedPath.Count; k++)
-            {
-                <span class="keyword">if</span> (i != k &amp;&amp; path.Contains(_SelectedPath[k]))
-                {
-                    _IsTopLv = <span class="literal">false</span>;
-                    <span class="keyword">break</span>;
-                }
-            }
-            <span class="keyword">if</span> (_IsTopLv)
-                _TopLvPath.Add(path);
-        }
-        <span class="keyword">return</span> _TopLvPath;
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">string</span> <span class="title">AppendSlash</span>(<span class="params"><span class="keyword">string</span> path</span>)
-    </span>{
-        <span class="keyword">if</span> (path == <span class="literal">null</span> || path == <span class="string">""</span>)
-            <span class="keyword">return</span> <span class="string">""</span>;
-        <span class="keyword">int</span> idx = path.LastIndexOf(<span class="string">'/'</span>);
-        <span class="keyword">if</span> (idx == <span class="number">-1</span>)
-            <span class="keyword">return</span> path + <span class="string">"/"</span>;
-        <span class="keyword">if</span> (idx == path.Length - <span class="number">1</span>)
-            <span class="keyword">return</span> path;
-        <span class="keyword">return</span> path + <span class="string">"/"</span>;
     }
 }
 </code></pre>
