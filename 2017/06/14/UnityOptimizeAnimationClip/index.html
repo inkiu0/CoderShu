@@ -20,7 +20,7 @@
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/hasscalecurve.png">
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/ConstantCurve.png">
 <meta property="og:image" content="/assets/blogImg/Unity/OptimizeAnimationClip/OptimizeAnimationClip.gif">
-<meta property="og:updated_time" content="2017-06-27T05:58:24.172Z">
+<meta property="og:updated_time" content="2017-06-27T06:01:45.837Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unity动画文件优化探究">
 <meta name="twitter:description" content="主要思路 压缩浮点数精度   去除scale曲线">
@@ -181,7 +181,7 @@
 <li>去除scale曲线  </li>
 </ol>
 <a id="more"></a>  
-<h2 id="各Size含义"><a href="#各Size含义" class="headerlink" title="各Size含义"></a>各Size含义</h2><p>在参考了王亮的代码后，我也尝试优化了动画文件，发现一个很奇怪的现象。下图中Inspector中显示的大小并没有任何变化，但是文件大小和Profiler中的内存大小确实是减小了。那么Inspector中显示的Size是什么含义呢？<br>下图中的动画文件不包含Scale曲线，所以这次优化中只压缩了浮点数精度。<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/noscalecurve.png" alt=""><br>我分别对比了动画文件优化前和优化后的大小  </p>
+<h2 id="各Size含义"><a href="#各Size含义" class="headerlink" title="各Size含义"></a>各Size含义</h2><p>在参考了王亮的代码后，我也尝试优化了动画文件，发现一个很奇怪的现象。下图中Inspector中显示的大小并没有任何变化，但是文件大小和Profiler中的内存大小确实是减小了。那么Inspector中显示的Size是什么含义呢？<br>下图中的动画文件不包含Scale曲线，所以这次优化中只压缩了浮点数精度。<br><img src="/assets/blogImg/Unity/OptimizeAnimationClip/noscalecurve.png" alt=""><br>我分别对比了动画文件优化前和优化后的大小  </p>
 <ul>
 <li>FileSize<ul>
 <li>FileInfo.Length取得的文件大小  </li>
