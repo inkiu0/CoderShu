@@ -151,6 +151,72 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-reflection" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/22/reflection/">反射材质</a>
+    </h1>
+  
+
+        
+        <a href="/2016/12/22/reflection/" class="archive-article-date">
+  	<time datetime="2016-12-21T18:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/UnityShader/QQ图片20161222020100.png" alt=""><br>这是使用了反射材质的水壶，模拟了金属反射室内的情况。室内用的是一个天空球模拟的。  </p>
+<pre><code>fixed fresnel = _FresnelScale + (1 - _FresnelScale) * pow(1 - dot(worldViewDir, worldNormal), 5);
+</code></pre><p>在片元着色器添加一行菲涅尔反射用的参数，然后将正常的ReflectionShader的_ReflectAmount换成新计算的fresnel，改变插值的系数。</p>
+        
+          <a class="article-more-a" href="/2016/12/22/reflection/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/12/22/reflection/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-shadow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -802,77 +868,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/11/11/assetbundleRedencyCheck/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-separateAlpha" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/31/separateAlpha/">Alpha分离</a>
-    </h1>
-  
-
-        
-        <a href="/2016/10/31/separateAlpha/" class="archive-article-date">
-  	<time datetime="2016-10-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="1-为什么要进行Alpha分离？"><a href="#1-为什么要进行Alpha分离？" class="headerlink" title="1. 为什么要进行Alpha分离？"></a>1. 为什么要进行Alpha分离？</h2><ul>
-<li>使得图集可以压缩，减小包量。</li>
-</ul>
-<h2 id="2-Alpha分离要点"><a href="#2-Alpha分离要点" class="headerlink" title="2. Alpha分离要点"></a>2. Alpha分离要点</h2><h3 id="1-分离"><a href="#1-分离" class="headerlink" title="1. 分离"></a>1. 分离</h3><ul>
-<li><p>收集图集</p>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">List&lt;Texture2D&gt; m_AtlasList = <span class="keyword">new</span> List&lt;Texture2D&gt;();</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">CollectAtlasSprite</span>(<span class="params"></span>)</div><div class="line"></span>&#123;</div><div class="line">    <span class="comment">//Travel all AtlasSprite</span></div><div class="line">    m_AtlasList.Add(obj <span class="keyword">as</span> Texture2D);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-        
-          <a class="article-more-a" href="/2016/10/31/separateAlpha/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Unity</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/10/31/separateAlpha/">展开全文 >></a>
         </p>
       
 

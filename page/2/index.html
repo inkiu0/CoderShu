@@ -151,6 +151,86 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-sobel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/17/sobel/">Sobel算子边缘检测</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/17/sobel/" class="archive-article-date">
+  	<time datetime="2017-01-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>用Sobel算子来进行边缘检测<br>应该知道除了Sobel算子以外还有几种常用的算子。</p>
+<ul>
+<li>Roberts  </li>
+</ul>
+<p>$$\left[\begin{matrix}<br>-1 &amp; 0 \<br> 0 &amp; 1<br>\end{matrix}\right]$$$$\left[\begin{matrix}<br>0 &amp; -1 \<br>1 &amp;  0<br>\end{matrix}\right]$$</p>
+<ul>
+<li>Prewitt</li>
+</ul>
+<p>$$\left[\begin{matrix}<br>-1 &amp; -1 &amp; -1 \<br> 0 &amp;  0 &amp;  0 \<br> 1 &amp;  1 &amp;  1<br>\end{matrix}\right]$$$$\left[\begin{matrix}<br>-1 &amp;  0 &amp;  1 \<br>-1 &amp;  0 &amp;  1 \<br>-1 &amp;  0 &amp;  1<br>\end{matrix}\right]$$</p>
+<ul>
+<li>Sobel</li>
+</ul>
+<p>$$\left[\begin{matrix}<br>-1 &amp; -2 &amp; -1 \<br>0 &amp; 0 &amp; 0 \<br>1 &amp; 2 &amp; 1<br>\end{matrix}\right]$$$$\left[\begin{matrix}<br>-1 &amp; 0 &amp; 1 \<br>-2 &amp; 0 &amp; 2 \<br>-1 &amp; 0 &amp; 1<br>\end{matrix}\right]$$</p>
+<p>我们取得一个纹素的大小， 即1/texelSize。然后根据现在的纹理坐标前后左右偏移一个像素，得到9个方向的纹理坐标。<br>然后用Sobel函数算得该纹理坐标的卷积值  </p>
+<ul>
+<li>_EdgeOnly = 0时显示原图像和边缘的叠加图像，即withEdgeColor</li>
+<li><p>_EdgeOnly = 1时只显示边缘，其他部分为背景色，即只显示onlyEdgeColor</p>
+        
+          <a class="article-more-a" href="/2017/01/17/sobel/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/17/sobel/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-luaIter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -783,72 +863,6 @@ void OnRenderImage(RenderTexture src, RenderTexture dest)
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/12/28/mirror/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-reflection" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/22/reflection/">反射材质</a>
-    </h1>
-  
-
-        
-        <a href="/2016/12/22/reflection/" class="archive-article-date">
-  	<time datetime="2016-12-21T18:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/UnityShader/QQ图片20161222020100.png" alt=""><br>这是使用了反射材质的水壶，模拟了金属反射室内的情况。室内用的是一个天空球模拟的。  </p>
-<pre><code>fixed fresnel = _FresnelScale + (1 - _FresnelScale) * pow(1 - dot(worldViewDir, worldNormal), 5);
-</code></pre><p>在片元着色器添加一行菲涅尔反射用的参数，然后将正常的ReflectionShader的_ReflectAmount换成新计算的fresnel，改变插值的系数。</p>
-        
-          <a class="article-more-a" href="/2016/12/22/reflection/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">UnityShader</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/22/reflection/">展开全文 >></a>
         </p>
       
 
